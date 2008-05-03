@@ -8,3 +8,4 @@ $t->ok(1);
 --EXPECT--
 ok 1
 1..1
+ Looks like everything went fine.

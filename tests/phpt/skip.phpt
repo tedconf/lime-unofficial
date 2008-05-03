@@ -8,3 +8,4 @@ $t->skip();
 --EXPECT--
 ok 1 # SKIP
 1..1
+ Looks like everything went fine.

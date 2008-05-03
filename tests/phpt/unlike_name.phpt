@@ -8,3 +8,4 @@ $t->unlike('tests01', '/test\d+/', 'test name');
 --EXPECT--
 ok 1 - test name
 1..1
+ Looks like everything went fine.

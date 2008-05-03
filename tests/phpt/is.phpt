@@ -8,3 +8,4 @@ $t->is(false, false);
 --EXPECT--
 ok 1
 1..1
+ Looks like everything went fine.

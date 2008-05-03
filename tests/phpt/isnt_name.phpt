@@ -8,3 +8,4 @@ $t->isnt(false, true, 'test name');
 --EXPECT--
 ok 1 - test name
 1..1
+ Looks like everything went fine.

@@ -9,4 +9,4 @@ $t->fail('test name');
 not ok 1 - test name
 #     Failed test (./tests/phpt/fail_name.php at line 3)
 1..1
-# Looks like you failed 1 tests of 1.
+ Looks like you failed 1 tests of 1.

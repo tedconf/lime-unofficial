@@ -8,3 +8,4 @@ $t->todo('test name');
 --EXPECT--
 ok 1 # TODO test name
 1..1
+ Looks like everything went fine.

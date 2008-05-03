@@ -11,4 +11,4 @@ not ok 1
 #     Failed test (./tests/phpt/isa_ok_fails.php at line 4)
 #       isa_ok isn't a 'Foo' it's a 'Test'
 1..1
-# Looks like you failed 1 tests of 1.
+ Looks like you failed 1 tests of 1.

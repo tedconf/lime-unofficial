@@ -9,3 +9,4 @@ $t->isa_ok(new Test(), 'Test', 'test name');
 --EXPECT--
 ok 1 - test name
 1..1
+ Looks like everything went fine.

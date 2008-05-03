@@ -8,3 +8,4 @@ $t->like('test01', '/test\d+/');
 --EXPECT--
 ok 1
 1..1
+ Looks like everything went fine.

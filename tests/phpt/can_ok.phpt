@@ -9,3 +9,4 @@ $t->can_ok(new Test(), 'test');
 --EXPECT--
 ok 1
 1..1
+ Looks like everything went fine.

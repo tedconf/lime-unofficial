@@ -11,4 +11,4 @@ not ok 1
 #                     'tests01'
 #       doesn't match '/test\d+/'
 1..1
-# Looks like you failed 1 tests of 1.
+ Looks like you failed 1 tests of 1.
