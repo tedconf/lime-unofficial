@@ -5,9 +5,9 @@ cmp_ok method that fails
 require_once(dirname(__FILE__).'/setup.php');
 $t->cmp_ok(1, '>', 1);
 ?>
---EXPECT--
+--EXPECTF--
 not ok 1
-#     Failed test (./tests/phpt/lime_test/cmp_ok_fails.php at line 3)
+#     Failed test (%s/cmp_ok_fails.php at line 3)
 #       1
 #           >
 #       1

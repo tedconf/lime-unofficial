@@ -5,9 +5,9 @@ is method that fails
 require_once(dirname(__FILE__).'/setup.php');
 $t->is(false, true);
 ?>
---EXPECT--
+--EXPECTF--
 not ok 1
-#     Failed test (./tests/phpt/lime_test/is_fails.php at line 3)
+#     Failed test (%s/is_fails.php at line 3)
 #            got: false
 #       expected: true
 1..1

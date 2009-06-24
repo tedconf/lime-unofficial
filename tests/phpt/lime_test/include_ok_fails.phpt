@@ -5,9 +5,9 @@ include_ok method that fails
 require_once(dirname(__FILE__).'/setup.php');
 $t->include_ok('foo.php');
 ?>
---EXPECT--
+--EXPECTF--
 not ok 1
-#     Failed test (./tests/phpt/lime_test/include_ok_fails.php at line 3)
+#     Failed test (%s/include_ok_fails.php at line 3)
 #       Tried to include 'foo.php'
 1..1
  Looks like you failed 1 tests of 1.

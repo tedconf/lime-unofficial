@@ -5,9 +5,9 @@ isnt method that fails
 require_once(dirname(__FILE__).'/setup.php');
 $t->isnt(false, false);
 ?>
---EXPECT--
+--EXPECTF--
 not ok 1
-#     Failed test (./tests/phpt/lime_test/isnt_fails.php at line 3)
+#     Failed test (%s/isnt_fails.php at line 3)
 #       false
 #           ne
 #       false

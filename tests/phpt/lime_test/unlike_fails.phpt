@@ -5,9 +5,9 @@ like method that fails
 require_once(dirname(__FILE__).'/setup.php');
 $t->unlike('test01', '/test\d+/');
 ?>
---EXPECT--
+--EXPECTF--
 not ok 1
-#     Failed test (./tests/phpt/lime_test/unlike_fails.php at line 3)
+#     Failed test (%s/unlike_fails.php at line 3)
 #                'test01'
 #       matches '/test\d+/'
 1..1

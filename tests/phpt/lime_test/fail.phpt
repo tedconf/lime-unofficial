@@ -5,8 +5,8 @@ fail method
 require_once(dirname(__FILE__).'/setup.php');
 $t->fail();
 ?>
---EXPECT--
+--EXPECTF--
 not ok 1
-#     Failed test (./tests/phpt/lime_test/fail.php at line 3)
+#     Failed test (%s/fail.php at line 3)
 1..1
  Looks like you failed 1 tests of 1.
