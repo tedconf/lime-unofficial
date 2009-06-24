@@ -9,15 +9,15 @@ $t->is_deeply(array(), array(1, 2, 3));
 ?>
 --EXPECT--
 not ok 1
-#     Failed test (./tests/phpt/is_deeply_fails.php at line 3)
+#     Failed test (./tests/phpt/lime_test/is_deeply_fails.php at line 3)
 #            got: array (  0 => 1,  1 => 2,  2 =>   array (    1 => 'foo',    'a' => '4',  ),)
 #       expected: array (  0 => 1,  1 => 2,  2 =>   array (    1 => 'bar',    'a' => '4',  ),)
 not ok 2
-#     Failed test (./tests/phpt/is_deeply_fails.php at line 4)
+#     Failed test (./tests/phpt/lime_test/is_deeply_fails.php at line 4)
 #            got: array (  0 => 1,  1 => 2,  2 => 3,)
 #       expected: array ()
 not ok 3
-#     Failed test (./tests/phpt/is_deeply_fails.php at line 5)
+#     Failed test (./tests/phpt/lime_test/is_deeply_fails.php at line 5)
 #            got: array ()
 #       expected: array (  0 => 1,  1 => 2,  2 => 3,)
 1..3

@@ -7,7 +7,7 @@ $t->cmp_ok(1, '>', 1);
 ?>
 --EXPECT--
 not ok 1
-#     Failed test (./tests/phpt/cmp_ok_fails.php at line 3)
+#     Failed test (./tests/phpt/lime_test/cmp_ok_fails.php at line 3)
 #       1
 #           >
 #       1

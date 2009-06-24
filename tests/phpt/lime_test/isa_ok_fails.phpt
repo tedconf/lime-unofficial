@@ -8,7 +8,7 @@ $t->isa_ok(new Test(), 'Foo');
 ?>
 --EXPECT--
 not ok 1
-#     Failed test (./tests/phpt/isa_ok_fails.php at line 4)
+#     Failed test (./tests/phpt/lime_test/isa_ok_fails.php at line 4)
 #       variable isn't a 'Foo' it's a 'Test'
 1..1
  Looks like you failed 1 tests of 1.

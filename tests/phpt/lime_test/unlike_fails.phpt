@@ -7,7 +7,7 @@ $t->unlike('test01', '/test\d+/');
 ?>
 --EXPECT--
 not ok 1
-#     Failed test (./tests/phpt/unlike_fails.php at line 3)
+#     Failed test (./tests/phpt/lime_test/unlike_fails.php at line 3)
 #                'test01'
 #       matches '/test\d+/'
 1..1

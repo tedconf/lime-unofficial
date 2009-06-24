@@ -7,7 +7,7 @@ $t->isnt(false, false);
 ?>
 --EXPECT--
 not ok 1
-#     Failed test (./tests/phpt/isnt_fails.php at line 3)
+#     Failed test (./tests/phpt/lime_test/isnt_fails.php at line 3)
 #       false
 #           ne
 #       false

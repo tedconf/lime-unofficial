@@ -7,7 +7,7 @@ $t->like('tests01', '/test\d+/');
 ?>
 --EXPECT--
 not ok 1
-#     Failed test (./tests/phpt/like_fails.php at line 3)
+#     Failed test (./tests/phpt/lime_test/like_fails.php at line 3)
 #                     'tests01'
 #       doesn't match '/test\d+/'
 1..1

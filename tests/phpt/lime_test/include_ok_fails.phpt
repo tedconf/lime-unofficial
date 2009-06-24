@@ -7,7 +7,7 @@ $t->include_ok('foo.php');
 ?>
 --EXPECT--
 not ok 1
-#     Failed test (./tests/phpt/include_ok_fails.php at line 3)
+#     Failed test (./tests/phpt/lime_test/include_ok_fails.php at line 3)
 #       Tried to include 'foo.php'
 1..1
  Looks like you failed 1 tests of 1.
