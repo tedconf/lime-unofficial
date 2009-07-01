@@ -22,12 +22,27 @@ class lime_test
   protected $test_nb = 0;
   protected $output  = null;
   protected $results = array();
+  protected $options = array();
 
   static protected $all_results = array();
 
-  public function __construct($plan = null, $output_instance = null)
+  public function __construct($plan = null, $options = array())
   {
-    $this->output = $output_instance ? $output_instance : new lime_output();
+    // for BC
+    if (!is_array($options))
+    {
+      $options = array('output' => $options);
+    }
+
+    $this->options = array_merge(array(
+      'base_dir'     => null,
+      'force_colors' => false,
+      'output'       => null,
+      'verbose'      => false,
+    ), $options);
+
+    $this->output = $this->options['output'] ? $this->options['output'] : new lime_output($this->options['force_colors']);
+    $this->options['base_dir'] = realpath($this->options['base_dir']);
 
     $caller = $this->find_caller(debug_backtrace());
     self::$all_results[] = array(
@@ -504,9 +519,24 @@ class lime_test
 
   protected function find_caller($traces)
   {
-    $last = count($traces) - 1;
+    // find the first call to a method of an object that is an instance of lime_test
+    $t = array_reverse($traces);
+    foreach ($t as $trace)
+    {
+      if (isset($trace['object']) && $trace['object'] instanceof lime_test)
+      {
+        return array($trace['file'], $trace['line']);
+      }
+    }
 
-    return array($traces[$last]['file'], $traces[$last]['line']);
+    // return the first call
+    $last = count($traces) - 1;
+    $file = $traces[$last]['file'];
+    if ($this->options['base_dir'])
+    {
+      $file = str_replace(str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $this->options['base_dir']), '', str_replace(array('/', '\\'), $file));
+    }
+    return array($file, $traces[$last]['line']);
   }
 }
 
@@ -645,7 +675,7 @@ class lime_harness extends lime_registration
     ), $options);
 
     $this->php_cli = $this->find_php_cli($this->options['php_cli']);
-    $this->output = $this->options['output'] ? $this->options['output'] : new lime_output($options['force_colors']);
+    $this->output = $this->options['output'] ? $this->options['output'] : new lime_output($this->options['force_colors']);
   }
 
   protected function find_php_cli($php_cli = null)
