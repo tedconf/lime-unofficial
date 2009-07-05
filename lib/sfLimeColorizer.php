@@ -66,19 +66,6 @@ class sfLimeColorizer
       'white'   => 47,
     );
 
-  protected
-    $forceColors = false;
-
-  /**
-   * Constructor.
-   *
-   * @param boolean $forceColors  Whether colorization should be enforced
-   */
-  public function __construct($forceColors = false)
-  {
-    $this->forceColors = $forceColors;
-  }
-
   /**
    * Returns whether colorization is supported by the current OS and console.
    *
@@ -179,11 +166,6 @@ class sfLimeColorizer
    */
   public function colorize($text = '', $parameters = array())
   {
-    if (!$this->forceColors && !self::isSupported())
-    {
-      return $text;
-    }
-
     if (!is_array($parameters) && isset(self::$styles[$parameters]))
     {
       $parameters = self::$styles[$parameters];
