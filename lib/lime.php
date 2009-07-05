@@ -9,6 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
+require_once dirname(__FILE__).'/sfLimeAutoloader.php';
+
+sfLimeAutoloader::enableLegacyMode();
+sfLimeAutoloader::register();
+
 class lime_test extends sfLimeTest
 {
   static public function to_array()
