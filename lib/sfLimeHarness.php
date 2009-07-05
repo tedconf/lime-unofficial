@@ -126,7 +126,7 @@ EOF
       ob_start();
       // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing
       passthru(sprintf('cd & %s %s 2>&1', escapeshellarg($this->executable), escapeshellarg($testFile)), $return);
-      ob_end_clean();
+      ob_get_clean();
       unlink($testFile);
 
       $output = file_get_contents($resultFile);

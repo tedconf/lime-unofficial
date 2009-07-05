@@ -32,7 +32,7 @@
  * @package    lime
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Bernhard Schussek <bschussek@gmail.com>
- * @version    SVN: $Id: lime.php 19882 2009-07-05 07:51:53Z bschussek $
+ * @version    SVN: $Id$
  */
 class sfLimeColorizer
 {
@@ -102,8 +102,8 @@ class sfLimeColorizer
    *   <tr><td>bold</td>      <td>boolean</td>    <td><tt>true</tt> for bold text</td></tr>
    *   <tr><td>underscore</td><td>boolean</td>    <td><tt>true</tt> for underscored text</td></tr>
    *   <tr><td>blink</td>     <td>boolean</td>    <td><tt>true</tt> for blinking text</td></tr>
-   *   <tr><td>reverse</td>   <td>boolean</td>    <td><tt>true</tt> for reversed text</td></tr>
-   *   <tr><td>conceal</td>   <td>boolean</td>    <td><tt>true</tt> for concealed text</td></tr>
+   *   <tr><td>reverse</td>   <td>boolean</td>    <td><tt>true</tt> for text with inverted foreground/background color</td></tr>
+   *   <tr><td>conceal</td>   <td>boolean</td>    <td><tt>true</tt> for invisible text</td></tr>
    *   <tr><td>fg</td>        <td>color</td>      <td>The color of the text</td></tr>
    *   <tr><td>bg</td>        <td>color</td>      <td>The color of the background</td></tr>
    * </table>

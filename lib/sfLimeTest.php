@@ -14,7 +14,7 @@
  *
  * @package    lime
  * @author     Fabien Potencier <fabien.potencier@gmail.com>
- * @version    SVN: $Id: lime.php 19882 2009-07-05 07:51:53Z bschussek $
+ * @version    SVN: $Id$
  */
 class sfLimeTest
 {
