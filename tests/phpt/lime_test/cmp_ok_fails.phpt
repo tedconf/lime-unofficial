@@ -1,9 +1,9 @@
 --TEST--
-cmp_ok method that fails
+compare method that fails
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
-$t->cmp_ok(1, '>', 1);
+$t->compare(1, '>', 1);
 ?>
 --EXPECTF--
 not ok 1

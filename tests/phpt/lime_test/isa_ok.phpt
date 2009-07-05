@@ -1,10 +1,10 @@
 --TEST--
-isa_ok method
+isa method
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
 class Test {}
-$t->isa_ok(new Test(), 'Test');
+$t->isa(new Test(), 'Test');
 ?>
 --EXPECT--
 ok 1

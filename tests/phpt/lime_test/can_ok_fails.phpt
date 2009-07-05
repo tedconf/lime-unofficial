@@ -1,10 +1,10 @@
 --TEST--
-can_ok method that fails
+hasMethod method that fails
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
 class Test { function test() {} }
-$t->can_ok(new Test(), 'foo');
+$t->hasMethod(new Test(), 'foo');
 ?>
 --EXPECTF--
 not ok 1

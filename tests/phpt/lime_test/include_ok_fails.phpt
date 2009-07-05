@@ -1,9 +1,9 @@
 --TEST--
-include_ok method that fails
+includeOk method that fails
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
-$t->include_ok('foo.php');
+$t->includeOk('foo.php');
 ?>
 --EXPECTF--
 not ok 1

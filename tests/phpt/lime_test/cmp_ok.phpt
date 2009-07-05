@@ -1,9 +1,9 @@
 --TEST--
-cmp_ok method
+compare method
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
-$t->cmp_ok(2, '>', 1);
+$t->compare(2, '>', 1);
 ?>
 --EXPECT--
 ok 1
