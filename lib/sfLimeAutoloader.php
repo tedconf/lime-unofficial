@@ -21,6 +21,8 @@ class sfLimeAutoloader
 {
   static protected $isLegacyMode = false;
 
+  static protected $isRegistered = false;
+
   /**
    * Enables a backwards compatibility layer to allow use of old class names
    * such as lime_test, lime_output etc.
@@ -35,8 +37,13 @@ class sfLimeAutoloader
    */
   static public function register()
   {
-    ini_set('unserialize_callback_func', 'spl_autoload_call');
-    spl_autoload_register(array(new self, 'autoload'));
+    if (!self::$isRegistered)
+    {
+      ini_set('unserialize_callback_func', 'spl_autoload_call');
+      spl_autoload_register(array(new self, 'autoload'));
+
+      self::$isRegistered = true;
+    }
   }
 
   /**
