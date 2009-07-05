@@ -65,7 +65,7 @@ class lime_output extends sfLimeOutput
   }
 }
 
-class lime_output_color extends sfLimeOutputColor
+class lime_output_color extends sfLimeOutput
 {
 }
 
