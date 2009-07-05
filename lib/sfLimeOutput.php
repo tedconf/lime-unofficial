@@ -55,10 +55,10 @@ class sfLimeOutput
   {
     if ($colorize)
     {
-      $message = preg_replace('/(?:^|\.)((?:not ok|dubious) *\d*)\b/e', '$this->colorizer->colorize(\'$1\', \'ERROR\')', $message);
-      $message = preg_replace('/(?:^|\.)(ok *\d*)\b/e', '$this->colorizer->colorize(\'$1\', \'INFO\')', $message);
-      $message = preg_replace('/"(.+?)"/e', '$this->colorizer->colorize(\'$1\', \'PARAMETER\')', $message);
-      $message = preg_replace('/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/e', '$this->colorizer->colorize(\'$1$2()\', \'PARAMETER\')', $message);
+      $message = preg_replace('/(?:^|\.)((?:not ok|dubious) *\d*)\b/e', '$this->colorize(\'$1\', \'ERROR\')', $message);
+      $message = preg_replace('/(?:^|\.)(ok *\d*)\b/e', '$this->colorize(\'$1\', \'INFO\')', $message);
+      $message = preg_replace('/"(.+?)"/e', '$this->colorize(\'$1\', \'PARAMETER\')', $message);
+      $message = preg_replace('/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/e', '$this->colorize(\'$1$2()\', \'PARAMETER\')', $message);
     }
 
     echo ($colorizerParameter ? $this->colorize($message, $colorizerParameter) : $message)."\n";
