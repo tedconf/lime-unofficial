@@ -56,6 +56,6 @@ sfLimeColorizer::style('INFO', array('fg' => 'green', 'bold' => true));
 sfLimeColorizer::style('PARAMETER', array('fg' => 'cyan'));
 sfLimeColorizer::style('COMMENT', array('fg' => 'yellow'));
 
-sfLimeColorizer::style('greenBar', array('fg' => 'white', 'bg' => 'green', 'bold' => true));
-sfLimeColorizer::style('redBar', array('fg' => 'white', 'bg' => 'red', 'bold' => true));
+sfLimeColorizer::style('GREEN_BAR', array('fg' => 'white', 'bg' => 'green', 'bold' => true));
+sfLimeColorizer::style('RED_BAR', array('fg' => 'white', 'bg' => 'red', 'bold' => true));
 sfLimeColorizer::style('INFO_BAR', array('fg' => 'cyan', 'bold' => true));

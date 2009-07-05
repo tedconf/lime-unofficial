@@ -39,7 +39,7 @@ class sfLimeOutput
 
   public function error($message)
   {
-    echo $this->colorizer->colorize(sprintf(' %s ', $message), 'redBar')."\n";
+    echo $this->colorizer->colorize(sprintf(' %s ', $message), 'RED_BAR')."\n";
   }
 
   public function echoln($message, $colorizerParameter = null, $colorize = true)
@@ -57,11 +57,11 @@ class sfLimeOutput
 
   public function greenBar($message)
   {
-    echo $this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'greenBar')."\n";
+    echo $this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'GREEN_BAR')."\n";
   }
 
   public function redBar($message)
   {
-    echo $this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'redBar')."\n";
+    echo $this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'RED_BAR')."\n";
   }
 }
