@@ -75,6 +75,22 @@ class lime_colorizer extends sfLimeColorizer
 
 class lime_harness extends sfLimeHarness
 {
+  public function __construct($options = array())
+  {
+    // for BC
+    if (!is_array($options))
+    {
+      $options = array('output' => $options);
+    }
+    else if (array_key_exists('php_cli', $options))
+    {
+      $options['executable'] = $options['php_cli'];
+      unset($options['php_cli']);
+    }
+
+    parent::__construct($options);
+  }
+
   public function to_array()
   {
     return $this->toArray();

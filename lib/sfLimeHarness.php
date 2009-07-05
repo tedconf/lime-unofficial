@@ -18,12 +18,6 @@ class sfLimeHarness extends sfLimeRegistration
 
   public function __construct($options = array())
   {
-    // for BC
-    if (!is_array($options))
-    {
-      $options = array('output' => $options);
-    }
-
     $this->options = array_merge(array(
       'executable'   => null,
       'force_colors' => false,
