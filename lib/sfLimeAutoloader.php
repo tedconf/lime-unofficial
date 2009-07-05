@@ -10,11 +10,31 @@
  */
 
 /**
- * sfLimeAutoloader is an autoloader for the service container classes.
+ * sfLimeAutoloader is an autoloader for the lime test framework classes.
+ *
+ * Use the method register() to activate autoloading for all classes of this
+ * component.
+ *
+ * <code>
+ * include 'path/to/sfLimeAutoloader.php';
+ * sfLimeAutoloader::register();
+ * </code>
+ *
+ * Bundled with this component comes a backwards compatibility layer that
+ * offers class and method signatures of lime 1.0 (lime_test, lime_harness etc.).
+ * To activate this layer, call the method sfLimeAutoloader::enableLegacyMode()
+ * anytime before using any of the old class names in your code.
+ *
+ * <code>
+ * include 'path/to/sfLimeAutoloader.php';
+ * sfLimeAutoloader::register();
+ * sfLimeAutoloader::enableLegacyMode();
+ * </code>
  *
  * @package    symfony
  * @subpackage lime
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
 class sfLimeAutoloader
