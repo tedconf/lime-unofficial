@@ -11,7 +11,8 @@
 
 class sfLimeOutput
 {
-  public $colorizer = null;
+  public
+    $colorizer = null;
 
   public function __construct($forceColors = false)
   {

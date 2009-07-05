@@ -18,14 +18,17 @@
  */
 class sfLimeTest
 {
-  const EPSILON = 0.0000000001;
+  const
+    EPSILON = 0.0000000001;
 
-  protected $nbTests = 0;
-  protected $output  = null;
-  protected $results = array();
-  protected $options = array();
+  protected
+    $nbTests = 0,
+    $output  = null,
+    $results = array(),
+    $options = array();
 
-  static protected $allResults = array();
+  static protected
+    $allResults = array();
 
   public function __construct($plan = null, $options = array())
   {

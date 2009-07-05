@@ -19,9 +19,9 @@
  */
 class sfLimeAutoloader
 {
-  static protected $isLegacyMode = false;
-
-  static protected $isRegistered = false;
+  static protected
+    $isLegacyMode = false,
+    $isRegistered = false;
 
   /**
    * Enables a backwards compatibility layer to allow use of old class names

@@ -11,9 +11,11 @@
 
 class sfLimeColorizer
 {
-  static public $styles = array();
+  static public
+    $styles = array();
 
-  protected $forceColors = false;
+  protected
+    $forceColors = false;
 
   public function __construct($forceColors = false)
   {

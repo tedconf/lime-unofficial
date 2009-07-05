@@ -11,10 +11,11 @@
 
 class sfLimeHarness extends sfLimeRegistration
 {
-  public $options = array();
-  public $executable = null;
-  public $stats   = array();
-  public $output  = null;
+  public
+    $options    = array(),
+    $executable = null,
+    $stats      = array(),
+    $output     = null;
 
   public function __construct($options = array())
   {

@@ -11,12 +11,15 @@
 
 class sfLimeCoverage extends sfLimeRegistration
 {
-  public $files = array();
-  public $extension = '.php';
-  public $baseDir = '';
-  public $harness = null;
-  public $verbose = false;
-  protected $coverage = array();
+  public
+    $files      = array(),
+    $extension  = '.php',
+    $baseDir    = '',
+    $harness    = null,
+    $verbose    = false;
+
+  protected
+    $coverage = array();
 
   public function __construct($harness)
   {

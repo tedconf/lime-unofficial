@@ -11,9 +11,10 @@
 
 class sfLimeRegistration
 {
-  public $files = array();
-  public $extension = '.php';
-  public $baseDir = '';
+  public
+    $files      = array(),
+    $extension  = '.php',
+    $baseDir    = '';
 
   public function register($filesOrDirectories)
   {
