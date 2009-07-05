@@ -89,7 +89,7 @@ class sfLimeColorizer
    */
   public static function isSupported()
   {
-    return DIRECTORY_SEPARATOR == '\\' || !function_exists('posix_isatty') || !@posix_isatty(STDOUT);
+    return DIRECTORY_SEPARATOR != '\\' && function_exists('posix_isatty') && @posix_isatty(STDOUT);
   }
 
   /**
@@ -179,7 +179,7 @@ class sfLimeColorizer
    */
   public function colorize($text = '', $parameters = array())
   {
-    if (!$this->forceColors && self::isSupported())
+    if (!$this->forceColors && !self::isSupported())
     {
       return $text;
     }
