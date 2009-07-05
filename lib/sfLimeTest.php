@@ -29,12 +29,6 @@ class sfLimeTest
 
   public function __construct($plan = null, $options = array())
   {
-    // for BC
-    if (!is_array($options))
-    {
-      $options = array('output' => $options);
-    }
-
     $this->options = array_merge(array(
       'base_dir'     => null,
       'force_colors' => false,

@@ -16,6 +16,17 @@ sfLimeAutoloader::register();
 
 class lime_test extends sfLimeTest
 {
+  public function __construct($plan = null, $options = array())
+  {
+    // for BC
+    if (!is_array($options))
+    {
+      $options = array('output' => $options);
+    }
+
+    parent::__construct($plan, $options);
+  }
+
   static public function to_array()
   {
     return self::toArray();
