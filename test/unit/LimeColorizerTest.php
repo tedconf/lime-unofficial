@@ -11,12 +11,12 @@
 
 require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
-$t = new sfLimeTest(10);
+$t = new LimeTest(10);
 
 
 $t->diag('Text can be colorized with font and color styles');
 
-$c = new sfLimeColorizer();
+$c = new LimeColorizer();
 $t->is($c->colorize('Hello World', array('bold' => true)),       "\033[1mHello World\033[0m", 'Text can be bold');
 $t->is($c->colorize('Hello World', array('underscore' => true)), "\033[4mHello World\033[0m", 'Text can be underscored');
 $t->is($c->colorize('Hello World', array('blink' => true)),      "\033[5mHello World\033[0m", 'Text can be blinking');
@@ -29,14 +29,14 @@ $t->is($c->colorize('Hello World', array('bold' => true, 'fg' => 'black', 'bg' =
 
 $t->diag('Text styles can be preset using ->setStyle()');
 
-$c = new sfLimeColorizer();
+$c = new LimeColorizer();
 $c->setStyle('test_style', array('bold' => true, 'fg' => 'black', 'bg' => 'white'));
 $t->is($c->colorize('Hello World', 'test_style'), "\033[30;47;1mHello World\033[0m", 'Predefined styles can be used');
 
 
 $t->diag('Text styles can be preset using backwards compatible ::style()');
 
-sfLimeAutoloader::enableLegacyMode();
+LimeAutoloader::enableLegacyMode();
 lime_colorizer::style('test_style', array('bold' => true, 'fg' => 'black', 'bg' => 'white'));
 
 $c = new lime_colorizer();

@@ -16,7 +16,7 @@
  * @author     Fabien Potencier <fabien.potencier@gmail.com>
  * @version    SVN: $Id$
  */
-class sfLimeTest
+class LimeTest
 {
   const
     EPSILON = 0.0000000001;
@@ -39,7 +39,7 @@ class sfLimeTest
       'verbose'      => false,
     ), $options);
 
-    $this->output = $this->options['output'] ? $this->options['output'] : new sfLimeOutput($this->options['force_colors']);
+    $this->output = $this->options['output'] ? $this->options['output'] : new LimeOutput($this->options['force_colors']);
     $this->options['base_dir'] = realpath($this->options['base_dir']);
 
     $caller = $this->findCaller(debug_backtrace());
@@ -517,11 +517,11 @@ class sfLimeTest
 
   protected function findCaller($traces)
   {
-    // find the first call to a method of an object that is an instance of sfLimeTest
+    // find the first call to a method of an object that is an instance of LimeTest
     $t = array_reverse($traces);
     foreach ($t as $trace)
     {
-      if (isset($trace['object']) && $trace['object'] instanceof sfLimeTest)
+      if (isset($trace['object']) && $trace['object'] instanceof LimeTest)
       {
         return array($trace['file'], $trace['line']);
       }

@@ -9,11 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-require_once(dirname(__FILE__).'/../../lib/sfLimeAutoloader.php');
+require_once(dirname(__FILE__).'/../../lib/LimeAutoloader.php');
 
-sfLimeAutoloader::register();
+LimeAutoloader::register();
 
-$h = new sfLimeHarness(array(
+$h = new LimeHarness(array(
   'force_colors' => isset($argv) && in_array('--color', $argv),
   'verbose'      => isset($argv) && in_array('--verbose', $argv),
 ));

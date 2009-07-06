@@ -10,25 +10,25 @@
  */
 
 /**
- * sfLimeAutoloader is an autoloader for the lime test framework classes.
+ * LimeAutoloader is an autoloader for the lime test framework classes.
  *
  * Use the method register() to activate autoloading for all classes of this
  * component.
  *
  * <code>
- * include 'path/to/sfLimeAutoloader.php';
- * sfLimeAutoloader::register();
+ * include 'path/to/LimeAutoloader.php';
+ * LimeAutoloader::register();
  * </code>
  *
  * Bundled with this component comes a backwards compatibility layer that
  * offers class and method signatures of lime 1.0 (lime_test, lime_harness etc.).
- * To activate this layer, call the method sfLimeAutoloader::enableLegacyMode()
+ * To activate this layer, call the method LimeAutoloader::enableLegacyMode()
  * anytime before using any of the old class names in your code.
  *
  * <code>
- * include 'path/to/sfLimeAutoloader.php';
- * sfLimeAutoloader::register();
- * sfLimeAutoloader::enableLegacyMode();
+ * include 'path/to/LimeAutoloader.php';
+ * LimeAutoloader::register();
+ * LimeAutoloader::enableLegacyMode();
  * </code>
  *
  * @package    symfony
@@ -37,7 +37,7 @@
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
-class sfLimeAutoloader
+class LimeAutoloader
 {
   static protected
     $isLegacyMode = false,
@@ -53,7 +53,7 @@ class sfLimeAutoloader
   }
 
   /**
-   * Registers sfLimeAutoloader as an SPL autoloader.
+   * Registers LimeAutoloader as an SPL autoloader.
    */
   static public function register()
   {
@@ -83,7 +83,7 @@ class sfLimeAutoloader
       return true;
     }
 
-    if (0 === strpos($class, 'sfLime'))
+    if (0 === strpos($class, 'Lime'))
     {
       require dirname(__FILE__).'/'.$class.'.php';
 

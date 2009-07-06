@@ -16,7 +16,7 @@
  * string:
  *
  * <code>
- * $colorizer = new sfLimeColorizer();
+ * $colorizer = new LimeColorizer();
  * $text = $colorizer->colorize('Hello World', array(
  *   'bold' => true,
  *   'fg' => 'white',
@@ -34,7 +34,7 @@
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
-class sfLimeColorizer
+class LimeColorizer
 {
   static protected
     $fontStyles = array(
@@ -111,7 +111,7 @@ class sfLimeColorizer
    * Example:
    *
    * <code>
-   * $colorizer = new sfLimeColorizer();
+   * $colorizer = new LimeColorizer();
    * $colorizer->setStyle('myStyle', array(
    *   'bold' => true,
    *   'fg' => 'white',
@@ -140,7 +140,7 @@ class sfLimeColorizer
    * Example (with options):
    *
    * <code>
-   * $colorizer = new sfLimeColorizer();
+   * $colorizer = new LimeColorizer();
    * $text = $colorizer->colorize('Hello World', array(
    *   'bold' => true,
    *   'fg' => 'white',
@@ -151,7 +151,7 @@ class sfLimeColorizer
    * Example (with style name):
    *
    * <code>
-   * $colorizer = new sfLimeColorizer();
+   * $colorizer = new LimeColorizer();
    * $colorizer->setStyle('myStyle', array(
    *   'bold' => true,
    *   'fg' => 'white',

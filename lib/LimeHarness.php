@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class sfLimeHarness extends sfLimeRegistration
+class LimeHarness extends LimeRegistration
 {
   public
     $options    = array(),
@@ -27,7 +27,7 @@ class sfLimeHarness extends sfLimeRegistration
     ), $options);
 
     $this->executable = $this->findExecutable($this->options['executable']);
-    $this->output = $this->options['output'] ? $this->options['output'] : new sfLimeOutput($this->options['force_colors']);
+    $this->output = $this->options['output'] ? $this->options['output'] : new LimeOutput($this->options['force_colors']);
   }
 
   protected function findExecutable($executable = null)
@@ -87,7 +87,7 @@ class sfLimeHarness extends sfLimeRegistration
 
   public function toXml()
   {
-    return sfLimeTest::toXml($this->toArray());
+    return LimeTest::toXml($this->toArray());
   }
 
   public function run()
@@ -119,7 +119,7 @@ class sfLimeHarness extends sfLimeRegistration
       file_put_contents($testFile, <<<EOF
 <?php
 include('$file');
-file_put_contents('$resultFile', serialize(sfLimeTest::toArray()));
+file_put_contents('$resultFile', serialize(LimeTest::toArray()));
 EOF
       );
 

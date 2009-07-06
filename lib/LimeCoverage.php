@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class sfLimeCoverage extends sfLimeRegistration
+class LimeCoverage extends LimeRegistration
 {
   public
     $files      = array(),

@@ -9,16 +9,16 @@
  * with this source code in the file LICENSE.
  */
 
-class sfLimeOutput
+class LimeOutput
 {
   public
     $colorizer = null;
 
   public function __construct($forceColors = false)
   {
-    if (sfLimeColorizer::isSupported() || $forceColors)
+    if (LimeColorizer::isSupported() || $forceColors)
     {
-      $colorizer = new sfLimeColorizer();
+      $colorizer = new LimeColorizer();
       $colorizer->setStyle('ERROR', array('bg' => 'red', 'fg' => 'white', 'bold' => true));
       $colorizer->setStyle('INFO', array('fg' => 'green', 'bold' => true));
       $colorizer->setStyle('PARAMETER', array('fg' => 'cyan'));

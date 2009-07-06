@@ -9,12 +9,12 @@
  * with this source code in the file LICENSE.
  */
 
-require_once dirname(__FILE__).'/sfLimeAutoloader.php';
+require_once dirname(__FILE__).'/LimeAutoloader.php';
 
-sfLimeAutoloader::enableLegacyMode();
-sfLimeAutoloader::register();
+LimeAutoloader::enableLegacyMode();
+LimeAutoloader::register();
 
-class lime_test extends sfLimeTest
+class lime_test extends LimeTest
 {
   public function __construct($plan = null, $options = array())
   {
@@ -63,7 +63,7 @@ class lime_test extends sfLimeTest
   }
 }
 
-class lime_output extends sfLimeOutput
+class lime_output extends LimeOutput
 {
   public function green_bar($message)
   {
@@ -76,11 +76,11 @@ class lime_output extends sfLimeOutput
   }
 }
 
-class lime_output_color extends sfLimeOutput
+class lime_output_color extends LimeOutput
 {
 }
 
-class lime_colorizer extends sfLimeColorizer
+class lime_colorizer extends LimeColorizer
 {
   protected static
     $instances    = array(),
@@ -102,7 +102,7 @@ class lime_colorizer extends sfLimeColorizer
   }
 }
 
-class lime_harness extends sfLimeHarness
+class lime_harness extends LimeHarness
 {
   public function __construct($options = array())
   {
@@ -136,7 +136,7 @@ class lime_harness extends sfLimeHarness
   }
 }
 
-class lime_coverage extends sfLimeCoverage
+class lime_coverage extends LimeCoverage
 {
   public static function get_php_lines($content)
   {
@@ -149,7 +149,7 @@ class lime_coverage extends sfLimeCoverage
   }
 }
 
-class lime_registration extends sfLimeRegistration
+class lime_registration extends LimeRegistration
 {
   public function register_glob($glob)
   {
