@@ -1,10 +1,10 @@
 --TEST--
-isa method that fails
+instanceOf method that fails
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
 class Test {}
-$t->isa(new Test(), 'Foo');
+$t->instanceOf(new Test(), 'Foo');
 ?>
 --EXPECTF--
 not ok 1

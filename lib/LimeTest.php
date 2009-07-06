@@ -333,7 +333,7 @@ class LimeTest
    *
    * @return boolean
    */
-  public function isa($var, $class, $message = '')
+  public function instanceOf($var, $class, $message = '')
   {
     $type = is_object($var) ? get_class($var) : gettype($var);
     if (!$result = $this->ok($type == $class, $message))

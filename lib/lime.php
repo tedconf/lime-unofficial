@@ -49,7 +49,7 @@ class lime_test extends LimeTest
 
   public function isa_ok($var, $class, $message = '')
   {
-    return $this->isa($var, $class, $message);
+    return $this->instanceOf($var, $class, $message);
   }
 
   public function is_deeply($exp1, $exp2, $message = '')
