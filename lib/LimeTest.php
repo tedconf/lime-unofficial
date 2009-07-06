@@ -431,24 +431,6 @@ class LimeTest
     array_pop($this->results['stats']['passed']);
   }
 
-  /**
-   * Validates that a file exists and that it is properly included
-   *
-   * @param string $file    file path
-   * @param string $message display output message when the test passes
-   *
-   * @return boolean
-   */
-  public function includeOk($file, $message = '')
-  {
-    if (!$result = $this->ok((@include($file)) == 1, $message))
-    {
-      $this->setLastTestErrors(array(sprintf("      Tried to include '%s'", $file)));
-    }
-
-    return $result;
-  }
-
   private function testIsDeeply($var1, $var2)
   {
     if (gettype($var1) != gettype($var2))
