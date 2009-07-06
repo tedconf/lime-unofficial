@@ -11,7 +11,7 @@
 
 require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
-$t = new sfLimeTest(9);
+$t = new sfLimeTest(10);
 
 
 $t->diag('Text can be colorized with font and color styles');
@@ -27,9 +27,17 @@ $t->is($c->colorize('Hello World', array('bg' => 'white')),      "\033[47mHello 
 $t->is($c->colorize('Hello World', array('bold' => true, 'fg' => 'black', 'bg' => 'white')), "\033[30;47;1mHello World\033[0m", 'Styles can be combined');
 
 
-$t->diag('Text styles can be preset using ::setStyle()');
-
-sfLimeColorizer::setStyle('test_style', array('bold' => true, 'fg' => 'black', 'bg' => 'white'));
+$t->diag('Text styles can be preset using ->setStyle()');
 
 $c = new sfLimeColorizer();
+$c->setStyle('test_style', array('bold' => true, 'fg' => 'black', 'bg' => 'white'));
+$t->is($c->colorize('Hello World', 'test_style'), "\033[30;47;1mHello World\033[0m", 'Predefined styles can be used');
+
+
+$t->diag('Text styles can be preset using backwards compatible ::style()');
+
+sfLimeAutoloader::enableLegacyMode();
+lime_colorizer::style('test_style', array('bold' => true, 'fg' => 'black', 'bg' => 'white'));
+
+$c = new lime_colorizer();
 $t->is($c->colorize('Hello World', 'test_style'), "\033[30;47;1mHello World\033[0m", 'Predefined styles can be used');

@@ -82,9 +82,23 @@ class lime_output_color extends sfLimeOutput
 
 class lime_colorizer extends sfLimeColorizer
 {
+  protected static
+    $instances    = array(),
+    $staticStyles = array();
+
+  public function __construct()
+  {
+    self::$instances[] = $this;
+    $this->styles = self::$staticStyles;
+  }
+
   public static function style($name, $options = array())
   {
-    return self::setStyle($name, $options);
+    foreach (self::$instances as $instance)
+    {
+      $instance->setStyle($name, $options);
+    }
+    self::$staticStyles[$name] = $options;
   }
 }
 

@@ -37,8 +37,7 @@
 class sfLimeColorizer
 {
   static protected
-    $styles     = array(),
-    $fontStyles    = array(
+    $fontStyles = array(
       'bold'        => 1,
       'underscore'  => 4,
       'blink'       => 5,
@@ -65,6 +64,9 @@ class sfLimeColorizer
       'cyan'    => 46,
       'white'   => 47,
     );
+
+  protected
+    $styles     = array();
 
   /**
    * Returns whether colorization is supported by the current OS and console.
@@ -109,7 +111,8 @@ class sfLimeColorizer
    * Example:
    *
    * <code>
-   * sfLimeColorizer::setStyle('myStyle', array(
+   * $colorizer = new sfLimeColorizer();
+   * $colorizer->setStyle('myStyle', array(
    *   'bold' => true,
    *   'fg' => 'white',
    *   'bg' => 'blue',
@@ -119,18 +122,17 @@ class sfLimeColorizer
    * @param  string $name
    * @param  array  $options
    */
-  public static function setStyle($name, $options = array())
+  public function setStyle($name, $options = array())
   {
-    self::$styles[$name] = $options;
+    $this->styles[$name] = $options;
   }
 
   /**
    * Colorizes a given text.
    *
    * The second parameter can either be the name of a style predefined with
-   * sfLimeColorizer::setStyle() or an array of style options. For more
-   * information about the possible style options, see the description of
-   * sfLimeColorizer::setStyle().
+   * setStyle() or an array of style options. For more information about the
+   * possible style options, see the description of setStyle().
    *
    * The returned string contains special codes that are interpreted by the
    * shell to format the output.
@@ -149,13 +151,12 @@ class sfLimeColorizer
    * Example (with style name):
    *
    * <code>
-   * sfLimeColorizer::setStyle('myStyle', array(
+   * $colorizer = new sfLimeColorizer();
+   * $colorizer->setStyle('myStyle', array(
    *   'bold' => true,
    *   'fg' => 'white',
    *   'bg' => 'blue',
    * ));
-   *
-   * $colorizer = new sfLimeColorizer();
    * $text = $colorizer->colorize('Hello World', 'myStyle');
    * </code>
    *
@@ -166,9 +167,9 @@ class sfLimeColorizer
    */
   public function colorize($text = '', $parameters = array())
   {
-    if (!is_array($parameters) && isset(self::$styles[$parameters]))
+    if (!is_array($parameters) && isset(self::$this->styles[$parameters]))
     {
-      $parameters = self::$styles[$parameters];
+      $parameters = $this->styles[$parameters];
     }
 
     $codes = array();
@@ -192,12 +193,3 @@ class sfLimeColorizer
     return "\033[".implode(';', $codes).'m'.$text."\033[0m";
   }
 }
-
-sfLimeColorizer::setStyle('ERROR', array('bg' => 'red', 'fg' => 'white', 'bold' => true));
-sfLimeColorizer::setStyle('INFO', array('fg' => 'green', 'bold' => true));
-sfLimeColorizer::setStyle('PARAMETER', array('fg' => 'cyan'));
-sfLimeColorizer::setStyle('COMMENT', array('fg' => 'yellow'));
-
-sfLimeColorizer::setStyle('GREEN_BAR', array('fg' => 'white', 'bg' => 'green', 'bold' => true));
-sfLimeColorizer::setStyle('RED_BAR', array('fg' => 'white', 'bg' => 'red', 'bold' => true));
-sfLimeColorizer::setStyle('INFO_BAR', array('fg' => 'cyan', 'bold' => true));

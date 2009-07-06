@@ -18,7 +18,16 @@ class sfLimeOutput
   {
     if (sfLimeColorizer::isSupported() || $forceColors)
     {
-      $this->colorizer = new sfLimeColorizer();
+      $colorizer = new sfLimeColorizer();
+      $colorizer->setStyle('ERROR', array('bg' => 'red', 'fg' => 'white', 'bold' => true));
+      $colorizer->setStyle('INFO', array('fg' => 'green', 'bold' => true));
+      $colorizer->setStyle('PARAMETER', array('fg' => 'cyan'));
+      $colorizer->setStyle('COMMENT', array('fg' => 'yellow'));
+      $colorizer->setStyle('GREEN_BAR', array('fg' => 'white', 'bg' => 'green', 'bold' => true));
+      $colorizer->setStyle('RED_BAR', array('fg' => 'white', 'bg' => 'red', 'bold' => true));
+      $colorizer->setStyle('INFO_BAR', array('fg' => 'cyan', 'bold' => true));
+
+      $this->colorizer = $colorizer;
     }
   }
 
