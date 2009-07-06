@@ -78,7 +78,7 @@ class sfLimeAutoloader
     // backwards compatibility
     if (0 === strpos($class, 'lime_') && self::$isLegacyMode)
     {
-      require dirname(__FILE__).'/legacy.php';
+      require dirname(__FILE__).'/lime.php';
 
       return true;
     }
