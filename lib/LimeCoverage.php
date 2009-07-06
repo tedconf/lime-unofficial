@@ -82,7 +82,8 @@ EOF;
         // something may have gone wrong, we should warn the user so they know
         // it's a bug in their code and not symfony's
 
-        $this->harness->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $return), 'ERROR');
+        // TODO: can this line be replaced by a call to ->error()?
+        $this->harness->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $return), LimeOutput::ERROR);
       }
 
       if (false === $cov = @unserialize(substr($retval, strpos($retval, '<PHP_SER>') + 9, strpos($retval, '</PHP_SER>') - 9)))
@@ -165,7 +166,7 @@ EOF;
       $totalCoveredLines += count($coveredLines);
 
       $relativeFile = $this->getRelativeFile($file);
-      $output->echoln(sprintf("%-70s %3.0f%%", substr($relativeFile, -min(70, strlen($relativeFile))), $percent), $percent == 100 ? 'INFO' : ($percent > 90 ? 'PARAMETER' : ($percent < 20 ? 'ERROR' : '')));
+      $output->echoln(sprintf("%-70s %3.0f%%", substr($relativeFile, -min(70, strlen($relativeFile))), $percent), $percent == 100 ? LimeOutput::INFO : ($percent > 90 ? LimeOutput::PARAMETER : ($percent < 20 ? LimeOutput::ERROR : '')));
       if ($this->verbose && $isCovered && $percent != 100)
       {
         $output->comment(sprintf("missing: %s", $this->formatRange($missingLines)));
