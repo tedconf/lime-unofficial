@@ -18,7 +18,7 @@ class sfLimeOutput
   {
     if (sfLimeColorizer::isSupported() || $forceColors)
     {
-      $this->colorizer = new sfLimeColorizer($forceColors);
+      $this->colorizer = new sfLimeColorizer();
     }
   }
 
