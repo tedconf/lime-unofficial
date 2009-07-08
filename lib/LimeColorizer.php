@@ -122,7 +122,7 @@ class LimeColorizer
    * @param  string $name
    * @param  array  $options
    */
-  public function setStyle($name, $options = array())
+  public function setStyle($name, array $options = array())
   {
     $this->styles[$name] = $options;
   }

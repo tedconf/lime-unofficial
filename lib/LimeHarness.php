@@ -11,13 +11,13 @@
 
 class LimeHarness extends LimeRegistration
 {
-  public
+  protected
     $options    = array(),
     $executable = null,
     $stats      = array(),
     $output     = null;
 
-  public function __construct($options = array())
+  public function __construct(array $options = array())
   {
     $this->options = array_merge(array(
       'executable'   => null,
@@ -26,11 +26,11 @@ class LimeHarness extends LimeRegistration
       'verbose'      => false,
     ), $options);
 
-    $this->executable = $this->findExecutable($this->options['executable']);
+    $this->executable = self::findExecutable($this->options['executable']);
     $this->output = $this->options['output'] ? $this->options['output'] : new LimeOutput($this->options['force_colors']);
   }
 
-  protected function findExecutable($executable = null)
+  protected static function findExecutable($executable = null)
   {
     if (is_null($executable))
     {

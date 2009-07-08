@@ -30,7 +30,7 @@ class LimeTest
   static protected
     $allResults = array();
 
-  public function __construct($plan = null, $options = array())
+  public function __construct($plan = null, array $options = array())
   {
     $this->options = array_merge(array(
       'base_dir'     => null,
@@ -497,7 +497,7 @@ class LimeTest
     $this->results['tests'][$this->nbTests]['error'] = implode("\n", $errors);
   }
 
-  protected function findCaller($traces)
+  protected function findCaller(array $traces)
   {
     // find the first call to a method of an object that is an instance of LimeTest
     $t = array_reverse($traces);

@@ -11,17 +11,15 @@
 
 class LimeCoverage extends LimeRegistration
 {
-  public
+  protected
     $files      = array(),
     $extension  = '.php',
     $baseDir    = '',
     $harness    = null,
-    $verbose    = false;
+    $verbose    = false,
+    $coverage   = array();
 
-  protected
-    $coverage = array();
-
-  public function __construct($harness)
+  public function __construct(LimeHarness $harness)
   {
     $this->harness = $harness;
 
@@ -34,6 +32,31 @@ class LimeCoverage extends LimeRegistration
     {
       throw new Exception('You must set xdebug.extended_info to 1 in your php.ini to use lime coverage.');
     }
+  }
+    
+  public function setFiles($files)
+  {
+    if (!is_array($files))
+    {
+      $files = array($files);
+    }
+    
+  	$this->files = $files;
+  }
+  
+  public function setExtension($extension)
+  {
+  	$this->extension = $extension;
+  }
+  
+  public function setBaseDir($baseDir)
+  {
+  	$this->baseDir = $baseDir;
+  }
+  
+  public function setVerbose($verbose)
+  {
+  	$this->verbose = $verbose;
   }
 
   public function run()
@@ -55,13 +78,8 @@ class LimeCoverage extends LimeRegistration
     $this->output($this->files);
   }
 
-  public function process($files)
+  protected function process(array $files)
   {
-    if (!is_array($files))
-    {
-      $files = array($files);
-    }
-
     $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.'test.php';
     foreach ($files as $file)
     {
@@ -126,7 +144,7 @@ EOF;
     }
   }
 
-  public function output($files)
+  protected function output(array $files)
   {
     ksort($this->coverage);
     $totalPhpLines = 0;
@@ -176,7 +194,7 @@ EOF;
     $output->echoln(sprintf("TOTAL COVERAGE: %3.0f%%", $totalPhpLines ? $totalCoveredLines * 100 / $totalPhpLines : 0));
   }
 
-  public static function getPhpLines($content)
+  protected static function getPhpLines($content)
   {
     if (is_readable($content))
     {
@@ -332,7 +350,7 @@ EOF;
     return $phpLines;
   }
 
-  public function compute($content, $cov)
+  public function compute($content, array $cov)
   {
     $phpLines = self::getPhpLines($content);
 
@@ -345,7 +363,7 @@ EOF;
     return array($cov, $phpLines);
   }
 
-  public function formatRange($lines)
+  protected function formatRange(array $lines)
   {
     sort($lines);
     $formatted = '';
