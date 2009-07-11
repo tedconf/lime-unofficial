@@ -10,7 +10,7 @@
  */
 
 /**
- * Mimics the behaviour of LimeAssert for testing.
+ * Mimics the behaviour of LimeTest for testing.
  *
  * The public properties $fails and $passes give you information about how
  * often a fail/pass was reported to this test instance.
@@ -19,7 +19,7 @@
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
-class MockLimeAssert extends LimeAssert
+class MockLimeAssert extends LimeTest
 {
   /**
    * The number of reported failing tests

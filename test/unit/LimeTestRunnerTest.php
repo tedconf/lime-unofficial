@@ -23,7 +23,7 @@ class TestCase
 }
 
 
-$t = new LimeAssert(4);
+$t = new LimeTest(4);
 
 
 $t->diag('The before callbacks are called before each test method');

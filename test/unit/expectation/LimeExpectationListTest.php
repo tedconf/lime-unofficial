@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 require_once dirname(__FILE__).'/../MockLimeAssert.php';
 
 
-$t = new LimeAssert(4);
+$t = new LimeTest(4);
 
 
 $t->diag('Exceptions are thrown if unexpected values are added');

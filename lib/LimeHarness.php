@@ -87,7 +87,7 @@ class LimeHarness extends LimeRegistration
 
   public function toXml()
   {
-    return LimeAssert::toXml($this->toArray());
+    return LimeTest::toXml($this->toArray());
   }
 
   public function run()
@@ -119,7 +119,7 @@ class LimeHarness extends LimeRegistration
       file_put_contents($testFile, <<<EOF
 <?php
 include('$file');
-file_put_contents('$resultFile', serialize(LimeAssert::toArray()));
+file_put_contents('$resultFile', serialize(LimeTest::toArray()));
 EOF
       );
 

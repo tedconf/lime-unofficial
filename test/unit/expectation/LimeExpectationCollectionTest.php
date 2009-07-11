@@ -17,7 +17,7 @@ class TestExpectationCollection extends LimeExpectationCollection
 {
   private $isExpected;
 
-  public function __construct(LimeAssert $test = null, $isExpected = true)
+  public function __construct(LimeTest $test = null, $isExpected = true)
   {
     parent::__construct($test);
 
@@ -31,7 +31,7 @@ class TestExpectationCollection extends LimeExpectationCollection
 }
 
 
-$t = new LimeAssert(21);
+$t = new LimeTest(21);
 
 
 $t->diag('No value expected, no value retrieved');

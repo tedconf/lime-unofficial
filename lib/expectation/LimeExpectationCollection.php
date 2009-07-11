@@ -69,8 +69,8 @@ abstract class LimeExpectationCollection
 {
 
   /**
-   * A reference to a LimeAssert instance
-   * @var LimeAssert
+   * A reference to a LimeTest instance
+   * @var LimeTest
    */
   protected $test = null;
 
@@ -101,7 +101,7 @@ abstract class LimeExpectationCollection
    */
   protected $strict = false;
 
-  public function __construct(LimeAssert $test = null)
+  public function __construct(LimeTest $test = null)
   {
     $this->test = $test;
   }
@@ -132,7 +132,7 @@ abstract class LimeExpectationCollection
   {
     if (is_null($this->test))
     {
-      throw new BadMethodCallException("A LimeAssert object is required for verification");
+      throw new BadMethodCallException("A LimeTest object is required for verification");
     }
 
     if (count($this->expected) == 0)

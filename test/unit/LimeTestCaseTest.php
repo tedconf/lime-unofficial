@@ -43,7 +43,7 @@ class TestCase extends LimeTestCase
 }
 
 
-$t = new LimeAssert(1);
+$t = new LimeTest(1);
 
 
 $t->diag('The methods setUp() and tearDown() are called before and after each test method');

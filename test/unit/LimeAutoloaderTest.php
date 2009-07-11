@@ -11,7 +11,7 @@
 
 require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
-$t = new LimeAssert(5);
+$t = new LimeTest(5);
 
 
 $t->diag('->autoload() loads class files by class name');

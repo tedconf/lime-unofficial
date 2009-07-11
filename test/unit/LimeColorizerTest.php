@@ -11,7 +11,7 @@
 
 require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
-$t = new LimeAssert(10);
+$t = new LimeTest(10);
 
 
 $t->diag('Text can be colorized with font and color styles');

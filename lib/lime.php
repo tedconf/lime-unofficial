@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/LimeAutoloader.php';
 LimeAutoloader::enableLegacyMode();
 LimeAutoloader::register();
 
-class lime_test extends LimeAssert
+class lime_test extends LimeTest
 {
   public function __construct($plan = null, $options = array())
   {

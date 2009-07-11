@@ -16,7 +16,7 @@
  * @author     Fabien Potencier <fabien.potencier@gmail.com>
  * @version    SVN: $Id$
  */
-class LimeAssert
+class LimeTest
 {
   const
     EPSILON = 0.0000000001;
@@ -499,11 +499,11 @@ class LimeAssert
 
   protected function findCaller(array $traces)
   {
-    // find the first call to a method of an object that is an instance of LimeAssert
+    // find the first call to a method of an object that is an instance of LimeTest
     $t = array_reverse($traces);
     foreach ($t as $trace)
     {
-      if (isset($trace['object']) && $trace['object'] instanceof LimeAssert)
+      if (isset($trace['object']) && $trace['object'] instanceof LimeTest)
       {
         return array($trace['file'], $trace['line']);
       }

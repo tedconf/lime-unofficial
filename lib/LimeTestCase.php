@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeTestCase extends LimeAssert
+class LimeTestCase extends LimeTest
 {
   public function __construct($plan = null, array $options = array())
   {
