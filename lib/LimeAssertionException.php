@@ -18,6 +18,9 @@
  */
 class LimeAssertionException extends Exception
 {
+  const
+    NONE            = '__LIME_NONE__';
+
   protected
     $actualValue    = null,
     $expectedValue  = null;
@@ -29,8 +32,15 @@ class LimeAssertionException extends Exception
    * @param mixed  $actualValue
    * @param mixed  $expectedValue
    */
-  public function __construct($message, $actualValue, $expectedValue = null)
+  public function __construct($message, $actualValue, $expectedValue = self::NONE)
   {
+    $message = trim($message, '.').'. Got: '.$actualValue;
+
+    if ($expectedValue !== self::NONE)
+    {
+      $message .= '. Expected: '.$expectedValue;
+    }
+
     parent::__construct($message);
 
     $this->actualValue = $actualValue;
