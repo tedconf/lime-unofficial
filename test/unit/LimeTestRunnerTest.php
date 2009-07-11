@@ -26,7 +26,7 @@ class TestCase
 $t = new LimeAssert(4);
 
 
-$t->diag('The before callbacks are called before and each test method');
+$t->diag('The before callbacks are called before each test method');
 
   // fixtures
   $test = new TestCase();
@@ -45,7 +45,7 @@ $t->diag('The before callbacks are called before and each test method');
   $test->methodCalls->verify();
 
 
-$t->diag('The after callbacks are called before and each test method');
+$t->diag('The after callbacks are called before each test method');
 
   // fixtures
   $test = new TestCase();
