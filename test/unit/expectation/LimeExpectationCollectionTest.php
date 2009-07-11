@@ -10,7 +10,7 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-require_once dirname(__FILE__).'/../MockLimeAssert.php';
+require_once dirname(__FILE__).'/../../MockLimeTest.php';
 
 
 class TestExpectationCollection extends LimeExpectationCollection
@@ -37,7 +37,7 @@ $t = new LimeTest(21);
 $t->diag('No value expected, no value retrieved');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->verify();
@@ -49,7 +49,7 @@ $t->diag('No value expected, no value retrieved');
 $t->diag('One value expected, no value retrieved');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->addExpected(1);
@@ -62,7 +62,7 @@ $t->diag('One value expected, no value retrieved');
 $t->diag('One value expected, one different value retrieved');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->addExpected(1);
@@ -76,7 +76,7 @@ $t->diag('One value expected, one different value retrieved');
 $t->diag('No expectations are set, added values are ignored');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->addActual(1);
@@ -89,7 +89,7 @@ $t->diag('No expectations are set, added values are ignored');
 $t->diag('An exception is thrown if an unexpected value is added');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock, false);
   $l->addExpected('Foo');
   // test
@@ -107,7 +107,7 @@ $t->diag('An exception is thrown if an unexpected value is added');
 $t->diag('Exactly no values are expected');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock, false);
   $l->setExpectNothing();
   // test
@@ -125,7 +125,7 @@ $t->diag('Exactly no values are expected');
 $t->diag('The expected value was added');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->addExpected(1);
@@ -139,7 +139,7 @@ $t->diag('The expected value was added');
 $t->diag('The list can contain a mix of different types');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->addExpected(1);
@@ -157,7 +157,7 @@ $t->diag('The list can contain a mix of different types');
 $t->diag('By default, values are compared with weak typing');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->addExpected(1);
@@ -171,7 +171,7 @@ $t->diag('By default, values are compared with weak typing');
 $t->diag('If you call setStrict(), values are compared with strict typing - different types');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->setStrict();
@@ -186,7 +186,7 @@ $t->diag('If you call setStrict(), values are compared with strict typing - diff
 $t->diag('If you call setStrict(), values are compared with strict typing - same types');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new TestExpectationCollection($mock);
   // test
   $l->setStrict();

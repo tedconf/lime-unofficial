@@ -10,7 +10,7 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-require_once dirname(__FILE__).'/../MockLimeAssert.php';
+require_once dirname(__FILE__).'/../../MockLimeTest.php';
 
 
 $t = new LimeTest(4);
@@ -19,7 +19,7 @@ $t = new LimeTest(4);
 $t->diag('Exceptions are thrown if unexpected values are added');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new LimeExpectationList($mock);
   $l->addExpected(1);
   $l->addExpected(2);
@@ -38,7 +38,7 @@ $t->diag('Exceptions are thrown if unexpected values are added');
 $t->diag('Exceptions are thrown if expected values are added too often');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new LimeExpectationList($mock);
   $l->addExpected(1);
   $l->addActual(1);
@@ -57,7 +57,7 @@ $t->diag('Exceptions are thrown if expected values are added too often');
 $t->diag('setFailOnVerify() suppresses exceptions');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $l = new LimeExpectationList($mock);
   // test
   $l->setFailOnVerify();

@@ -10,7 +10,7 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-require_once dirname(__FILE__).'/../MockLimeAssert.php';
+require_once dirname(__FILE__).'/../../MockLimeTest.php';
 
 
 $t = new LimeTest(7);
@@ -19,7 +19,7 @@ $t = new LimeTest(7);
 $t->diag('Expected values can be added in any order');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $s = new LimeExpectationSet($mock);
   // test
   $s->addExpected(1);
@@ -37,7 +37,7 @@ $t->diag('Expected values can be added in any order');
 $t->diag('Expected values can be added any number of times');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $s = new LimeExpectationSet($mock);
   // test
   $s->addExpected(1);
@@ -52,7 +52,7 @@ $t->diag('Expected values can be added any number of times');
 $t->diag('Exceptions are thrown if unexpected values are added');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $s = new LimeExpectationSet($mock);
   $s->addExpected(1);
   // test
@@ -70,7 +70,7 @@ $t->diag('Exceptions are thrown if unexpected values are added');
 $t->diag('setFailOnVerify() suppresses exceptions');
 
   // fixtures
-  $mock = new MockLimeAssert();
+  $mock = new MockLimeTest();
   $s = new LimeExpectationSet($mock);
   // test
   $s->setFailOnVerify();

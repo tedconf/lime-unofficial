@@ -19,7 +19,7 @@
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
-class MockLimeAssert extends LimeTest
+class MockLimeTest extends LimeTest
 {
   /**
    * The number of reported failing tests
