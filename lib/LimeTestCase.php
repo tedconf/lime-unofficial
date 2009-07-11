@@ -11,6 +11,9 @@
 
 class LimeTestCase extends LimeTest
 {
+  protected
+    $testRunner   = null;
+
   public function __construct($plan = null, array $options = array())
   {
     parent::__construct($plan, $options);
