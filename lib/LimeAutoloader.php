@@ -85,7 +85,14 @@ class LimeAutoloader
 
     if (0 === strpos($class, 'Lime'))
     {
-      require dirname(__FILE__).'/'.$class.'.php';
+      $dir = '/';
+
+      if (0 === strpos($class, 'LimeExpectation'))
+      {
+        $dir .= 'expectation/';
+      }
+
+      require dirname(__FILE__).$dir.$class.'.php';
 
       return true;
     }
