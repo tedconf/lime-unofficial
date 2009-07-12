@@ -149,7 +149,7 @@ class LimeLexerAnnotations extends LimeLexer
 
         $text = $this->inAnnotation ? '} ' : '';
         $this->inAnnotation = true;
-        $text .= sprintf('function %s() { global %s;', $functionName, implode(', ', $this->variables));
+        $text .= sprintf("function %s() { global %s;\n", $functionName, implode(', ', $this->variables));
 
 //        if (!empty($comment))
 //        {
