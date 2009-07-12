@@ -15,7 +15,8 @@ class LimeHarness extends LimeRegistration
     $options    = array(),
     $executable = null,
     $stats      = array(),
-    $output     = null;
+    $output     = null,
+    $shell      = null;
 
   public function __construct(array $options = array())
   {
@@ -23,56 +24,12 @@ class LimeHarness extends LimeRegistration
       'executable'   => null,
       'force_colors' => false,
       'output'       => null,
+      'shell'        => null,
       'verbose'      => false,
     ), $options);
 
-    $this->executable = self::findExecutable($this->options['executable']);
     $this->output = $this->options['output'] ? $this->options['output'] : new LimeOutput($this->options['force_colors']);
-  }
-
-  // TODO: This method should be moved to a seperate class
-  public static function findExecutable($executable = null)
-  {
-    if (is_null($executable))
-    {
-      if (getenv('PHP_PATH'))
-      {
-        $executable = getenv('PHP_PATH');
-
-        if (!is_executable($executable))
-        {
-          throw new Exception('The defined PHP_PATH environment variable is not a valid PHP executable.');
-        }
-      }
-      else
-      {
-        $executable = PHP_BINDIR.DIRECTORY_SEPARATOR.'php';
-      }
-    }
-
-    if (is_executable($executable))
-    {
-      return $executable;
-    }
-
-    $path = getenv('PATH') ? getenv('PATH') : getenv('Path');
-    $extensions = DIRECTORY_SEPARATOR == '\\' ? (getenv('PATHEXT') ? explode(PATH_SEPARATOR, getenv('PATHEXT')) : array('.exe', '.bat', '.cmd', '.com')) : array('');
-    foreach (array('php5', 'php') as $executable)
-    {
-      foreach ($extensions as $extension)
-      {
-        foreach (explode(PATH_SEPARATOR, $path) as $dir)
-        {
-          $file = $dir.DIRECTORY_SEPARATOR.$executable.$extension;
-          if (is_executable($file))
-          {
-            return $file;
-          }
-        }
-      }
-    }
-
-    throw new Exception("Unable to find PHP executable.");
+    $this->shell = $this->options['shell'] ? $this->options['shell'] : new LimeShell($this->options['executable']);
   }
 
   public function toArray()
@@ -114,21 +71,13 @@ class LimeHarness extends LimeRegistration
       $stats = &$this->stats['files'][$file];
 
       $relativeFile = $this->getRelativeFile($file);
-
-      $testFile = tempnam(sys_get_temp_dir(), 'lime');
       $resultFile = tempnam(sys_get_temp_dir(), 'lime');
-      file_put_contents($testFile, <<<EOF
-<?php
+
+      list($return, $output) = $this->shell->execute(<<<EOF
 include('$file');
 file_put_contents('$resultFile', serialize(LimeTest::toArray()));
 EOF
       );
-
-      ob_start();
-      // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing
-      passthru(sprintf('cd & %s %s 2>&1', escapeshellarg($this->executable), escapeshellarg($testFile)), $return);
-      ob_end_clean();
-      unlink($testFile);
 
       $output = file_get_contents($resultFile);
       $stats['output'] = $output ? unserialize($output) : '';

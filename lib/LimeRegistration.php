@@ -15,15 +15,20 @@ class LimeRegistration
     $files      = array(),
     $extension  = '.php',
     $baseDir    = '';
-    
+
   public function setBaseDir($baseDir)
   {
   	$this->baseDir = $baseDir;
   }
-  
+
   public function setExtension($extension)
   {
   	$this->extension = $extension;
+  }
+
+  public function getFiles()
+  {
+    return $this->files;
   }
 
   public function register($filesOrDirectories)

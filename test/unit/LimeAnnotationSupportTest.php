@@ -23,12 +23,14 @@ class LimeAnnotationSupportTest extends LimeTest
 
 $t = new LimeAnnotationSupportTest(25);
 
-$cli = LimeHarness::findExecutable().' ';
-
-
 function execute($file)
 {
-  global $cli;
+  static $shell = null;
+
+  if (is_null($shell))
+  {
+    $shell = new LimeShell();
+  }
 
   $file = dirname(__FILE__).'/LimeAnnotationSupport/'.$file;
 
@@ -36,15 +38,13 @@ function execute($file)
   rename($file, $file.'.test.copy');
   copy($file.'.test.copy', $file);
 
-  ob_start();
-  passthru($cli.' '.$file, $result);
-  $content = ob_get_clean();
+  $result = $shell->execute($file);
 
   // move the original file back
   unlink($file);
   rename($file.'.test.copy', $file);
 
-  return array($result, $content);
+  return $result;
 }
 
 
