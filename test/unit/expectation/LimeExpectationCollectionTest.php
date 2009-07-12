@@ -10,12 +10,6 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-
-LimeAnnotationSupport::enable();
-
-LimeAnnotationSupport::enable();
-
-LimeAnnotationSupport::enable();
 require_once dirname(__FILE__).'/../../MockLimeTest.php';
 
 
