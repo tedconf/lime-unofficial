@@ -38,7 +38,9 @@ class LimeTestRunner
     $afterAllCallbacks  = array(),
     $beforeCallbacks    = array(),
     $afterCallbacks     = array(),
-    $testCallbacks      = array();
+    $testCallbacks      = array(),
+    $errorCallbacks     = array(),
+    $exceptionCallbacks = array();
 
   /**
    * Runs all registered callbacks.
@@ -57,7 +59,16 @@ class LimeTestRunner
         call_user_func($callback);
       }
 
-      call_user_func($testCallback);
+      try
+      {
+        set_error_handler(array($this, 'handleError'));
+        call_user_func($testCallback);
+        restore_error_handler();
+      }
+      catch (Exception $e)
+      {
+        $this->handleException($e);
+      }
 
       foreach ($this->afterCallbacks as $callback)
       {
@@ -129,6 +140,71 @@ class LimeTestRunner
   {
     $this->assertIsCallable($callback);
     $this->testCallbacks[] = $callback;
+  }
+
+  /**
+   * Adds a callback that is called when a PHP error occurs in a test.
+   *
+   * The callback retrieves an instance of LimeError as first argument.
+   *
+   * @param  callable $callback
+   * @throws InvalidArgumentException  If the argument is no callbale
+   */
+  public function addErrorHandler($callback)
+  {
+    $this->assertIsCallable($callback);
+    $this->errorCallbacks[] = $callback;
+  }
+
+  /**
+   * Adds a callback that is called when an exception is thrown in a test.
+   *
+   * The callback retrieves the exception as first argument.
+   *
+   * @param  callable $callback
+   * @throws InvalidArgumentException  If the argument is no callbale
+   */
+  public function addExceptionHandler($callback)
+  {
+    $this->assertIsCallable($callback);
+    $this->exceptionCallbacks[] = $callback;
+  }
+
+  /**
+   * Calls all registered error callbacks.
+   *
+   * The passed arguments are wrapped in an instance of LimeError and passed
+   * to the error callbacks as first argument.
+   *
+   * @param integer $code
+   * @param string  $message
+   * @param string  $file
+   * @param integer $line
+   * @param array   $context
+   */
+  public function handleError($code, $message, $file, $line, $context)
+  {
+    $error = new LimeError($message, $code, $file, $line, debug_backtrace());
+
+    foreach ($this->errorCallbacks as $callback)
+    {
+      call_user_func($callback, $error);
+    }
+  }
+
+  /**
+   * Calls all registered exception callbacks.
+   *
+   * The exception is passed to the callbacks as first argument.
+   *
+   * @param Exception $exception
+   */
+  protected function handleException(Exception $exception)
+  {
+    foreach ($this->exceptionCallbacks as $callback)
+    {
+      call_user_func($callback, $exception);
+    }
   }
 
   /**
