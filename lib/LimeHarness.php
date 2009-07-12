@@ -30,7 +30,8 @@ class LimeHarness extends LimeRegistration
     $this->output = $this->options['output'] ? $this->options['output'] : new LimeOutput($this->options['force_colors']);
   }
 
-  protected static function findExecutable($executable = null)
+  // TODO: This method should be moved to a seperate class
+  public static function findExecutable($executable = null)
   {
     if (is_null($executable))
     {
