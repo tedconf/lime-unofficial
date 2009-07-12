@@ -138,6 +138,10 @@ class LimeAnnotationSupport
 
     rename($path, $path.'.bak');
     copy($path.'.bak', $path);
+
+    // this is necessary to make sure the destructor is executed upon
+    // fatal errors
+    register_shutdown_function(array($this, '__destruct'));
   }
 
   /**
