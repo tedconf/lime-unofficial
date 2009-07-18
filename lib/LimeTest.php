@@ -503,6 +503,9 @@ class LimeTest
     }
     else
     {
+      // TODO: We should always return true to avoid errors being rethrown as
+      // LimeError instances. When errors occur in the shutdown procedure,
+      // throwing exceptions will result in new errors
       return false;
     }
   }

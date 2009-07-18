@@ -21,9 +21,25 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(25);
+$t = new LimeAnnotationSupportTest(26);
 
-function execute($file)
+function _backup($file)
+{
+  $file = dirname(__FILE__).'/LimeAnnotationSupport/'.$file;
+
+  rename($file, $file.'.test.copy');
+  copy($file.'.test.copy', $file);
+}
+
+function _restore($file)
+{
+  $file = dirname(__FILE__).'/LimeAnnotationSupport/'.$file;
+
+  unlink($file);
+  rename($file.'.test.copy', $file);
+}
+
+function _execute($file)
 {
   static $shell = null;
 
@@ -34,15 +50,14 @@ function execute($file)
 
   $file = dirname(__FILE__).'/LimeAnnotationSupport/'.$file;
 
-  // move the original file away to make sure it is not modified
-  rename($file, $file.'.test.copy');
-  copy($file.'.test.copy', $file);
+  return $shell->execute($file);
+}
 
-  $result = $shell->execute($file);
-
-  // move the original file back
-  unlink($file);
-  rename($file.'.test.copy', $file);
+function execute($file)
+{
+  _backup($file);
+  $result = _execute($file);
+  _restore($file);
 
   return $result;
 }
@@ -259,3 +274,17 @@ Test 3
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
   $t->isOutput($actual, $expected);
+
+
+$t->diag('Bugfix: Test files remain unchanged when fatal errors occur');
+
+  // fixtures
+  $expected = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_error.php');
+  _backup('test_fatal_error.php');
+  // test
+  _execute('test_fatal_error.php');
+  // assertions
+  $actual = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_error.php');
+  $t->is($actual, $expected, 'The file content remained unchanged');
+  // teardown
+  _restore('test_fatal_error.php');
