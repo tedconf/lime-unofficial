@@ -44,7 +44,7 @@ class MockLimeTest extends LimeTest
   /**
    * @see parent::ok()
    */
-  public function ok($condition)
+  public function ok($condition, $message = '')
   {
     if (!$condition)
     {
