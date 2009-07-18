@@ -488,8 +488,10 @@ class LimeTest
 
   public function expect($exception, $code = null)
   {
-    $this->expectedException = $exception;
-    $this->expectedCode      = $code;
+    $this->expectedException  = $exception;
+    $this->expectedCode       = $code;
+    $this->actualException    = null;
+    $this->actualCode         = null;
   }
 
   public function handleException(Exception $exception)

@@ -21,7 +21,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(30);
+$t = new LimeAnnotationSupportTest(32);
 
 function _backup($file)
 {
@@ -255,6 +255,27 @@ not ok 3 - A RuntimeException with code 1 was thrown
 Test 4
 ok 4 - A RuntimeException with code 1 was thrown
  Looks like you failed 2 tests of 4.
+EOF
+)).'/';
+  $t->is($result, 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($actual, $expected, 'like');
+
+
+$t->diag('Old expected exceptions are ignored');
+
+  // test
+  list($result, $actual) = execute('test_expect_ignore_old.php');
+  // assertion
+  $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
+1..2
+Test 1
+ok 1 - A RuntimeException was thrown
+Test 2
+not ok 2 - A LogicException was thrown
+#     Failed test (%ANY%)
+#            got: NULL
+#       expected: 'LogicException'
+ Looks like you failed 1 tests of 2.
 EOF
 )).'/';
   $t->is($result, 0, 'The file returned exit status 0 (success)');
