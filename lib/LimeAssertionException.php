@@ -32,19 +32,33 @@ class LimeAssertionException extends Exception
    * @param mixed  $actualValue
    * @param mixed  $expectedValue
    */
-  public function __construct($message, $actualValue, $expectedValue = self::NONE)
+  public function __construct($message, $actualValue, $expectedValue = self::NONE, $file = null, $line = null)
   {
-    $message = trim($message, '.').'. Got: '.$actualValue;
+    $message = trim($message, '.');
 
-    if ($expectedValue !== self::NONE)
+    if ($expectedValue === self::NONE)
     {
-      $message .= '. Expected: '.$expectedValue;
+      $message = $message.': '.$actualValue;
+    }
+    else
+    {
+      $message .= '. Got: '.$actualValue.'. Expected: '.$expectedValue;
     }
 
     parent::__construct($message);
 
     $this->actualValue = $actualValue;
     $this->expectedValue = $expectedValue;
+
+    if (!is_null($file))
+    {
+      $this->file = $file;
+    }
+
+    if (!is_null($line))
+    {
+      $this->line = $line;
+    }
   }
 
   /**

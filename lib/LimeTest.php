@@ -547,7 +547,6 @@ class LimeTest
 
   protected function findCaller(array $traces)
   {
-    // find the first call to a method of an object that is an instance of LimeTest
     $t = array_reverse($traces);
     foreach ($t as $trace)
     {

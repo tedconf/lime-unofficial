@@ -52,15 +52,9 @@ class LimeMockControl implements LimeMockInterface
 
   /**
    * The last called method name and parameters
-   * @var array
+   * @var LimeMethodInvocation
    */
   private $currentMethod = array();
-
-  /**
-   * A string representation of the last called method name and parameters.
-   * @var string
-   */
-  private $currentMethodHash = '';
 
   /**
    * The configured return values for each method/parameter combination
@@ -103,21 +97,33 @@ class LimeMockControl implements LimeMockInterface
    */
   public function call($method, array $parameters)
   {
-    $this->currentMethod = array($method, $parameters);
-    $this->currentMethodHash = md5(serialize($this->currentMethod));
+    $this->currentMethod = new LimeMockMethodInvocation($method, $parameters);
 
     if ($this->replay)
     {
-      $this->expectationList->addActual($this->currentMethod);
-
-      if (array_key_exists($this->currentMethodHash, $this->exceptions))
+      try
       {
-        throw new $this->exceptions[$this->currentMethodHash]();
+        $this->expectationList->addActual($this->currentMethod);
+      }
+      catch (LimeAssertionException $e)
+      {
+        list($file, $line) = $this->findCaller();
+        $actual = $e->getActualValue();
+        $expected = $e->getExpectedValue();
+
+        throw new LimeAssertionException('Unexpected method call', $actual, $expected, $file, $line);
       }
 
-      if (array_key_exists($this->currentMethodHash, $this->returnValues))
+      $key = $this->currentMethod->hashCode();
+
+      if (array_key_exists($key, $this->exceptions))
       {
-        return $this->returnValues[$this->currentMethodHash];
+        throw new $this->exceptions[$key]();
+      }
+
+      if (array_key_exists($key, $this->returnValues))
+      {
+        return $this->returnValues[$key];
       }
     }
     else
@@ -126,6 +132,22 @@ class LimeMockControl implements LimeMockInterface
 
       return $this;
     }
+  }
+
+  protected function findCaller()
+  {
+    // find the first call to a method of an object that is an instance of LimeMockInterface
+    $traces = array_reverse(debug_backtrace());
+    foreach ($traces as $trace)
+    {
+      if (isset($trace['object']) && $trace['object'] instanceof LimeMockInterface && isset($trace['file']) && isset($trace['line']))
+      {
+        return array($trace['file'], $trace['line']);
+      }
+    }
+
+    // return the first call
+    return array($traces[0]['file'], $traces[0]['line']);
   }
 
   /**
@@ -178,7 +200,7 @@ class LimeMockControl implements LimeMockInterface
    */
   public function returns($value)
   {
-    $this->returnValues[$this->currentMethodHash] = $value;
+    $this->returnValues[$this->currentMethod->hashCode()] = $value;
 
     return $this;
   }
@@ -203,7 +225,7 @@ class LimeMockControl implements LimeMockInterface
    */
   public function throws($exception)
   {
-    $this->exceptions[$this->currentMethodHash] = $exception;
+    $this->exceptions[$this->currentMethod->hashCode()] = $exception;
 
     return $this;
   }
