@@ -202,13 +202,9 @@ class LimeTestRunner
     // see PHP bug http://bugs.php.net/bug.php?id=48969
     // a test for this problem exists in LimeAnnotationSupportTest
 
-    // intermediate solution: let PHP throw the error for require statements
-    if (strpos($message, 'require(') === 0 || strpos($message, 'require_once(') === 0)
-    {
-      return false;
-    }
-
-    throw $error;
+    // throwing the exception is not possible due to too many problems
+    // with the shutdown function not being called in certain situations
+    return false;
   }
 
   /**
