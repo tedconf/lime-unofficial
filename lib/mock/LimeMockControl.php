@@ -25,7 +25,7 @@
  * names in this class (for instance "replay()"). For more information, see
  * the documentation of LimeMock.
  *
- * @package    sfLimeExtraPlugin
+ * @package    lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */

@@ -129,7 +129,7 @@
  *   // echos "Response of replay()"
  * </code>
  *
- * @package    sfLimeExtraPlugin
+ * @package    lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  *
