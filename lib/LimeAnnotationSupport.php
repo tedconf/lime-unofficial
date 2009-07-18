@@ -74,11 +74,12 @@ class LimeAnnotationSupport
 {
   protected static
     $annotations  = array('Test', 'Before', 'After', 'BeforeAll', 'AfterAll'),
-    $enabled      = false,
-    $path         = null,
-    $test         = null,
-    $testRunner   = null,
-    $lexer        = null;
+    $enabled      = false;
+
+  protected
+    $path   = null,
+    $test   = null,
+    $lexer  = null;
 
   /**
    * Enables annotation support in a script file.
@@ -90,8 +91,8 @@ class LimeAnnotationSupport
     {
       self::$enabled = true;
 
-      self::initialize(self::getScriptPath(), new LimeTestRunner());
-      self::execute();
+      $support = new LimeAnnotationSupport(self::getScriptPath(), new LimeTestRunner());
+      $support->execute();
 
       exit;
     }
@@ -126,15 +127,11 @@ class LimeAnnotationSupport
    * Constructor.
    *
    * Creates a backup of the given file with the extension .bak.
-   *
-   * This and the other methods must be static, because we should only register
-   * static methods as shutdown functions. Otherwise the shutdown function
-   * may not be executed when the associated object is not in memory anymore.
    */
-  protected static function initialize($path, LimeTestRunner $testRunner)
+  protected function __construct($path, LimeTestRunner $testRunner)
   {
-    self::$path = $path;
-    self::$testRunner = $testRunner;
+    $this->path = $path;
+    $this->testRunner = $testRunner;
 
     if (file_exists($path.'.bak'))
     {
@@ -146,7 +143,7 @@ class LimeAnnotationSupport
 
     // this is necessary to make sure the destructor is executed upon
     // fatal errors
-    register_shutdown_function(array(__CLASS__, 'shutdown'));
+    register_shutdown_function(array($this, '__destruct'));
   }
 
   /**
@@ -154,12 +151,12 @@ class LimeAnnotationSupport
    *
    * Restores the backup created in the constructor.
    */
-  protected static function shutdown()
+  public function __destruct()
   {
-    if (file_exists(self::$path) && file_exists(self::$path.'.bak'))
+    if (file_exists($this->path) && file_exists($this->path.'.bak'))
     {
-      unlink(self::$path);
-      rename(self::$path.'.bak', self::$path);
+      unlink($this->path);
+      rename($this->path.'.bak', $this->path);
     }
   }
 
@@ -167,30 +164,30 @@ class LimeAnnotationSupport
    * Transforms the annotations in the script file and executes the resulting
    * script.
    */
-  protected static function execute()
+  protected function execute()
   {
-    self::$lexer = new LimeLexerAnnotations(self::$path, self::$annotations);
-    $callbacks = self::$lexer->parse(self::$path);
+    $this->lexer = new LimeLexerAnnotations($this->path, self::$annotations);
+    $callbacks = $this->lexer->parse($this->path);
 
-    self::includeTestFile();
+    $this->includeTestFile();
 
     foreach ($callbacks as $annotation => $callbacks)
     {
       $addMethod = 'add'.$annotation;
       foreach ($callbacks as $callback)
       {
-        self::$testRunner->$addMethod($callback);
+        $this->testRunner->$addMethod($callback);
       }
     }
 
-    if (self::$test instanceof LimeTest)
+    if ($this->test instanceof LimeTest)
     {
-      self::$testRunner->addExceptionHandler(array(self::$test, 'handleException'));
-      self::$testRunner->addErrorHandler(array(self::$test, 'handleException'));
-      self::$testRunner->addAfter(array(self::$test, 'verifyException'));
+      $this->testRunner->addExceptionHandler(array($this->test, 'handleException'));
+      $this->testRunner->addErrorHandler(array($this->test, 'handleException'));
+      $this->testRunner->addAfter(array($this->test, 'verifyException'));
     }
 
-    self::$testRunner->run();
+    $this->testRunner->run();
   }
 
   /**
@@ -198,14 +195,14 @@ class LimeAnnotationSupport
    *
    * @param string $testVariable
    */
-  protected static function includeTestFile()
+  protected function includeTestFile()
   {
-//    var_dump(file_get_contents(self::$path));
-    include self::$path;
+//    var_dump(file_get_contents($this->path));
+    include $this->path;
 
-    if (!is_null(self::$lexer->getTestVariable()))
+    if (!is_null($this->lexer->getTestVariable()))
     {
-      eval(sprintf('self::$test = %s;', self::$lexer->getTestVariable()));
+      eval(sprintf('$this->test = %s;', $this->lexer->getTestVariable()));
     }
   }
 }

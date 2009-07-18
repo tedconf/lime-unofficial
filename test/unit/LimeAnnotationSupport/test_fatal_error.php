@@ -1,5 +1,5 @@
 <?php
-global $t, $foobar;
+
 /*
  * This file is part of the symfony framework.
  *
@@ -16,6 +16,5 @@ LimeAnnotationSupport::enable();
 
 $t = new LimeTest(0);
 
-function __lime_annotation_0() { global $t, $foobar;
+// @Test
 $foobar = new NonExistingClass();
-}
