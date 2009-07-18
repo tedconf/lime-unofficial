@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-include dirname(__FILE__).'/../bootstrap/unit.php';
+include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 
 $t = new LimeTest(2);
