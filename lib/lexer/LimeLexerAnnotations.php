@@ -146,7 +146,10 @@ class LimeLexerAnnotations extends LimeLexer
   {
     if ($id == T_OPEN_TAG && !$this->initialized)
     {
-      $text .= 'global '.implode(', ', $this->variables).';';
+      if (count($this->variables))
+      {
+        $text .= 'global '.implode(', ', $this->variables).';';
+      }
       $this->initialized = true;
     }
     else if ($this->inClass() || $this->inFunction())
@@ -164,7 +167,8 @@ class LimeLexerAnnotations extends LimeLexer
 
         $text = $this->inAnnotation ? '} ' : '';
         $this->inAnnotation = true;
-        $text .= sprintf("function %s() { global %s;\n", $functionName, implode(', ', $this->variables));
+        $variables = count($this->variables) ? sprintf('global %s;', implode(', ', $this->variables)) : '';
+        $text .= sprintf("function %s() { %s\n", $functionName, $variables);
 
         if (!empty($comment))
         {

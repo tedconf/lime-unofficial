@@ -198,7 +198,24 @@ class LimeTestRunner
       }
     }
 
-    throw $error;
+    // this solution is currently not possible
+    // see PHP bug http://bugs.php.net/bug.php?id=48969
+    // a test for this problem exists in LimeAnnotationSupportTest
+    // throw $error;
+
+    // intermediate solution
+    switch ($code)
+    {
+      case E_WARNING:
+        trigger_error($message, E_USER_WARNING);
+        break;
+      case E_NOTICE:
+        trigger_error($message, E_USER_NOTICE);
+        break;
+      default:
+        trigger_error($message, E_USER_ERROR);
+        die;
+    }
   }
 
   /**
