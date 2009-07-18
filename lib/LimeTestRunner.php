@@ -145,7 +145,9 @@ class LimeTestRunner
   /**
    * Adds a callback that is called when a PHP error occurs in a test.
    *
-   * The callback retrieves an instance of LimeError as first argument.
+   * The callback retrieves an instance of LimeError as first argument. It
+   * should return TRUE if it was able to handle the error successfully and
+   * FALSE otherwise. In the latter case, the LimeError exception is thrown.
    *
    * @param  callable $callback
    * @throws InvalidArgumentException  If the argument is no callbale
@@ -159,7 +161,9 @@ class LimeTestRunner
   /**
    * Adds a callback that is called when an exception is thrown in a test.
    *
-   * The callback retrieves the exception as first argument.
+   * The callback retrieves the exception as first argument. It
+   * should return TRUE if it was able to handle the exception successfully and
+   * FALSE otherwise. In the latter case, the exception is thrown globally.
    *
    * @param  callable $callback
    * @throws InvalidArgumentException  If the argument is no callbale
@@ -188,8 +192,13 @@ class LimeTestRunner
 
     foreach ($this->errorCallbacks as $callback)
     {
-      call_user_func($callback, $error);
+      if (true === call_user_func($callback, $error))
+      {
+        return;
+      }
     }
+
+    throw $error;
   }
 
   /**
@@ -203,8 +212,13 @@ class LimeTestRunner
   {
     foreach ($this->exceptionCallbacks as $callback)
     {
-      call_user_func($callback, $exception);
+      if (true === call_user_func($callback, $exception))
+      {
+        return;
+      }
     }
+
+    throw $exception;
   }
 
   /**

@@ -22,10 +22,14 @@ class LimeTest
     EPSILON = 0.0000000001;
 
   protected
-    $nbTests = 0,
-    $output  = null,
-    $results = array(),
-    $options = array();
+    $nbTests            = 0,
+    $output             = null,
+    $results            = array(),
+    $options            = array(),
+    $expectedException  = null,
+    $expectedCode       = null,
+    $actualException    = null,
+    $actualCode         = null;
 
   static protected
     $allResults = array();
@@ -482,6 +486,47 @@ class LimeTest
     $this->output->error($message);
   }
 
+  public function expect($exception, $code = null)
+  {
+    $this->expectedException = $exception;
+    $this->expectedCode      = $code;
+  }
+
+  public function handleException(Exception $exception)
+  {
+    if (!is_null($this->expectedException))
+    {
+      $this->actualException = get_class($exception);
+      $this->actualCode = $exception->getCode();
+
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  public function verifyException()
+  {
+    if (!is_null($this->expectedException))
+    {
+      if (is_null($this->expectedCode))
+      {
+        $this->is($this->actualException, $this->expectedException, sprintf('A "%s" was thrown', $this->expectedException));
+      }
+      else
+      {
+        $actual = sprintf('%s (%s)', $this->actualException, var_export($this->actualCode, true));
+        $expected = sprintf('%s (%s)', $this->expectedException, var_export($this->expectedCode, true));
+
+        $this->is($actual, $expected, sprintf('A "%s" with code "%s" was thrown', $this->expectedException, $this->expectedCode));
+      }
+    }
+
+    $this->expectedException = null;
+  }
+
   protected function updateStats()
   {
     ++$this->nbTests;
@@ -503,7 +548,7 @@ class LimeTest
     $t = array_reverse($traces);
     foreach ($t as $trace)
     {
-      if (isset($trace['object']) && $trace['object'] instanceof LimeTest)
+      if (isset($trace['object']) && $trace['object'] instanceof LimeTest && isset($trace['file']) && isset($trace['line']))
       {
         return array($trace['file'], $trace['line']);
       }

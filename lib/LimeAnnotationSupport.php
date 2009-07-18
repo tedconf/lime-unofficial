@@ -77,7 +77,9 @@ class LimeAnnotationSupport
     $enabled      = false;
 
   protected
-    $path = null;
+    $path   = null,
+    $test   = null,
+    $lexer  = null;
 
   /**
    * Enables annotation support in a script file.
@@ -164,11 +166,10 @@ class LimeAnnotationSupport
    */
   protected function execute()
   {
-    $lexer = new LimeLexerAnnotations($this->path, self::$annotations);
-    $callbacks = $lexer->parse($this->path);
+    $this->lexer = new LimeLexerAnnotations($this->path, self::$annotations);
+    $callbacks = $this->lexer->parse($this->path);
 
-//    var_dump(file_get_contents($this->path));
-    include $this->path;
+    $this->includeTestFile();
 
     foreach ($callbacks as $annotation => $callbacks)
     {
@@ -179,6 +180,29 @@ class LimeAnnotationSupport
       }
     }
 
+    if ($this->test instanceof LimeTest)
+    {
+      $this->testRunner->addExceptionHandler(array($this->test, 'handleException'));
+      $this->testRunner->addErrorHandler(array($this->test, 'handleException'));
+      $this->testRunner->addAfter(array($this->test, 'verifyException'));
+    }
+
     $this->testRunner->run();
+  }
+
+  /**
+   * Includes the test file in a separate scope.
+   *
+   * @param string $testVariable
+   */
+  protected function includeTestFile()
+  {
+//    var_dump(file_get_contents($this->path));
+    include $this->path;
+
+    if (!is_null($this->lexer->getTestVariable()))
+    {
+      eval(sprintf('$this->test = %s;', $this->lexer->getTestVariable()));
+    }
   }
 }

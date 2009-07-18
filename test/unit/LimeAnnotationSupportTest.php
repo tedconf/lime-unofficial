@@ -223,16 +223,23 @@ $t->diag('Exceptions can be expected');
   // test
   list($result, $actual) = execute('test_expect.php');
   // assertion
-  $expected = '/'.str_replace(array('%ANY%', '%EXCEPTION%'), array('.*', '"?RuntimeException"?'), preg_quote(<<<EOF
-1..2
+  $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
+1..4
 Test 1
-not ok 1 - A %EXCEPTION% was thrown
+not ok 1 - A RuntimeException was thrown
 #     Failed test (%ANY%)
 #            got: NULL
 #       expected: 'RuntimeException'
 Test 2
-ok 2 - A %EXCEPTION% was thrown
- Looks like you failed 1 tests of 2.
+ok 2 - A RuntimeException was thrown
+Test 3
+not ok 3 - A RuntimeException with code 1 was thrown
+#     Failed test (%ANY%)
+#            got: 'RuntimeException (0)'
+#       expected: 'RuntimeException (1)'
+Test 4
+ok 4 - A RuntimeException with code 1 was thrown
+ Looks like you failed 2 tests of 4.
 EOF
 )).'/';
   $t->is($result, 0, 'The file returned exit status 0 (success)');
