@@ -198,13 +198,17 @@ class LimeTestRunner
       }
     }
 
-    // this solution is currently not possible
+    // always throwing an exception is currently not possible
     // see PHP bug http://bugs.php.net/bug.php?id=48969
     // a test for this problem exists in LimeAnnotationSupportTest
-    // throw $error;
 
-    // intermediate solution
-    return false;
+    // intermediate solution: let PHP throw the error for require statements
+    if (strpos($message, 'require(') === 0 || strpos($message, 'require_once(') === 0)
+    {
+      return false;
+    }
+
+    throw $error;
   }
 
   /**
