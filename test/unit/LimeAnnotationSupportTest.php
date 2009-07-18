@@ -21,7 +21,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(26);
+$t = new LimeAnnotationSupportTest(28);
 
 function _backup($file)
 {
@@ -276,7 +276,7 @@ EOF;
   $t->isOutput($actual, $expected);
 
 
-$t->diag('Bugfix: Test files remain unchanged when fatal errors occur');
+$t->diag('Test files remain unchanged when fatal errors occur');
 
   // fixtures
   $expected = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_error.php');
@@ -288,3 +288,12 @@ $t->diag('Bugfix: Test files remain unchanged when fatal errors occur');
   $t->is($actual, $expected, 'The file content remained unchanged');
   // teardown
   _restore('test_fatal_error.php');
+
+
+$t->diag('Line numbers in error messages remain the same as in the original files');
+
+  // test
+  list($result, $actual) = execute('test_line_number.php');
+  // assertion
+  $t->is($result, 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($actual, '/on line 25$/', 'like');

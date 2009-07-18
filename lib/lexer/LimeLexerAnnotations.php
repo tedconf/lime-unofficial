@@ -151,7 +151,7 @@ class LimeLexerAnnotations extends LimeLexer
     }
     else if ($this->inClass() || $this->inFunction())
     {
-      $text = '';
+      $text = str_repeat("\n", count(explode("\n", $text)) - 1);
     }
     else if ($id = T_COMMENT && strpos($text, '//') === 0)
     {
