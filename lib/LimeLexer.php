@@ -31,6 +31,7 @@
 abstract class LimeLexer
 {
   private
+    $continue,
     $currentClass,
     $inClassDeclaration,
     $currentFunction,
@@ -52,6 +53,7 @@ abstract class LimeLexer
       $content = file_get_contents($content);
     }
 
+    $this->continue = true;
     $this->currentClass = array();
     $this->inClassDeclaration = false;
     $this->currentFunction = array();
@@ -223,6 +225,11 @@ abstract class LimeLexer
 
         $this->process($text, $id);
       }
+
+      if (!$this->continue)
+      {
+        break;
+      }
     }
 
     return $this->getResult();
@@ -324,5 +331,13 @@ abstract class LimeLexer
   protected function isEndOfCurrentExpr()
   {
     return $this->endOfCurrentExpr;
+  }
+
+  /**
+   * Tells the lexer to stop lexing.
+   */
+  protected function stop()
+  {
+    $this->continue = false;
   }
 }

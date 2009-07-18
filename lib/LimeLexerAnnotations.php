@@ -57,12 +57,6 @@
  */
 class LimeLexerAnnotations extends LimeLexer
 {
-  const
-    NORMAL        = 0,
-    VARIABLE      = 1,
-    ASSIGNMENT    = 2,
-    INSTANTIATION = 3;
-
   protected
     $allowedAnnotations,
     $fileName,
@@ -72,9 +66,7 @@ class LimeLexerAnnotations extends LimeLexer
     $inAnnotation,
     $functionCount,
     $initialized,
-    $lastVariable,
-    $testVariable,
-    $state;
+    $testVariable;
 
   /**
    * Constructor.
@@ -103,11 +95,14 @@ class LimeLexerAnnotations extends LimeLexer
     }
 
     $lexer = new LimeLexerVariables();
+    $this->variables = $lexer->parse($content);
+
+    $lexer = new LimeLexerTestVariable();
+    $this->testVariable = $lexer->parse($content);
 
     $this->inAnnotation = false;
     $this->initialized = false;
     $this->functionCount = 0;
-    $this->variables = $lexer->parse($content);
     $this->functions = array();
 
     foreach ($this->allowedAnnotations as $annotation)
@@ -149,62 +144,6 @@ class LimeLexerAnnotations extends LimeLexer
    */
   protected function process($text, $id)
   {
-    $this->detectTestVariable($text, $id);
-    $this->transformAnnotations($text, $id);
-  }
-
-  /**
-   * Tries to detect the first global variable that is assigned a new instance
-   * of LimeTest or any subclass.
-   *
-   * @param  string  $text
-   * @param  integer $id
-   */
-  protected function detectTestVariable($text, $id)
-  {
-    if (empty($this->testVariable))
-    {
-      if ($id == T_VARIABLE && !$this->inFunction())
-      {
-        $this->lastVariable = $text;
-        $this->state = self::VARIABLE;
-      }
-      else if ($text == '=' && $this->state == self::VARIABLE)
-      {
-        $this->state = self::ASSIGNMENT;
-      }
-      else if ($id == T_NEW && $this->state == self::ASSIGNMENT)
-      {
-        $this->state = self::INSTANTIATION;
-      }
-      else if ($id == T_STRING && $this->state == self::INSTANTIATION)
-      {
-        if (class_exists($text))
-        {
-          $class = new ReflectionClass($text);
-          if ($text == 'LimeTest' || $class->isSubclassOf('LimeTest'))
-          {
-            $this->testVariable = $this->lastVariable;
-          }
-        }
-        $this->state = self::NORMAL;
-      }
-      else if ($id != T_WHITESPACE)
-      {
-        $this->state = self::NORMAL;
-      }
-    }
-  }
-
-  /**
-   * Transforms annotations into functions and writes the result into the
-   * output file.
-   *
-   * @param  string  $text
-   * @param  integer $id
-   */
-  protected function transformAnnotations($text, $id)
-  {
     if ($id == T_OPEN_TAG && !$this->initialized)
     {
       $text .= 'global '.implode(', ', $this->variables).';';
@@ -227,10 +166,10 @@ class LimeLexerAnnotations extends LimeLexer
         $this->inAnnotation = true;
         $text .= sprintf("function %s() { global %s;\n", $functionName, implode(', ', $this->variables));
 
-//        if (!empty($comment))
-//        {
-//          $line .= ' '.$this->testVariable.'->comment("'.$data.'");';
-//        }
+        if (!empty($comment))
+        {
+          $text .= ' '.$this->testVariable.'->comment("'.$comment.'");';
+        }
       }
     }
 
