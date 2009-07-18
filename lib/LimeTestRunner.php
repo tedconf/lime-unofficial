@@ -204,18 +204,7 @@ class LimeTestRunner
     // throw $error;
 
     // intermediate solution
-    switch ($code)
-    {
-      case E_WARNING:
-        trigger_error($message, E_USER_WARNING);
-        break;
-      case E_NOTICE:
-        trigger_error($message, E_USER_NOTICE);
-        break;
-      default:
-        trigger_error($message, E_USER_ERROR);
-        die;
-    }
+    return false;
   }
 
   /**
