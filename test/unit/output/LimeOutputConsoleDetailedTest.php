@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(23);
+$t = new LimeTest(26);
 
 // @Before
 
@@ -156,6 +156,35 @@ $t = new LimeTest(23);
   $output->pass('First test', '/test/file', 11);
   $printer->reset();
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+  $printer->replay();
+  // test
+  $output->__destruct();
+  // assertions
+  $printer->verify();
+
+  // @Test: Case 4 - Failed tests
+
+  // fixtures
+  $output->plan(2, '/test/file');
+  $output->pass('First test', '/test/file', 11);
+  $output->fail('Second test', '/test/file', 22);
+  $printer->reset();
+  $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
+  $printer->replay();
+  // test
+  $output->__destruct();
+  // assertions
+  $printer->verify();
+
+  // @Test: Case 5 - Failed and too few tests
+
+  // fixtures
+  $output->plan(3, '/test/file');
+  $output->pass('First test', '/test/file', 11);
+  $output->fail('Second test', '/test/file', 22);
+  $printer->reset();
+  $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
+  $printer->printBox(' Looks like you planned 3 tests but only ran 2.', LimePrinter::ERROR);
   $printer->replay();
   // test
   $output->__destruct();

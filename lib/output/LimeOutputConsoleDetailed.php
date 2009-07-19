@@ -12,6 +12,7 @@
 class LimeOutputConsoleDetailed implements LimeOutputInterface
 {
   protected
+    $passed = 0,
     $expected = 0,
     $actual = 0,
     $printer = null;
@@ -23,6 +24,15 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
   public function __destruct()
   {
+    if ($this->passed == $this->expected)
+    {
+      $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+    }
+    else if ($this->passed != $this->actual)
+    {
+      $this->printer->printBox(sprintf(' Looks like you failed %s tests of %s.', $this->passed, $this->actual), LimePrinter::ERROR);
+    }
+
     if ($this->actual > $this->expected)
     {
       $this->printer->printBox(sprintf(' Looks like you planned %s tests but ran %s extra.', $this->expected, $this->actual-$this->expected), LimePrinter::ERROR);
@@ -33,7 +43,6 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     }
     else
     {
-      $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
     }
   }
 
@@ -47,6 +56,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
   public function pass($message, $file, $line)
   {
     $this->actual++;
+    $this->passed++;
 
     $this->printer->printText('ok '.$this->actual, LimePrinter::OK);
     $this->printer->printLine(' - '.$message);
