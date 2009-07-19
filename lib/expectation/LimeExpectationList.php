@@ -56,7 +56,7 @@ class LimeExpectationList extends LimeExpectationCollection
    */
   protected function isExpected($value)
   {
-    return $this->expected[$this->cursor++] == $value;
+    return array_key_exists($this->cursor, $this->expected) && $this->expected[$this->cursor++] == $value;
   }
 
 }
