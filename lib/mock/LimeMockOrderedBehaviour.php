@@ -16,17 +16,20 @@ class LimeMockOrderedBehaviour extends LimeMockBehaviour
 
   public function invoke(LimeMockInvocation $invocation)
   {
-    $expectedInvocation = $this->invocations[$this->cursor];
-
-    if ($expectedInvocation->matches($invocation, $this->strict))
+    if (array_key_exists($this->cursor, $this->invocations))
     {
-      return $expectedInvocation->invoke();
-    }
-    else if ($expectedInvocation->isComplete())
-    {
-      $this->cursor++;
+      $expectedInvocation = $this->invocations[$this->cursor];
 
-      return $this->invoke($invocation);
+      if ($expectedInvocation->matches($invocation, $this->strict))
+      {
+        return $expectedInvocation->invoke();
+      }
+      else if ($expectedInvocation->isComplete())
+      {
+        $this->cursor++;
+
+        return $this->invoke($invocation);
+      }
     }
 
     parent::invoke($invocation);

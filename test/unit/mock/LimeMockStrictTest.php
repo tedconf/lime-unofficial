@@ -15,7 +15,7 @@ require_once dirname(__FILE__).'/../../MockLimeTest.php';
 LimeAnnotationSupport::enable();
 
 
-$t = new LimeTest(11);
+$t = new LimeTest(12);
 
 
 // @Before
@@ -52,6 +52,16 @@ $t = new LimeTest(11);
   $m->replay();
   $t->expect('LimeAssertionException');
   // test
+  $m->method2();
+
+
+// @Test: An exception is thrown if too many methods are called
+
+  // test
+  $m->method1();
+  $m->replay();
+  $m->method1();
+  $t->expect('LimeAssertionException');
   $m->method2();
 
 
