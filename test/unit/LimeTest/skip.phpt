@@ -6,6 +6,6 @@ require_once(dirname(__FILE__).'/setup.php');
 $t->skip();
 ?>
 --EXPECT--
-ok 1 # SKIP
+skip 1
 1..1
  Looks like everything went fine.

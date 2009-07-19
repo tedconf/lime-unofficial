@@ -12,8 +12,8 @@
 class LimeOutputConsoleDetailed implements LimeOutputInterface
 {
   protected
+    $expected = null,
     $passed = 0,
-    $expected = 0,
     $actual = 0,
     $printer = null;
 
@@ -25,7 +25,6 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
   public function plan($amount, $file)
   {
     $this->expected = $amount;
-
     $this->printer->printLine('1..'.$amount);
   }
 
@@ -34,16 +33,31 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->actual++;
     $this->passed++;
 
-    $this->printer->printText('ok '.$this->actual, LimePrinter::OK);
-    $this->printer->printLine(' - '.$message);
+    if (empty($message))
+    {
+      $this->printer->printLine('ok '.$this->actual, LimePrinter::OK);
+    }
+    else
+    {
+      $this->printer->printText('ok '.$this->actual, LimePrinter::OK);
+      $this->printer->printLine(' - '.$message);
+    }
   }
 
   public function fail($message, $file, $line, $error = null)
   {
     $this->actual++;
 
-    $this->printer->printText('not ok '.$this->actual, LimePrinter::NOT_OK);
-    $this->printer->printLine(' - '.$message);
+    if (empty($message))
+    {
+      $this->printer->printLine('not ok '.$this->actual, LimePrinter::NOT_OK);
+    }
+    else
+    {
+      $this->printer->printText('not ok '.$this->actual, LimePrinter::NOT_OK);
+      $this->printer->printLine(' - '.$message);
+    }
+
     $this->printer->printLine(sprintf('#     Failed test (%s at line %s)', $file, $line), LimePrinter::COMMENT);
 
     if (!is_null($error))
@@ -58,9 +72,17 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
   public function skip($message, $file, $line)
   {
     $this->actual++;
+    $this->passed++;
 
-    $this->printer->printText('skip '.$this->actual, LimePrinter::SKIP);
-    $this->printer->printLine(' - '.$message);
+    if (empty($message))
+    {
+      $this->printer->printLine('skip '.$this->actual, LimePrinter::SKIP);
+    }
+    else
+    {
+      $this->printer->printText('skip '.$this->actual, LimePrinter::SKIP);
+      $this->printer->printLine(' - '.$message);
+    }
   }
 
   public function warning($message, $file, $line)
@@ -80,25 +102,27 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
   public function flush()
   {
+    if (is_null($this->expected))
+    {
+      $this->plan($this->actual, null);
+    }
+
     if ($this->passed == $this->expected)
     {
       $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
     }
     else if ($this->passed != $this->actual)
     {
-      $this->printer->printBox(sprintf(' Looks like you failed %s tests of %s.', $this->passed, $this->actual), LimePrinter::ERROR);
+      $this->printer->printBox(sprintf(' Looks like you failed %s tests of %s.', $this->actual - $this->passed, $this->actual), LimePrinter::ERROR);
     }
 
     if ($this->actual > $this->expected)
     {
-      $this->printer->printBox(sprintf(' Looks like you planned %s tests but ran %s extra.', $this->expected, $this->actual-$this->expected), LimePrinter::ERROR);
+      $this->printer->printBox(sprintf(' Looks like you planned %s tests but ran %s extra.', $this->expected, $this->actual - $this->expected), LimePrinter::ERROR);
     }
     else if ($this->actual < $this->expected)
     {
       $this->printer->printBox(sprintf(' Looks like you planned %s tests but only ran %s.', $this->expected, $this->actual), LimePrinter::ERROR);
-    }
-    else
-    {
     }
   }
 }

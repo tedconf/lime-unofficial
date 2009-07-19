@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(26);
+$t = new LimeTest(33);
 
 // @Before
 
@@ -53,6 +53,17 @@ $t = new LimeTest(26);
   $printer->verify();
 
 
+// @Test: pass() prints no message if none is given
+
+  // fixtures
+  $printer->printLine('ok 1', LimePrinter::OK);
+  $printer->replay();
+  // test
+  $output->pass('', '/test/file', 11);
+  // assertions
+  $printer->verify();
+
+
 // @Test: fail() prints and counts failed tests
 
   // fixtures
@@ -72,6 +83,18 @@ $t = new LimeTest(26);
   $printer->verify();
 
 
+// @Test: fail() prints no message if none is given
+
+  // fixtures
+  $printer->printLine('not ok 1', LimePrinter::NOT_OK);
+  $printer->printLine('#     Failed test (/test/file at line 11)', LimePrinter::COMMENT);
+  $printer->replay();
+  // test
+  $output->fail('', '/test/file', 11);
+  // assertions
+  $printer->verify();
+
+
 // @Test: skip() prints and counts skipped tests
 
   // fixtures
@@ -83,6 +106,17 @@ $t = new LimeTest(26);
   // test
   $output->skip('A skipped test', '/test/file', 11);
   $output->skip('Another skipped test', '/test/file', 22);
+  // assertions
+  $printer->verify();
+
+
+// @Test: skip() prints no message if none is given
+
+  // fixtures
+  $printer->printLine('skip 1', LimePrinter::SKIP);
+  $printer->replay();
+  // test
+  $output->skip('', '/test/file', 11);
   // assertions
   $printer->verify();
 
@@ -165,11 +199,12 @@ $t = new LimeTest(26);
   // @Test: Case 4 - Failed tests
 
   // fixtures
-  $output->plan(2, '/test/file');
+  $output->plan(3, '/test/file');
   $output->pass('First test', '/test/file', 11);
   $output->fail('Second test', '/test/file', 22);
+  $output->pass('Third test', '/test/file', 33);
   $printer->reset();
-  $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
+  $printer->printBox(' Looks like you failed 1 tests of 3.', LimePrinter::ERROR);
   $printer->replay();
   // test
   $output->flush();
@@ -185,6 +220,32 @@ $t = new LimeTest(26);
   $printer->reset();
   $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
   $printer->printBox(' Looks like you planned 3 tests but only ran 2.', LimePrinter::ERROR);
+  $printer->replay();
+  // test
+  $output->flush();
+  // assertions
+  $printer->verify();
+
+  // @Test: Case 6 - No plan
+
+  // fixtures
+  $output->pass('First test', '/test/file', 11);
+  $printer->reset();
+  $printer->printLine('1..1');
+  $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+  $printer->replay();
+  // test
+  $output->flush();
+  // assertions
+  $printer->verify();
+
+  // @Test: Case 7 - Skipped tests
+
+  // fixtures
+  $output->plan(1, '/test/file');
+  $output->skip('First test', '/test/file', 11);
+  $printer->reset();
+  $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test
   $output->flush();

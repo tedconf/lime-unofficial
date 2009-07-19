@@ -42,7 +42,11 @@ class LimeTest
     list ($file, $line) = self::findCaller();
 
     $this->output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
-    $this->output->plan($plan, $file);
+
+    if (!is_null($plan))
+    {
+      $this->output->plan($plan, $file);
+    }
 
     $this->options['base_dir'] = realpath($this->options['base_dir']);
   }
@@ -261,7 +265,7 @@ class LimeTest
    */
   public function unlike($exp, $regex, $message = '')
   {
-    $error = sprintf("              '%s'\nmatches '%s'", $exp, $regex);
+    $error = sprintf("         '%s'\nmatches '%s'", $exp, $regex);
 
     return $this->test(!preg_match($regex, $exp), $message, $error);
   }
@@ -302,7 +306,7 @@ class LimeTest
     {
       if (!method_exists($object, $method))
       {
-        $failedMessages[] = sprintf("      method '%s' does not exist", $method);
+        $failedMessages[] = sprintf("method '%s' does not exist", $method);
         $result = false;
       }
     }
@@ -322,7 +326,7 @@ class LimeTest
   public function isa($var, $class, $message = '')
   {
     $type = is_object($var) ? get_class($var) : gettype($var);
-    $error = sprintf("      variable isn't a '%s' it's a '%s'", $class, $type);
+    $error = sprintf("variable isn't a '%s' it's a '%s'", $class, $type);
 
     return $this->test($type == $class, $message, $error);
   }
@@ -406,7 +410,7 @@ class LimeTest
    */
   public function todo($message = '')
   {
-    $this->skip('TODO: '.$message);
+    $this->skip(trim('TODO '.$message));
   }
 
   private function testIsDeeply($var1, $var2)
