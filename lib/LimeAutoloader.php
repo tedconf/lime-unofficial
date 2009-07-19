@@ -78,35 +78,40 @@ class LimeAutoloader
     // backwards compatibility
     if (0 === strpos($class, 'lime_') && self::$isLegacyMode)
     {
-      require dirname(__FILE__).'/lime.php';
+      require_once dirname(__FILE__).'/lime.php';
 
       return true;
     }
 
     if (0 === strpos($class, 'Lime'))
     {
-      $dir = '/';
+      $file = dirname(__FILE__).'/';
 
       if (0 === strpos($class, 'LimeExpectation'))
       {
-        $dir .= 'expectation/';
+        $file .= 'expectation/';
       }
       else if (0 === strpos($class, 'LimeLexer'))
       {
-        $dir .= 'lexer/';
+        $file .= 'lexer/';
       }
       else if (0 === strpos($class, 'LimeMockInvocationMatcher'))
       {
-        $dir .= 'mock/matcher/';
+        $file .= 'mock/matcher/';
       }
       else if (0 === strpos($class, 'LimeMock'))
       {
-        $dir .= 'mock/';
+        $file .= 'mock/';
       }
 
-      require dirname(__FILE__).$dir.$class.'.php';
+      $file .= $class.'.php';
 
-      return true;
+      if (file_exists($file))
+      {
+        require_once $file;
+
+        return true;
+      }
     }
 
     return false;
