@@ -47,7 +47,7 @@ class TestClass
 class TestException extends Exception {}
 
 
-$t = new LimeTest(70);
+$t = new LimeTest(72);
 
 
 // @Before
@@ -278,11 +278,8 @@ $t = new LimeTest(70);
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
-  /*
 // @Test: Methods may be called any number of times
 
-  // fixtures
-  $m = LimeMock::create('TestClass', $mockTest = new mock_lime_test());
   // test
   $m->testMethod();
   $m->replay();
@@ -292,7 +289,6 @@ $t = new LimeTest(70);
   // assertions
   $t->is($mockTest->passes, 1, 'One test passed');
   $t->is($mockTest->fails, 0, 'No test failed');
-  */
 
 
 // @Test: By default, method parameters are compared with weak typing

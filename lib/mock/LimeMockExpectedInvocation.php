@@ -31,8 +31,7 @@ class LimeMockExpectedInvocation
 
     $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherParameters($invocation);
 
-    // should the default behaviour be once() or atLeastOnce() ?
-    $this->once();
+    $this->atLeastOnce();
   }
 
   public function invoke()
