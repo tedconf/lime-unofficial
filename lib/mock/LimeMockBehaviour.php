@@ -12,6 +12,7 @@
 abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
 {
   protected
+    $verified       = false,
     $invocations    = array(),
     $failOnVerify   = false,
     $expectNothing  = false,
@@ -24,7 +25,7 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
 
   public function invoke(LimeMockInvocation $invocation)
   {
-    if (!$this->failOnVerify && ($this->expectNothing || count($this->invocations) > 0))
+    if (!$this->verified && !$this->failOnVerify && ($this->expectNothing || count($this->invocations) > 0))
     {
       throw new LimeAssertionException('Unexpected method call', $invocation);
     }
@@ -36,6 +37,8 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
     {
       $invocation->verify();
     }
+
+    $this->verified = true;
   }
 
   public function setFailOnVerify()

@@ -47,7 +47,7 @@ class TestClass
 class TestException extends Exception {}
 
 
-$t = new LimeTest(74);
+$t = new LimeTest(76);
 
 
 // @Before
@@ -200,6 +200,20 @@ $t = new LimeTest(74);
   $m->verify();
   // assertions
   $t->is($mockTest->passes, 2, 'Two tests passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+
+// @Test: After verifying all method calls are ignored
+
+  // test
+  $m->testMethod();
+  $m->replay();
+  $m->testMethod();
+  $m->verify();
+  $m->foobar();
+  $m->hurray();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
