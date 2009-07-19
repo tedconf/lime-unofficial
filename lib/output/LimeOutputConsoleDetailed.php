@@ -22,30 +22,6 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->printer = $printer;
   }
 
-  public function __destruct()
-  {
-    if ($this->passed == $this->expected)
-    {
-      $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
-    }
-    else if ($this->passed != $this->actual)
-    {
-      $this->printer->printBox(sprintf(' Looks like you failed %s tests of %s.', $this->passed, $this->actual), LimePrinter::ERROR);
-    }
-
-    if ($this->actual > $this->expected)
-    {
-      $this->printer->printBox(sprintf(' Looks like you planned %s tests but ran %s extra.', $this->expected, $this->actual-$this->expected), LimePrinter::ERROR);
-    }
-    else if ($this->actual < $this->expected)
-    {
-      $this->printer->printBox(sprintf(' Looks like you planned %s tests but only ran %s.', $this->expected, $this->actual), LimePrinter::ERROR);
-    }
-    else
-    {
-    }
-  }
-
   public function plan($amount, $file)
   {
     $this->expected = $amount;
@@ -100,5 +76,29 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
   public function comment($message)
   {
     $this->printer->printLine('# '.$message, LimePrinter::COMMENT);
+  }
+
+  public function flush()
+  {
+    if ($this->passed == $this->expected)
+    {
+      $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+    }
+    else if ($this->passed != $this->actual)
+    {
+      $this->printer->printBox(sprintf(' Looks like you failed %s tests of %s.', $this->passed, $this->actual), LimePrinter::ERROR);
+    }
+
+    if ($this->actual > $this->expected)
+    {
+      $this->printer->printBox(sprintf(' Looks like you planned %s tests but ran %s extra.', $this->expected, $this->actual-$this->expected), LimePrinter::ERROR);
+    }
+    else if ($this->actual < $this->expected)
+    {
+      $this->printer->printBox(sprintf(' Looks like you planned %s tests but only ran %s.', $this->expected, $this->actual), LimePrinter::ERROR);
+    }
+    else
+    {
+    }
   }
 }

@@ -64,6 +64,11 @@ class LimeOutputArray implements LimeOutputInterface
   {
   }
 
+  public function flush()
+  {
+    var_export($this->results);
+  }
+
   public function toArray()
   {
     return $this->results;

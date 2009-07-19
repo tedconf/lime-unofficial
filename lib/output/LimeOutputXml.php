@@ -54,6 +54,11 @@ class LimeOutputXml implements LimeOutputInterface
     return $this->output->comment($message);
   }
 
+  public function flush()
+  {
+    print $this->toXml();
+  }
+
   public function toXml()
   {
     $results = $this->output->toArray();

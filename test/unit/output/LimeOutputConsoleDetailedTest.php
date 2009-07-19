@@ -120,7 +120,7 @@ $t = new LimeTest(26);
   $printer->verify();
 
 
-// @Test: __destruct() prints a summary
+// @Test: flush() prints a summary
 
   // @Test: Case 1 - Too many tests
 
@@ -132,7 +132,7 @@ $t = new LimeTest(26);
   $printer->printBox(' Looks like you planned 1 tests but ran 1 extra.', LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->__destruct();
+  $output->flush();
   // assertions
   $printer->verify();
 
@@ -145,7 +145,7 @@ $t = new LimeTest(26);
   $printer->printBox(' Looks like you planned 2 tests but only ran 1.', LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->__destruct();
+  $output->flush();
   // assertions
   $printer->verify();
 
@@ -158,7 +158,7 @@ $t = new LimeTest(26);
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test
-  $output->__destruct();
+  $output->flush();
   // assertions
   $printer->verify();
 
@@ -172,7 +172,7 @@ $t = new LimeTest(26);
   $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->__destruct();
+  $output->flush();
   // assertions
   $printer->verify();
 
@@ -187,6 +187,6 @@ $t = new LimeTest(26);
   $printer->printBox(' Looks like you planned 3 tests but only ran 2.', LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->__destruct();
+  $output->flush();
   // assertions
   $printer->verify();
