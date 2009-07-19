@@ -11,6 +11,10 @@
 
 class LimeMockExpectedInvocation
 {
+  const
+    PARAMETER_MATCHER = 0,
+    COUNT_MATCHER     = 1;
+
   protected
     $invocation   = null,
     $matched      = false,
@@ -24,7 +28,7 @@ class LimeMockExpectedInvocation
     $this->invocation = $invocation;
     $this->output = $output;
 
-    $this->matchers[] = new LimeMockInvocationMatcherParameters($invocation);
+    $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherParameters($invocation);
   }
 
   public function invoke()
@@ -87,7 +91,26 @@ class LimeMockExpectedInvocation
 
   public function times($times)
   {
-    $this->matchers[] = new LimeMockInvocationMatcherTimes($times);
+    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherTimes($times);
+
+    return $this;
+  }
+
+  public function once()
+  {
+    return $this->times(1);
+  }
+
+  public function atLeastOnce()
+  {
+    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherAtLeastOnce();
+
+    return $this;
+  }
+
+  public function anyParameters()
+  {
+    $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherAnyParameters($this->invocation);
 
     return $this;
   }

@@ -15,7 +15,7 @@ require_once dirname(__FILE__).'/../../MockLimeTest.php';
 LimeAnnotationSupport::enable();
 
 
-$t = new LimeTest(8);
+$t = new LimeTest(11);
 
 
 // @Before
@@ -90,6 +90,35 @@ $t = new LimeTest(8);
 
   // fixtures
   $m->method1()->times(3);
+  $m->method2();
+  $m->replay();
+  // test
+  $m->method1();
+  $m->method1();
+  $m->method1();
+  $m->method2();
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 2, 'Two tests passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+
+// @Test: The order of the tests remains intact when using atLeastOnce()
+
+  // @Test: Case 1 - Assertion fails
+
+  // fixtures
+  $m->method1()->atLeastOnce();
+  $m->method2();
+  $m->replay();
+  $t->expect('LimeAssertionException');
+  // test
+  $m->method2();
+
+  // @Test: Case 2 - Assertion succeeds
+
+  // fixtures
+  $m->method1()->atLeastOnce();
   $m->method2();
   $m->replay();
   // test

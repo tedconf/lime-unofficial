@@ -20,12 +20,13 @@ class LimeMockOrderedBehaviour extends LimeMockBehaviour
 
     if ($expectedInvocation->matches($invocation, $this->strict))
     {
-      if ($expectedInvocation->isComplete())
-      {
-        ++$this->cursor;
-      }
-
       return $expectedInvocation->invoke();
+    }
+    else if ($expectedInvocation->isComplete())
+    {
+      $this->cursor++;
+
+      return $this->invoke($invocation);
     }
 
     parent::invoke($invocation);

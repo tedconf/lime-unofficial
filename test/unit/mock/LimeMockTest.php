@@ -47,7 +47,7 @@ class TestClass
 class TestException extends Exception {}
 
 
-$t = new LimeTest(47);
+$t = new LimeTest(57);
 
 
 // @Before
@@ -307,7 +307,7 @@ $t = new LimeTest(47);
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
-// @Test: If you call setStrict(), method parameters are compared with strict typing
+// @Test: ->setStrict()
 
   // @Test: - Case 1: Type comparison fails
 
@@ -333,9 +333,9 @@ $t = new LimeTest(47);
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
-// @Test: ->times() configures how often a method should be called
+// @Test: ->times()
 
-  // @Test: - Case 1: The method is called too seldom
+  // @Test: - Case 1: Too few actual calls
   // test
   $m->testMethod(1)->times(2);
   $m->replay();
@@ -346,7 +346,7 @@ $t = new LimeTest(47);
   $t->is($mockTest->fails, 1, 'One test failed');
 
 
-  // @Test: - Case 2: The method is called too often
+  // @Test: - Case 2: Too many actual calls
 
   // fixture
   $m->testMethod(1)->times(2);
@@ -358,7 +358,7 @@ $t = new LimeTest(47);
   $m->testMethod(1);
 
 
-  // @Test: - Case 3: The number of method calls matches times()
+  // @Test: - Case 3: Correct number
 
   // test
   $m->testMethod(1)->times(2);
@@ -371,7 +371,7 @@ $t = new LimeTest(47);
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
-  // @Test: - Case 4: The method is called with different parameters
+  // @Test: - Case 4: Call with different parameters
 
   // fixture
   $m->testMethod(1)->times(2);
@@ -382,7 +382,40 @@ $t = new LimeTest(47);
   $m->testMethod();
 
 
-// @Test: ->times() and ->returns() can be combined
+// @Test: ->atLeastOnce()
+
+  // @Test: - Case 1: Zero actual calls
+
+  $m->testMethod(1)->atLeastOnce();
+  $m->replay();
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 0, 'No test passed');
+  $t->is($mockTest->fails, 1, 'One test failed');
+
+  // @Test: - Case 2: One actual call
+
+  $m->testMethod(1)->atLeastOnce();
+  $m->replay();
+  $m->testMethod(1);
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+  // @Test: - Case 3: Two actual calls
+
+  $m->testMethod(1)->atLeastOnce();
+  $m->replay();
+  $m->testMethod(1);
+  $m->testMethod(1);
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+
+// @Test: ->times() and ->returns()
 
   // test
   $m->testMethod(1)->returns('Foobar')->times(2);
@@ -392,6 +425,31 @@ $t = new LimeTest(47);
   // assertions
   $t->is($value1, 'Foobar', 'The first return value is correct');
   $t->is($value2, 'Foobar', 'The second return value is correct');
+
+
+// @Test: ->withAnyParameters()
+
+  // @Test: - Case 1: Correct parameters
+
+  // test
+  $m->testMethod()->anyParameters();
+  $m->replay();
+  $m->testMethod();
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+  // @Test: - Case 1: "Wrong" parameters
+
+  // test
+  $m->testMethod()->anyParameters();
+  $m->replay();
+  $m->testMethod(1, 2, 3);
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
 
 
 // @Test: The control methods like ->replay() can be mocked
