@@ -172,7 +172,7 @@ class LimeLexerAnnotations extends LimeLexer
 
         if (!empty($comment))
         {
-          $text .= ' '.$this->testVariable.'->comment("'.$comment.'");';
+          $text .= ' '.$this->testVariable.'->comment("'.str_replace('"', '\"', $comment).'");';
         }
       }
     }

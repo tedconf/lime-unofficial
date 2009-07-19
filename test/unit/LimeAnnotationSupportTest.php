@@ -225,7 +225,7 @@ $t->diag('Tests annotated with @Test may have comments');
   $expected = <<<EOF
 1..0
 Test 1
-# This test is commented
+# This test is commented with "double" and 'single' quotes
 Test 2
  Looks like everything went fine.
 EOF;

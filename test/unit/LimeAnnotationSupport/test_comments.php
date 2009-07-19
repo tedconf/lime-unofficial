@@ -18,5 +18,5 @@ $t = new LimeTest(0);
 // @Test
 echo "Test 1\n";
 
-// @Test: This test is commented
+// @Test: This test is commented with "double" and 'single' quotes
 echo "Test 2\n";
