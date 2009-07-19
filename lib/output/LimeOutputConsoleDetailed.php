@@ -52,7 +52,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->printer->printLine(' - '.$message);
   }
 
-  public function fail($message, $file, $line, $error)
+  public function fail($message, $file, $line, $error = null)
   {
     $this->actual++;
 
@@ -60,9 +60,12 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->printer->printLine(' - '.$message);
     $this->printer->printLine(sprintf('#     Failed test (%s at line %s)', $file, $line), LimePrinter::COMMENT);
 
-    foreach (explode("\n", $error) as $line)
+    if (!is_null($error))
     {
-      $this->printer->printLine('#       '.$line, LimePrinter::COMMENT);
+      foreach (explode("\n", $error) as $line)
+      {
+        $this->printer->printLine('#       '.$line, LimePrinter::COMMENT);
+      }
     }
   }
 

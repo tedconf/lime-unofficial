@@ -29,7 +29,7 @@ class LimeOutputArray implements LimeOutputInterface
     $results['stats']['passed'][] = $this->addTest(true, $line, $file, $message);
   }
 
-  public function fail($message, $file, $line, $error)
+  public function fail($message, $file, $line, $error = null)
   {
     $results =& $this->getResults($file);
 
@@ -37,7 +37,11 @@ class LimeOutputArray implements LimeOutputInterface
 
     $results['stats']['total']++;
     $results['stats']['failed'][] = $index;
-    $results['tests'][$index]['error'] = $error;
+
+    if (!is_null($error))
+    {
+      $results['tests'][$index]['error'] = $error;
+    }
   }
 
   public function skip($message, $file, $line)

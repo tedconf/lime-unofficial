@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(24);
+$t = new LimeTest(23);
 
 // @Before
 
@@ -59,16 +59,15 @@ $t = new LimeTest(24);
   $printer->printText('not ok 1', LimePrinter::NOT_OK);
   $printer->printLine(' - A failed test');
   $printer->printLine('#     Failed test (/test/file at line 33)', LimePrinter::COMMENT);
-  $printer->printLine('#       error message', LimePrinter::COMMENT);
   $printer->printText('not ok 2', LimePrinter::NOT_OK);
   $printer->printLine(' - Another failed test');
   $printer->printLine('#     Failed test (/test/file at line 55)', LimePrinter::COMMENT);
-  $printer->printLine('#       line', LimePrinter::COMMENT);
-  $printer->printLine('#       break', LimePrinter::COMMENT);
+  $printer->printLine('#       error', LimePrinter::COMMENT);
+  $printer->printLine('#       message', LimePrinter::COMMENT);
   $printer->replay();
   // test
-  $output->fail('A failed test', '/test/file', 33, 'error message');
-  $output->fail('Another failed test', '/test/file', 55, "line\nbreak");
+  $output->fail('A failed test', '/test/file', 33);
+  $output->fail('Another failed test', '/test/file', 55, "error\nmessage");
   // assertions
   $printer->verify();
 

@@ -43,7 +43,6 @@ $t = new LimeTest(1);
           'file' => '/test/file1',
           'message' => 'Test message 2',
           'status' => false,
-          'error' => 'error message 1',
         ),
       ),
       'stats' => array(
@@ -62,7 +61,7 @@ $t = new LimeTest(1);
           'file' => '/test/file2',
           'message' => 'Test message 3',
           'status' => false,
-          'error' => 'error message 2',
+          'error' => 'error message',
         ),
         2 => array(
           'line' => 44,
@@ -90,8 +89,8 @@ $t = new LimeTest(1);
   $output->plan(3, '/test/file1');
   $output->plan(2, '/test/file2');
   $output->pass('Test message 1', '/test/file1', 11);
-  $output->fail('Test message 2', '/test/file1', 22, 'error message 1');
-  $output->fail('Test message 3', '/test/file2', 33, 'error message 2');
+  $output->fail('Test message 2', '/test/file1', 22);
+  $output->fail('Test message 3', '/test/file2', 33, 'error message');
   $output->pass('Test message 4', '/test/file2', 44);
   $output->skip('Test message 5', '/test/file2', 55);
   // assertions
