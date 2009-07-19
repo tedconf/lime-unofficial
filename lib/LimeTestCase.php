@@ -24,7 +24,7 @@ class LimeTestCase extends LimeTest
 
     // attention: the following three lines are not tested
     $this->testRunner->addExceptionHandler(array($this, 'handleException'));
-    $this->testRunner->addErrorHandler(array($this, 'handleException'));
+    $this->testRunner->addErrorHandler(array($this, 'handleError'));
     $this->testRunner->addAfter(array($this, 'verifyException'));
 
     foreach (get_class_methods($this) as $method)

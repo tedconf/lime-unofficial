@@ -188,11 +188,9 @@ class LimeTestRunner
    */
   public function handleError($code, $message, $file, $line, $context)
   {
-    $error = new LimeError($message, $code, $file, $line, debug_backtrace());
-
     foreach ($this->errorCallbacks as $callback)
     {
-      if (true === call_user_func($callback, $error))
+      if (true === call_user_func($callback, $code, $message, $file, $line, $context))
       {
         return;
       }

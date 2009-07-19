@@ -58,6 +58,20 @@ class LimePrinter
     print $this->colorize(str_pad($text, 80, ' '), $style)."\n";
   }
 
+  public function printLargeBox($text, $style = null)
+  {
+    $space = $this->colorize(str_repeat(' ', 80), $style)."\n";
+    $text = trim($text);
+    $text = wordwrap($text, 75, "\n");
+
+    print $space;
+    foreach (explode("\n", $text) as $line)
+    {
+      print $this->colorize(str_pad('  '.$line, 80, ' '), $style)."\n";
+    }
+    print $space;
+  }
+
   protected function colorize($text, $style)
   {
     if (is_null($this->colorizer))

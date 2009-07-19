@@ -15,6 +15,8 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $expected = null,
     $passed = 0,
     $actual = 0,
+    $warnings = 0,
+    $errors = 0,
     $printer = null;
 
   public function __construct(LimePrinter $printer)
@@ -87,12 +89,20 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
   public function warning($message, $file, $line)
   {
-    $this->printer->printBox(' '.$message, LimePrinter::WARNING);
+    $this->warnings++;
+
+    $message .= sprintf("\n(in %s on line %s)", $file, $line);
+
+    $this->printer->printLargeBox($message, LimePrinter::WARNING);
   }
 
   public function error($message, $file, $line)
   {
-    $this->printer->printBox(' '.$message, LimePrinter::ERROR);
+    $this->errors++;
+
+    $message .= sprintf("\n(in %s on line %s)", $file, $line);
+
+    $this->printer->printLargeBox($message, LimePrinter::ERROR);
   }
 
   public function comment($message)
@@ -107,13 +117,24 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
       $this->plan($this->actual, null);
     }
 
-    if ($this->passed == $this->expected)
+    if ($this->passed == $this->expected && $this->passed === $this->actual && $this->errors == 0)
     {
-      $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+      if ($this->warnings > 0)
+      {
+        $this->printer->printBox(' Looks like you\'re nearly there.', LimePrinter::WARNING);
+      }
+      else
+      {
+        $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
+      }
     }
     else if ($this->passed != $this->actual)
     {
       $this->printer->printBox(sprintf(' Looks like you failed %s tests of %s.', $this->actual - $this->passed, $this->actual), LimePrinter::ERROR);
+    }
+    else if ($this->errors > 0)
+    {
+      $this->printer->printBox(' Looks like some errors occurred.', LimePrinter::ERROR);
     }
 
     if ($this->actual > $this->expected)

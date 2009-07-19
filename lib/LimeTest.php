@@ -49,11 +49,17 @@ class LimeTest
     }
 
     $this->options['base_dir'] = realpath($this->options['base_dir']);
+
+    set_error_handler(array($this, 'handleError'));
+    set_exception_handler(array($this, 'handleException'));
   }
 
   public function __destruct()
   {
     $this->output->flush();
+
+    restore_error_handler();
+    restore_exception_handler();
   }
 
   protected function getDefaultOutput($forceColors = false)
@@ -473,22 +479,48 @@ class LimeTest
     $this->actualCode           = null;
   }
 
+  protected function trimPath($path)
+  {
+    if (array_key_exists('base_dir', $this->options))
+    {
+      $path = str_replace($this->options['base_dir'], '', $path);
+    }
+
+    return $path;
+  }
+
+  public function handleError($code, $message, $file, $line, $context)
+  {
+    switch ($code)
+    {
+      case E_WARNING:
+        $message = 'Warning: '.$message;
+        break;
+      case E_NOTICE:
+        $message = 'Notice: '.$message;
+        break;
+    }
+
+    $this->output->warning($message, $this->trimPath($file), $line);
+
+    return true;
+  }
+
   public function handleException(Exception $exception)
   {
     if (!is_null($this->expectedException))
     {
       $this->actualException = get_class($exception);
       $this->actualCode = $exception->getCode();
-
-      return true;
     }
     else
     {
-      // TODO: We should always return true to avoid errors being rethrown as
-      // LimeError instances. When errors occur in the shutdown procedure,
-      // throwing exceptions will result in new errors
-      return false;
+      $message = get_class($exception).': '.$exception->getMessage();
+
+      $this->output->error($message, $this->trimPath($exception->getFile()), $exception->getLine());
     }
+
+    return true;
   }
 
   public function verifyException()

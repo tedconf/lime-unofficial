@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(33);
+$t = new LimeTest(37);
 
 // @Before
 
@@ -124,7 +124,7 @@ $t = new LimeTest(33);
 // @Test: warning() prints a warning
 
   // fixtures
-  $printer->printBox(' A very important warning', LimePrinter::WARNING);
+  $printer->printLargeBox("A very important warning\n(in /test/file on line 11)", LimePrinter::WARNING);
   $printer->replay();
   // test
   $output->warning('A very important warning', '/test/file', 11);
@@ -135,7 +135,7 @@ $t = new LimeTest(33);
 // @Test: error() prints an warning
 
   // fixtures
-  $printer->printBox(' A very important error', LimePrinter::ERROR);
+  $printer->printLargeBox("A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->replay();
   // test
   $output->error('A very important error', '/test/file', 11);
@@ -161,7 +161,7 @@ $t = new LimeTest(33);
   // fixtures
   $output->plan(1, '/test/file');
   $output->pass('First test', '/test/file', 11);
-  $output->pass('First test', '/test/file', 22);
+  $output->pass('Second test', '/test/file', 22);
   $printer->reset();
   $printer->printBox(' Looks like you planned 1 tests but ran 1 extra.', LimePrinter::ERROR);
   $printer->replay();
@@ -170,7 +170,22 @@ $t = new LimeTest(33);
   // assertions
   $printer->verify();
 
-  // @Test: Case 2 - Too few tests
+  // @Test: Case 2 - Too many tests including failed tests
+
+  // fixtures
+  $output->plan(1, '/test/file');
+  $output->pass('First test', '/test/file', 11);
+  $output->fail('Second test', '/test/file', 22);
+  $printer->reset();
+  $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
+  $printer->printBox(' Looks like you planned 1 tests but ran 1 extra.', LimePrinter::ERROR);
+  $printer->replay();
+  // test
+  $output->flush();
+  // assertions
+  $printer->verify();
+
+  // @Test: Case 3 - Too few tests
 
   // fixtures
   $output->plan(2, '/test/file');
@@ -183,7 +198,7 @@ $t = new LimeTest(33);
   // assertions
   $printer->verify();
 
-  // @Test: Case 3 - Correct number of tests
+  // @Test: Case 4 - Correct number of tests
 
   // fixtures
   $output->plan(1, '/test/file');
@@ -196,7 +211,7 @@ $t = new LimeTest(33);
   // assertions
   $printer->verify();
 
-  // @Test: Case 4 - Failed tests
+  // @Test: Case 5 - Failed tests
 
   // fixtures
   $output->plan(3, '/test/file');
@@ -211,7 +226,7 @@ $t = new LimeTest(33);
   // assertions
   $printer->verify();
 
-  // @Test: Case 5 - Failed and too few tests
+  // @Test: Case 6 - Failed and too few tests
 
   // fixtures
   $output->plan(3, '/test/file');
@@ -226,7 +241,7 @@ $t = new LimeTest(33);
   // assertions
   $printer->verify();
 
-  // @Test: Case 6 - No plan
+  // @Test: Case 7 - No plan
 
   // fixtures
   $output->pass('First test', '/test/file', 11);
@@ -239,7 +254,7 @@ $t = new LimeTest(33);
   // assertions
   $printer->verify();
 
-  // @Test: Case 7 - Skipped tests
+  // @Test: Case 8 - Skipped tests
 
   // fixtures
   $output->plan(1, '/test/file');
@@ -251,3 +266,33 @@ $t = new LimeTest(33);
   $output->flush();
   // assertions
   $printer->verify();
+
+  // @Test: Case 9 - Successful but warnings
+
+  // fixtures
+  $output->plan(1, '/test/file');
+  $output->pass('First test', '/test/file', 11);
+  $output->warning('Some warning', '/test/file', 11);
+  $printer->reset();
+  $printer->printBox(' Looks like you\'re nearly there.', LimePrinter::WARNING);
+  $printer->replay();
+  // test
+  $output->flush();
+  // assertions
+  $printer->verify();
+
+  // @Test: Case 9 - Successful but errors
+
+  // fixtures
+  $output->plan(1, '/test/file');
+  $output->pass('First test', '/test/file', 11);
+  $output->error('Some error', '/test/file', 11);
+  $printer->reset();
+  $printer->printBox(' Looks like some errors occurred.', LimePrinter::ERROR);
+  $printer->replay();
+  // test
+  $output->flush();
+  // assertions
+  $printer->verify();
+
+

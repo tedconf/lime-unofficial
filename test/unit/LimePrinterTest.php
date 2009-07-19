@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(8);
+$t = new LimeTest(9);
 
 // @Before
 
@@ -65,6 +65,22 @@ $t = new LimeTest(8);
   $result = ob_get_clean();
   // assertions
   $t->is($result, '<RED>'.$paddedText."</RED>\n", 'The result was colorized and printed');
+
+
+// @Test: printLargeBox() prints text in a large box with a width of 80 characters or more
+
+  // fixtures
+  $paddedText = str_pad('  My text', 80, ' ');
+  $paddedSpace = str_repeat(' ', 80);
+  $colorizer->colorize($paddedText, 'RED')->returns('<RED>'.$paddedText.'</RED>');
+  $colorizer->colorize($paddedSpace, 'RED')->returns('<RED>'.$paddedSpace.'</RED>');
+  $colorizer->replay();
+  // test
+  ob_start();
+  $printer->printLargeBox('My text', 'RED');
+  $result = ob_get_clean();
+  // assertions
+  $t->is($result, '<RED>'.$paddedSpace."</RED>\n<RED>".$paddedText."</RED>\n<RED>".$paddedSpace."</RED>\n", 'The result was colorized and printed');
 
 
 // @Test: The printer does also work without colorizer
