@@ -109,14 +109,14 @@ $t = new LimeTest(8);
   // @Test: Case 2 - Function with "->" prefix
 
   // fixtures
-  $colorizer->colorize('->function(1, 2)', LimePrinter::METHOD)->returns('<BLUE>->function(1, 2)</BLUE>');
+  $colorizer->colorize('->function()', LimePrinter::METHOD)->returns('<BLUE>->function()</BLUE>');
   $colorizer->replay();
   // test
   ob_start();
-  $printer->printText('My text with a ->function(1, 2)');
+  $printer->printText('My text with a ->function()');
   $result = ob_get_clean();
   // assertions
-  $t->is($result, 'My text with a <BLUE>->function(1, 2)</BLUE>', 'The result was colorized and printed');
+  $t->is($result, 'My text with a <BLUE>->function()</BLUE>', 'The result was colorized and printed');
 
   // @Test: Case 3 - Function with "::" prefix
 
