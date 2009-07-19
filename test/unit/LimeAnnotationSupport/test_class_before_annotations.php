@@ -30,6 +30,10 @@ interface TestInterfaceDefinition {}
 
 abstract class TestAbstractClassDefinition {}
 
+abstract class TestAbstractClassWithMethod {
+  abstract public function testMethod();
+}
+
 class TestExtendingClassDefinition extends TestClassDefinition {}
 
 class TestExtendingAbstractClassDefinition extends TestAbstractClassDefinition {}

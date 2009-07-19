@@ -68,7 +68,7 @@ class LimeLexerAnnotations extends LimeLexer
     $initialized,
     $testVariable,
     $classBuffer,
-    $classImplementsInterface;
+    $classNotLoaded;
 
   /**
    * Constructor.
@@ -107,7 +107,7 @@ class LimeLexerAnnotations extends LimeLexer
     $this->functionCount = 0;
     $this->functions = array();
     $this->classBuffer = '';
-    $this->classImplementsInterface = false;
+    $this->classNotLoaded = false;
 
     foreach ($this->allowedAnnotations as $annotation)
     {
@@ -148,21 +148,25 @@ class LimeLexerAnnotations extends LimeLexer
    */
   protected function process($text, $id)
   {
-    if (!$this->inClass())
+    if (!$this->inClassDeclaration())
     {
       $this->classBuffer = '';
-      $this->classImplementsInterface = false;
     }
 
-    // classes implementing any interfaces seem not to be recognized by PHP if
-    // they are placed after the exit() statement, so we need to leave them in
-    // the source code
-    // this functionality is covered in LimeAnnotationSupportTest 11+12
+    if (!$this->inClass())
+    {
+      $this->classNotLoaded = false;
+    }
+
+    // Some classes are automatically loaded when the script is opened, others
+    // are not. These other classes need to be left in the source code,
+    // otherwise they cannot be instantiated later.
+    // This functionality is covered in LimeAnnotationSupportTest 11+12
     if ($this->inClassDeclaration())
     {
-      if ($id == T_IMPLEMENTS)
+      if ($this->getCurrentClass() && !class_exists($this->getCurrentClass()) && !interface_exists($this->getCurrentClass()))
       {
-        $this->classImplementsInterface = true;
+        $this->classNotLoaded = true;
         $text = $this->classBuffer.$text;
         $this->classBuffer = '';
       }
@@ -180,7 +184,7 @@ class LimeLexerAnnotations extends LimeLexer
       }
       $this->initialized = true;
     }
-    else if ($this->inClass() && $this->classImplementsInterface)
+    else if ($this->inClass() && $this->classNotLoaded)
     {
       // just print
     }

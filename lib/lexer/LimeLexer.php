@@ -75,7 +75,12 @@ abstract class LimeLexer
             $this->inFunctionDeclaration = false;
             break;
           case ';':
-            $this->inFunctionDeclaration = false;
+            // abstract functions
+            if ($this->inFunctionDeclaration)
+            {
+              $this->inFunctionDeclaration = false;
+              unset($this->currentFunction[$openBraces]);
+            }
             $this->endOfCurrentExpr = true;
             break;
           case '}':
@@ -134,6 +139,7 @@ abstract class LimeLexer
               $this->currentClass[$openBraces] = null;
               $this->inClassDeclaration = true;
             }
+            break;
           case T_INTERFACE:
           case T_CLASS:
             $this->currentClass[$openBraces] = null;
@@ -144,11 +150,11 @@ abstract class LimeLexer
             $this->inFunctionDeclaration = true;
             break;
           case T_STRING:
-            if (array_key_exists($openBraces, $this->currentClass))
+            if (array_key_exists($openBraces, $this->currentClass) && is_null($this->currentClass[$openBraces]))
             {
               $this->currentClass[$openBraces] = $text;
             }
-            if (array_key_exists($openBraces, $this->currentFunction))
+            if (array_key_exists($openBraces, $this->currentFunction) && is_null($this->currentFunction[$openBraces]))
             {
               $this->currentFunction[$openBraces] = $text;
             }
