@@ -29,7 +29,7 @@ class LimeTestCase extends LimeTest
 
     foreach (get_class_methods($this) as $method)
     {
-      if (strpos($method, 'test') === 0)
+      if (strpos($method, 'test') === 0 && strlen($method) > 4)
       {
         $this->testRunner->addTest(array($this, $method));
       }
