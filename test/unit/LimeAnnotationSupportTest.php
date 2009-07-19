@@ -21,7 +21,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(32);
+$t = new LimeAnnotationSupportTest(34);
 
 function _backup($file)
 {
@@ -346,3 +346,17 @@ $t->diag('Line numbers in error messages remain the same as in the original file
   // assertion
   $t->is($result, 0, 'The file returned exit status 0 (success)');
   $t->isOutput($actual, '/on line 25$/', 'like');
+
+
+$t->diag('The last line in an annotated file can be a comment (bugfix)');
+
+  // test
+  list($result, $actual) = execute('test_last_line_commented.php');
+  // assertion
+  $expected = <<<EOF
+1..0
+Test
+ Looks like everything went fine.
+EOF;
+  $t->is($result, 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($actual, $expected);

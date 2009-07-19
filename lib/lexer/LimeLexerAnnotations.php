@@ -117,7 +117,7 @@ class LimeLexerAnnotations extends LimeLexer
 
     if ($this->inAnnotation)
     {
-      fwrite($this->file, '}');
+      fwrite($this->file, "\n}");
     }
 
     fclose($this->file);
