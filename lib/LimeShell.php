@@ -89,11 +89,13 @@ class LimeShell
    * The return value and the output is returned as array. If you pass the
    * PHP code as string, you must omit the opening "<?php" tag.
    *
-   * @param  string $file  The PHP file or code
+   * @param  string $file       The PHP file or code
+   * @param  array  $arguments  A list of command options and arguments
+   *
    * @return array         An array with the return value as first and the
    *                       console output as second element.
    */
-  public function execute($file)
+  public function execute($file, array $arguments = array())
   {
     if (!is_readable($file))
     {
@@ -102,9 +104,14 @@ class LimeShell
       $file = $tmpFile;
     }
 
+    foreach ($arguments as &$argument)
+    {
+      $argument = escapeshellarg($argument);
+    }
+
     ob_start();
     // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing
-    passthru(sprintf('cd & %s %s 2>&1', escapeshellarg($this->executable), escapeshellarg($file)), $return);
+    passthru(sprintf('cd & %s %s %s 2>&1', escapeshellarg($this->executable), escapeshellarg($file), implode(' ', $arguments)), $return);
     $output = ob_get_clean();
 
     return array($return, $output);
