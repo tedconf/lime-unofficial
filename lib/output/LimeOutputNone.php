@@ -9,21 +9,21 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputNone extends LimeOutput
+class LimeOutputNone implements LimeOutputInterface
 {
-  public function __construct($forceColors = false) {}
+  public function plan($amount, $file) {}
 
-  public function diag() {}
+  public function pass($message, $file, $line) {}
+
+  public function fail($message, $file, $line, $error = null) {}
+
+  public function skip($message, $file, $line) {}
+
+  public function warning($message, $file, $line) {}
+
+  public function error($message, $file, $line) {}
 
   public function comment($message) {}
 
-  public function info($message) {}
-
-  public function error($message) {}
-
-  public function echoln($message, $style = null, $colorize = true) {}
-
-  public function greenBar($message) {}
-
-  public function redBar($message) {}
+  public function flush() {}
 }

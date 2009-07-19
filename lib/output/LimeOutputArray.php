@@ -12,7 +12,13 @@
 class LimeOutputArray implements LimeOutputInterface
 {
   protected
+    $serialize = false,
     $results = array();
+
+  public function __construct($serialize = false)
+  {
+    $this->serialize = $serialize;
+  }
 
   public function plan($amount, $file)
   {
@@ -66,7 +72,14 @@ class LimeOutputArray implements LimeOutputInterface
 
   public function flush()
   {
-    var_export($this->results);
+    if ($this->serialize)
+    {
+      print serialize($this->results);
+    }
+    else
+    {
+      var_export($this->results);
+    }
   }
 
   public function toArray()
