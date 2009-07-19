@@ -290,6 +290,11 @@ class LimeMock
     return $mock->__lime_replay();
   }
 
+  public static function reset($mock)
+  {
+    return $mock->__lime_getState()->reset();
+  }
+
   /**
    * Sets the given mock to compare method parameters with strict typing.
    * @param  $mock

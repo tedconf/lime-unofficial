@@ -29,6 +29,7 @@
   
   <?php if ($generate_methods): ?>
   public function replay() { return $this->__lime_replay(); }
+  public function reset() { return $this->state->reset(); }
   public function verify() { return $this->state->verify(); }
   public function setStrict() { return $this->state->setStrict(); }
   public function setFailOnVerify() { return $this->state->setFailOnVerify(); }

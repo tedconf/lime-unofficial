@@ -52,4 +52,9 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
   {
     $this->strict = true;
   }
+
+  public function reset()
+  {
+    $this->invocations = array();
+  }
 }

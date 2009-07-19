@@ -22,4 +22,6 @@ interface LimeMockBehaviourInterface
   public function setExpectNothing();
 
   public function setStrict();
+
+  public function reset();
 }

@@ -47,6 +47,11 @@ class LimeMockReplayState
     throw new BadMethodCallException('replay() is not supported');
   }
 
+  public function reset()
+  {
+    throw new BadMethodCallException('reset() must be called before replay()');
+  }
+
   public function verify()
   {
     return $this->behaviour->verify();

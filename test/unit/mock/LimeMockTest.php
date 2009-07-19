@@ -47,7 +47,7 @@ class TestClass
 class TestException extends Exception {}
 
 
-$t = new LimeTest(72);
+$t = new LimeTest(74);
 
 
 // @Before
@@ -115,6 +115,7 @@ $t = new LimeTest(72);
   $m->testMethod();
   // assertions
   $t->is(TestClass::$calls, 0, 'The method has not been called');
+
 
 
 // @Test: Return values can be stubbed
@@ -199,6 +200,20 @@ $t = new LimeTest(72);
   $m->verify();
   // assertions
   $t->is($mockTest->passes, 2, 'Two tests passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+
+// @Test: A mock can be reset
+
+  // test
+  $m->someOtherMethod();
+  $m->reset();
+  $m->testMethod();
+  $m->replay();
+  $m->testMethod();
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
