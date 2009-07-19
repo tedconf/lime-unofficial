@@ -147,6 +147,13 @@ class LimeMock
 
   protected static $parameterWithDefaultTemplate = '%s %s = %s';
 
+  protected static $illegalMethods = array(
+    '__construct',
+    '__call',
+    '__lime_replay',
+    '__lime_getState',
+  );
+
   /**
    * Creates a new mock object for the given class or interface name.
    *
@@ -183,7 +190,7 @@ class LimeMock
   {
     $methods = '';
 
-    if (!class_exists($classOrInterface, false) && !interface_exists($classOrInterface))
+    if (!class_exists($classOrInterface) && !interface_exists($classOrInterface))
     {
       eval(sprintf('interface %s {}', $classOrInterface));
     }
@@ -191,42 +198,45 @@ class LimeMock
     $class = new ReflectionClass($classOrInterface);
     foreach ($class->getMethods() as $method)
     {
-      /* @var $method ReflectionMethod */
-      $modifiers = Reflection::getModifierNames($method->getModifiers());
-      $modifiers = array_diff($modifiers, array('abstract'));
-      $modifiers = implode(' ', $modifiers);
-
-      $parameters = array();
-
-      foreach ($method->getParameters() as $parameter)
+      if (!in_array($method->getName(), self::$illegalMethods))
       {
-        $typeHint = '';
+        /* @var $method ReflectionMethod */
+        $modifiers = Reflection::getModifierNames($method->getModifiers());
+        $modifiers = array_diff($modifiers, array('abstract'));
+        $modifiers = implode(' ', $modifiers);
 
-        /* @var $parameter ReflectionParameter */
-        if ($parameter->getClass())
+        $parameters = array();
+
+        foreach ($method->getParameters() as $parameter)
         {
-          $typeHint = $parameter->getClass()->getName();
-        }
-        else if ($parameter->isArray())
-        {
-          $typeHint = 'array';
+          $typeHint = '';
+
+          /* @var $parameter ReflectionParameter */
+          if ($parameter->getClass())
+          {
+            $typeHint = $parameter->getClass()->getName();
+          }
+          else if ($parameter->isArray())
+          {
+            $typeHint = 'array';
+          }
+
+          $name = '$'.$parameter->getName();
+
+          if ($parameter->isOptional())
+          {
+            $default = var_export($parameter->getDefaultValue(), true);
+            $parameters[] = sprintf(self::$parameterWithDefaultTemplate, $typeHint, $name, $default);
+          }
+          else
+          {
+            $parameters[] = sprintf(self::$parameterTemplate, $typeHint, $name);
+          }
         }
 
-        $name = '$'.$parameter->getName();
-
-        if ($parameter->isOptional())
-        {
-          $default = var_export($parameter->getDefaultValue(), true);
-          $parameters[] = sprintf(self::$parameterWithDefaultTemplate, $typeHint, $name, $default);
-        }
-        else
-        {
-          $parameters[] = sprintf(self::$parameterTemplate, $typeHint, $name);
-        }
+        $methods .= sprintf(self::$methodTemplate, $modifiers, $method->getName(),
+            implode(', ', $parameters), $method->getName());
       }
-
-      $methods .= sprintf(self::$methodTemplate, $modifiers, $method->getName(),
-          implode(', ', $parameters), $method->getName());
     }
 
     $interfaces = array();

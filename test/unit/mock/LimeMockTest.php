@@ -44,10 +44,18 @@ class TestClass
   }
 }
 
+class TestClassWithMethodsFromMock
+{
+  public function __construct() {}
+  public function __call($method, $args) {}
+  public function __lime_replay() {}
+  public function __lime_getState() {}
+}
+
 class TestException extends Exception {}
 
 
-$t = new LimeTest(76);
+$t = new LimeTest(78);
 
 
 // @Before
@@ -85,6 +93,14 @@ $t = new LimeTest(76);
   $m = LimeMock::create('FoobarClass');
   // assertions
   $t->ok($m instanceof FoobarClass, 'The mock generates and inherits the class');
+  $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
+
+
+// @Test: Classes with methods from the mock can be mocked
+
+  $m = LimeMocK::create('TestClassWithMethodsFromMock');
+  // assertions
+  $t->ok($m instanceof TestClassWithMethodsFromMock, 'The mock generates and inherits the class');
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
 
 
