@@ -110,6 +110,7 @@ $t = new LimeTest(47);
   TestClass::$calls = 0;
   $m = LimeMock::create('TestClass');
   // test
+  $m->testMethod();
   $m->replay();
   $m->testMethod();
   // assertions
@@ -158,6 +159,7 @@ $t = new LimeTest(47);
 
   // fixtures
   $m = LimeMock::create('TestClass');
+  $m->testMethod();
   $t->expect('BadMethodCallException');
   // test
   $m->verify();
@@ -196,7 +198,7 @@ $t = new LimeTest(47);
   $m->testMethod2('Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One tests passed');
+  $t->is($mockTest->passes, 2, 'Two tests passed');
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
@@ -244,7 +246,7 @@ $t = new LimeTest(47);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 0, 'No test passed');
+  $t->is($mockTest->passes, 1, 'One test passed');
   $t->is($mockTest->fails, 1, 'One test failed');
 
 
@@ -258,7 +260,7 @@ $t = new LimeTest(47);
   $m->testMethod('Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->passes, 2, 'Two tests passed');
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
@@ -272,7 +274,7 @@ $t = new LimeTest(47);
   $m->testMethod1();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->passes, 2, 'Two tests passed');
   $t->is($mockTest->fails, 0, 'No test failed');
 
 
@@ -412,7 +414,7 @@ $t = new LimeTest(47);
   $m->testMethod2(1, 'Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->passes, 0, 'No test passed');
   $t->is($mockTest->fails, 0, 'No test failed');
 
 

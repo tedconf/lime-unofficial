@@ -20,7 +20,7 @@
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
-class LimeMockMethodInvocation
+class LimeMockInvocation
 {
   protected
     $method     = null,
@@ -32,10 +32,35 @@ class LimeMockMethodInvocation
    * @param string $method
    * @param array $parameters
    */
-  public function __construct($method, array $parameters)
+  public function __construct($class, $method, array $parameters = array())
   {
+    $this->class = $class;
     $this->method = $method;
     $this->parameters = $parameters;
+  }
+
+  public function getClass()
+  {
+    return $this->class;
+  }
+
+  public function getMethod()
+  {
+    return $this->method;
+  }
+
+  public function equals(LimeMockInvocation $invocation, $strict = false)
+  {
+    $equal = $this->method == $invocation->method && $this->class == $invocation->class;
+
+    if ($strict)
+    {
+      return $equal && $this->parameters === $invocation->parameters;
+    }
+    else
+    {
+      return $equal && $this->parameters == $invocation->parameters;
+    }
   }
 
   /**
@@ -65,6 +90,6 @@ class LimeMockMethodInvocation
    */
   public function __toString()
   {
-    return sprintf('%s(%s)', $this->method, implode(', ', $this->parameters));
+    return sprintf('%s::%s(%s)', $this->class, $this->method, implode(', ', $this->parameters));
   }
 }

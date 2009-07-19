@@ -1,28 +1,38 @@
 <?php echo $class_declaration ?>  
 {
-  private $control = null;
+  private
+    $class = null,
+    $state = null,
+    $behaviour = null;
   
-  public function __construct(LimeTest $test = null)
+  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeTest $test = null)
   {
-    $this->control = new LimeMockControl($test);
+    $this->class = $class;
+    $this->behaviour = $behaviour;
+    $this->state = new LimeMockRecordState($this->behaviour, $test);
   }
   
   public function __call($method, array $parameters)
   {
-    return $this->control->call($method, $parameters);
+    return $this->state->invoke($this->class, $method, $parameters);
   }
   
-  public function __lime_getControl()
+  public function __lime_replay()
   {
-    return $this->control;
+    $this->state = new LimeMockReplayState($this->behaviour);
+  }
+  
+  public function __lime_getState()
+  {
+    return $this->state;
   }
   
   <?php if ($generate_methods): ?>
-  public function replay() { return $this->control->replay(); }
-  public function verify() { return $this->control->verify(); }
-  public function setStrict() { return $this->control->setStrict(); }
-  public function setFailOnVerify() { return $this->control->setFailOnVerify(); }
-  public function setExpectNothing() { return $this->control->setExpectNothing(); }
+  public function replay() { return $this->__lime_replay(); }
+  public function verify() { return $this->state->verify(); }
+  public function setStrict() { return $this->state->setStrict(); }
+  public function setFailOnVerify() { return $this->state->setFailOnVerify(); }
+  public function setExpectNothing() { return $this->state->setExpectNothing(); }
   <?php endif ?>
   
   <?php echo $methods ?> 

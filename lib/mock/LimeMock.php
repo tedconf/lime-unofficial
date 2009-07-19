@@ -167,6 +167,20 @@ class LimeMock
    */
   public static function create($classOrInterface, LimeTest $test = null, $generateMethods = true)
   {
+    $name = self::generateClass($classOrInterface, $generateMethods);
+
+    return new $name($classOrInterface, new LimeMockUnorderedBehaviour(), $test);
+  }
+
+  public static function createStrict($classOrInterface, LimeTest $test = null, $generateMethods = true)
+  {
+    $name = self::generateClass($classOrInterface, $generateMethods);
+
+    return new $name($classOrInterface, new LimeMockOrderedBehaviour(), $test);
+  }
+
+  protected static function generateClass($classOrInterface, $generateMethods = true)
+  {
     $methods = '';
 
     if (!class_exists($classOrInterface, false) && !interface_exists($classOrInterface))
@@ -248,7 +262,7 @@ class LimeMock
       'generate_methods'    =>  $generateMethods,
     )));
 
-    return new $name($test);
+    return $name;
   }
 
   /**
@@ -273,7 +287,7 @@ class LimeMock
    */
   public static function replay($mock)
   {
-    return $mock->__lime_getControl()->replay();
+    return $mock->__lime_replay();
   }
 
   /**
@@ -282,7 +296,7 @@ class LimeMock
    */
   public static function setStrict($mock)
   {
-    return $mock->__lime_getControl()->setStrict();
+    return $mock->__lime_getState()->setStrict();
   }
 
   /**
@@ -294,7 +308,7 @@ class LimeMock
    */
   public static function setFailOnVerify($mock)
   {
-    return $mock->__lime_getControl()->setFailOnVerify();
+    return $mock->__lime_getState()->setFailOnVerify();
   }
 
   /**
@@ -302,7 +316,7 @@ class LimeMock
    */
   public static function setExpectNothing()
   {
-    return $mock->__lime_getControl()->setExpectNothing();
+    return $mock->__lime_getState()->setExpectNothing();
   }
 
   /**
@@ -312,7 +326,7 @@ class LimeMock
    */
   public static function verify($mock)
   {
-    return $mock->__lime_getControl()->verify();
+    return $mock->__lime_getState()->verify();
   }
 
 }
