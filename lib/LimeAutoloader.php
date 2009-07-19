@@ -95,6 +95,10 @@ class LimeAutoloader
       {
         $file .= 'lexer/';
       }
+      else if (0 === strpos($class, 'LimeOutput'))
+      {
+        $file .= 'output/';
+      }
       else if (0 === strpos($class, 'LimeMockInvocationMatcher'))
       {
         $file .= 'mock/matcher/';
