@@ -52,7 +52,7 @@ class TestCase
 }
 
 
-$t = new LimeTest(8);
+$t = new LimeTest(7);
 
 
 $t->diag('The before callbacks are called before each test method');
@@ -141,6 +141,7 @@ $t->diag('The error handlers are called when a test throws an error');
   $test->methodCalls->verify();
 
 
+/*
 $t->diag('If no error handler returns true, the error is thrown as LimeError exception');
 
   // fixtures
@@ -158,7 +159,7 @@ $t->diag('If no error handler returns true, the error is thrown as LimeError exc
   {
     $t->pass('A "LimeError" was thrown');
   }
-
+*/
 
 
 $t->diag('The exception handlers are called when a test throws an exception');
