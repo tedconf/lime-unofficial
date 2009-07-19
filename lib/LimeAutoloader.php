@@ -95,6 +95,10 @@ class LimeAutoloader
       {
         $dir .= 'lexer/';
       }
+      else if (0 === strpos($class, 'LimeMockInvocationMatcher'))
+      {
+        $dir .= 'mock/matcher/';
+      }
       else if (0 === strpos($class, 'LimeMock'))
       {
         $dir .= 'mock/';
