@@ -52,15 +52,18 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->printer->printLine(' - '.$message);
   }
 
-  public function fail($message, $file, $line, $actual, $expected)
+  public function fail($message, $file, $line, $error)
   {
     $this->actual++;
 
     $this->printer->printText('not ok '.$this->actual, LimePrinter::NOT_OK);
     $this->printer->printLine(' - '.$message);
     $this->printer->printLine(sprintf('#     Failed test (%s at line %s)', $file, $line), LimePrinter::COMMENT);
-    $this->printer->printLine('#            got: '.var_export($actual, true), LimePrinter::COMMENT);
-    $this->printer->printLine('#       expected: '.var_export($expected, true), LimePrinter::COMMENT);
+
+    foreach (explode("\n", $error) as $line)
+    {
+      $this->printer->printLine('#       '.$line, LimePrinter::COMMENT);
+    }
   }
 
   public function skip($message, $file, $line)

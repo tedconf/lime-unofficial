@@ -29,9 +29,9 @@ class LimeOutputXml implements LimeOutputInterface
     return $this->output->plan($message, $file, $line);
   }
 
-  public function fail($message, $file, $line, $actual, $expected)
+  public function fail($message, $file, $line, $error)
   {
-    return $this->output->fail($message, $file, $line, $actual, $expected);
+    return $this->output->fail($message, $file, $line, $error);
   }
 
   public function skip($message, $file, $line)

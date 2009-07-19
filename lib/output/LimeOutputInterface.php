@@ -15,7 +15,7 @@ interface LimeOutputInterface
 
   public function pass($message, $file, $line);
 
-  public function fail($message, $file, $line, $actual, $expected);
+  public function fail($message, $file, $line, $failure);
 
   public function skip($message, $file, $line);
 
