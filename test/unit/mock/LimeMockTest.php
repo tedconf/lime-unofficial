@@ -47,7 +47,7 @@ class TestClass
 class TestException extends Exception {}
 
 
-$t = new LimeTest(57);
+$t = new LimeTest(70);
 
 
 // @Before
@@ -446,6 +446,107 @@ $t = new LimeTest(57);
   $m->testMethod()->anyParameters();
   $m->replay();
   $m->testMethod(1, 2, 3);
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+
+// @Test: ->between()
+
+  // @Test: - Case 1: Too few calls
+
+  // test
+  $m->testMethod()->between(2, 4);
+  $m->replay();
+  $m->testMethod();
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 0, 'No test passed');
+  $t->is($mockTest->fails, 1, 'One test failed');
+
+  // @Test: - Case 2: Correct number
+
+  // test
+  $m->testMethod()->between(2, 4);
+  $m->replay();
+  $m->testMethod();
+  $m->testMethod();
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+  // @Test: - Case 3: Another correct number
+
+  // test
+  $m->testMethod()->between(2, 4);
+  $m->replay();
+  $m->testMethod();
+  $m->testMethod();
+  $m->testMethod();
+  $m->testMethod();
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 1, 'One test passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+  // @Test: - Case 4: Too many calls
+
+  // test
+  $m->testMethod()->between(2, 4);
+  $m->replay();
+  $m->testMethod();
+  $m->testMethod();
+  $m->testMethod();
+  $m->testMethod();
+  $t->expect('LimeAssertionException');
+  $m->testMethod();
+
+
+// @Test: ->never()
+
+  // @Test: - Case 1: No actual call
+
+  // test
+  $m->testMethod(1, 2, 3);
+  $m->testMethod()->never();
+  $m->replay();
+  $m->testMethod(1, 2, 3);
+  $m->verify();
+  // assertions
+  $t->is($mockTest->passes, 2, 'Two tests passed');
+  $t->is($mockTest->fails, 0, 'No test failed');
+
+  // @Test: - Case 2: Any actual calls
+
+  // test
+  $m->testMethod(1, 2, 3);
+  $m->testMethod()->never();
+  $m->replay();
+  $m->testMethod(1, 2, 3);
+  $t->expect('LimeAssertionException');
+  $m->testMethod();
+
+
+// @Test: ->strict() enforces strict parameter checks for single methods
+
+  // @Test: - Case 1: Type comparison fails
+
+  // fixture
+  $m->testMethod(1)->strict();
+  $m->replay();
+  $t->expect('LimeAssertionException');
+  // test
+  $m->testMethod('1');
+
+
+  // @Test: - Case 2: Type comparison passes
+
+  // test
+  $m->testMethod(1)->strict();
+  $m->replay();
+  $m->testMethod(1);
   $m->verify();
   // assertions
   $t->is($mockTest->passes, 1, 'One test passed');

@@ -21,7 +21,8 @@ class LimeMockExpectedInvocation
     $output       = null,
     $matchers     = array(),
     $returnValue  = null,
-    $exception    = null;
+    $exception    = null,
+    $strict       = false;
 
   public function __construct(LimeMockInvocation $invocation, LimeTest $output = null)
   {
@@ -29,6 +30,9 @@ class LimeMockExpectedInvocation
     $this->output = $output;
 
     $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherParameters($invocation);
+
+    // should the default behaviour be once() or atLeastOnce() ?
+    $this->once();
   }
 
   public function invoke()
@@ -51,7 +55,7 @@ class LimeMockExpectedInvocation
 
       foreach ($this->matchers as $matcher)
       {
-        $matched = $matched && $matcher->matches($invocation, $strict);
+        $matched = $matched && $matcher->matches($invocation, $strict || $this->strict);
       }
     }
 
@@ -101,9 +105,21 @@ class LimeMockExpectedInvocation
     return $this->times(1);
   }
 
+  public function never()
+  {
+    return $this->times(0);
+  }
+
   public function atLeastOnce()
   {
     $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherAtLeastOnce();
+
+    return $this;
+  }
+
+  public function between($start, $end)
+  {
+    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherBetween($start, $end);
 
     return $this;
   }
@@ -125,6 +141,13 @@ class LimeMockExpectedInvocation
   public function throws($class)
   {
     $this->exception = $class;
+
+    return $this;
+  }
+
+  public function strict()
+  {
+    $this->strict = true;
 
     return $this;
   }

@@ -12,7 +12,6 @@
 class LimeMockInvocationMatcherAnyParameters
 {
   protected
-    $complete   = false,
     $invocation = null;
 
   public function __construct(LimeMockInvocation $invocation)
@@ -22,14 +21,12 @@ class LimeMockInvocationMatcherAnyParameters
 
   public function matches(LimeMockInvocation $invocation, $strict = false)
   {
-    $this->complete = true;
-
     return true;
   }
 
   public function isComplete()
   {
-    return $this->complete;
+    return true;
   }
 
   public function getMessage()

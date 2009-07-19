@@ -12,7 +12,6 @@
 class LimeMockInvocationMatcherParameters
 {
   protected
-    $complete   = false,
     $invocation = null;
 
   public function __construct(LimeMockInvocation $invocation)
@@ -24,8 +23,6 @@ class LimeMockInvocationMatcherParameters
   {
     if ($this->invocation->equals($invocation, $strict))
     {
-      $this->complete = true;
-
       return true;
     }
     else
@@ -36,7 +33,7 @@ class LimeMockInvocationMatcherParameters
 
   public function isComplete()
   {
-    return $this->complete;
+    return true;
   }
 
   public function getMessage()
