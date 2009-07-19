@@ -10,55 +10,48 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-require_once dirname(__FILE__).'/../../MockLimeTest.php';
 
+LimeAnnotationSupport::enable();
 
 $t = new LimeTest(4);
 
 
+// @Before
+
+  $output = LimeMock::create('LimeOutputInterface', $t);
+  $l = new LimeExpectationList($output);
+
+
+// @After
+
+  $output = null;
+  $l = null;
+
+
 // @Test: Exceptions are thrown if unexpected values are added
 
-  // fixtures
-  $mock = new MockLimeTest();
-  $l = new LimeExpectationList($mock);
+  // test
   $l->addExpected(1);
   $l->addExpected(2);
-  // test
-  try
-  {
-    $l->addActual(2);
-    $t->fail('A "LimeAssertionException" is thrown');
-  }
-  catch (LimeAssertionException $e)
-  {
-    $t->pass('A "LimeAssertionException" is thrown');
-  }
+  $t->expect('LimeAssertionException');
+  $l->addActual(2);
 
 
 // @Test: Exceptions are thrown if expected values are added too often
 
-  // fixtures
-  $mock = new MockLimeTest();
-  $l = new LimeExpectationList($mock);
+  // test
   $l->addExpected(1);
   $l->addActual(1);
-  // test
-  try
-  {
-    $l->addActual(1);
-    $t->fail('A "LimeAssertionException" is thrown');
-  }
-  catch (LimeAssertionException $e)
-  {
-    $t->pass('A "LimeAssertionException" is thrown');
-  }
+  $t->expect('LimeAssertionException');
+  $l->addActual(1);
 
 
 // @Test: setFailOnVerify() suppresses exceptions
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new LimeExpectationList($mock);
+  $output->invoke('pass')->never();
+  $output->invoke('fail')->once()->anyParameters();
+  $output->replay();
   // test
   $l->setFailOnVerify();
   $l->addExpected(1);
@@ -66,5 +59,4 @@ $t = new LimeTest(4);
   $l->addActual(1);
   $l->verify();
   // assertions
-  $t->is($mock->passes, 0, 'No test passed');
-  $t->is($mock->fails, 1, 'One test failed');
+  $output->verify();

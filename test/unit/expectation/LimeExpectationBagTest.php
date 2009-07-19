@@ -18,22 +18,22 @@ $t = new LimeTest(6);
 
 // @Before
 
-  $mock = LimeMock::create('LimeOutputInterface', $t);
-  $b = new LimeExpectationBag($mock);
+  $output = LimeMock::create('LimeOutputInterface', $t);
+  $b = new LimeExpectationBag($output);
 
 
 // @After
 
-  $mock = null;
+  $output = null;
   $b = null;
 
 
 // @Test: Expected values can be added in any order
 
   // fixtures
-  $mock->invoke('pass')->once()->anyParameters();
-  $mock->invoke('fail')->never();
-  $mock->replay();
+  $output->invoke('pass')->once()->anyParameters();
+  $output->invoke('fail')->never();
+  $output->replay();
   // test
   $b->addExpected(1);
   $b->addExpected(3);
@@ -43,7 +43,7 @@ $t = new LimeTest(6);
   $b->addActual(1);
   $b->verify();
   // assertions
-  $mock->verify();
+  $output->verify();
 
 
 // @Test: Exceptions are thrown if unexpected values are added
@@ -66,9 +66,9 @@ $t = new LimeTest(6);
 // @Test: setFailOnVerify() suppresses exceptions
 
   // fixtures
-  $mock->invoke('pass')->never();
-  $mock->invoke('fail')->once()->anyParameters();
-  $mock->replay();
+  $output->invoke('pass')->never();
+  $output->invoke('fail')->once()->anyParameters();
+  $output->replay();
   // test
   $b->setFailOnVerify();
   $b->addExpected(1);
@@ -76,5 +76,5 @@ $t = new LimeTest(6);
   $b->addActual(1);
   $b->verify();
   // assertions
-  $mock->verify();
+  $output->verify();
 

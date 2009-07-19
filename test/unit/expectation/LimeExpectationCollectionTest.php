@@ -18,7 +18,7 @@ class TestExpectationCollection extends LimeExpectationCollection
 {
   private $isExpected;
 
-  public function __construct(LimeTest $test = null, $isExpected = true)
+  public function __construct(LimeOutputInterface $test = null, $isExpected = true)
   {
     parent::__construct($test);
 
@@ -49,9 +49,11 @@ $t = new LimeTest(21);
 
 // @Test: No value expected, no value retrieved
 
-  // test
+  // fixtures
   $output->invoke('pass')->once()->anyParameters();
   $output->invoke('fail')->never();
+  $output->replay();
+  // test
   $l->verify();
   // assertions
   $output->verify();
@@ -60,98 +62,82 @@ $t = new LimeTest(21);
 // @Test: One value expected, no value retrieved
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->never();
+  $output->invoke('fail')->once()->anyParameters();
+  $output->replay();
   // test
   $l->addExpected(1);
   $l->verify();
   // assertions
-  $t->is($output->passes, 0, 'No test passed');
-  $t->is($output->fails, 1, 'One test failed');
+  $output->verify();
 
 
 // @Test: One value expected, one different value retrieved
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->never();
+  $output->invoke('fail')->once()->anyParameters();
+  $output->replay();
   // test
   $l->addExpected(1);
   $l->addActual(2);
   $l->verify();
   // assertions
-  $t->is($output->passes, 0, 'No test passed');
-  $t->is($output->fails, 1, 'One test failed');
+  $output->verify();
 
 
 // @Test: No expectations are set, added values are ignored
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->once()->anyParameters();
+  $output->invoke('fail')->never();
+  $output->replay();
   // test
   $l->addActual(1);
   $l->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $output->verify();
 
 
 // @Test: An exception is thrown if an unexpected value is added
 
   // fixtures
-  $output = new MockLimeTest();
   $l = new TestExpectationCollection($output, false);
-  $l->addExpected('Foo');
   // test
-  try
-  {
-    $l->addActual('Bar');
-    $t->fail('A "LimeAssertionException" is thrown');
-  }
-  catch (LimeAssertionException $e)
-  {
-    $t->pass('A "LimeAssertionException" is thrown');
-  }
+  $l->addExpected('Foo');
+  $t->expect('LimeAssertionException');
+  $l->addActual('Bar');
 
 
 // @Test: Exactly no values are expected
 
   // fixtures
-  $output = new MockLimeTest();
   $l = new TestExpectationCollection($output, false);
   $l->setExpectNothing();
-  // test
-  try
-  {
-    $l->addActual('Bar');
-    $t->fail('A "LimeAssertionException" is thrown');
-  }
-  catch (LimeAssertionException $e)
-  {
-    $t->pass('A "LimeAssertionException" is thrown');
-  }
+  $t->expect('LimeAssertionException');
+  $l->addActual('Bar');
 
 
 // @Test: The expected value was added
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->once()->anyParameters();
+  $output->invoke('fail')->never();
+  $output->replay();
   // test
   $l->addExpected(1);
   $l->addActual(1);
   $l->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $output->verify();
 
 
 // @Test: The list can contain a mix of different types
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->once()->anyParameters();
+  $output->invoke('fail')->never();
+  $output->replay();
   // test
   $l->addExpected(1);
   $l->addExpected('Foobar');
@@ -161,52 +147,51 @@ $t = new LimeTest(21);
   $l->addActual(new stdClass());
   $l->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $output->verify();
 
 
 // @Test: By default, values are compared with weak typing
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->once()->anyParameters();
+  $output->invoke('fail')->never();
+  $output->replay();
   // test
   $l->addExpected(1);
   $l->addActual('1');
   $l->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $output->verify();
 
 
 // @Test: If you call setStrict(), values are compared with strict typing - different types
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->never();
+  $output->invoke('fail')->once()->anyParameters();
+  $output->replay();
   // test
   $l->setStrict();
   $l->addExpected(1);
   $l->addActual('1');
   $l->verify();
   // assertions
-  $t->is($output->passes, 0, 'No test passed');
-  $t->is($output->fails, 1, 'One test failed');
+  $output->verify();
 
 
 // @Test: If you call setStrict(), values are compared with strict typing - same types
 
   // fixtures
-  $output = new MockLimeTest();
-  $l = new TestExpectationCollection($output);
+  $output->invoke('pass')->once()->anyParameters();
+  $output->invoke('fail')->never();
+  $output->replay();
   // test
   $l->setStrict();
   $l->addExpected(1);
   $l->addActual(1);
   $l->verify();
   // assertions
-  $t->is($output->passes, 1, 'One test passed');
-  $t->is($output->fails, 0, 'No test failed');
+  $output->verify();
 
 
 // @Test: Calling verify() results in an exception if no test is set
@@ -214,12 +199,5 @@ $t = new LimeTest(21);
   // fixtures
   $l = new TestExpectationCollection();
   // test
-  try
-  {
-    $l->verify();
-    $t->fail('A "BadMethodCallException" is thrown');
-  }
-  catch (BadMethodCallException $e)
-  {
-    $t->pass('A "BadMethodCallException" is thrown');
-  }
+  $t->expect('BadMethodCallException');
+  $l->verify();
