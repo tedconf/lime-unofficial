@@ -10,7 +10,8 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-require_once dirname(__FILE__).'/../../MockLimeTest.php';
+
+LimeAnnotationSupport::enable();
 
 
 class TestExpectationCollection extends LimeExpectationCollection
@@ -26,7 +27,7 @@ class TestExpectationCollection extends LimeExpectationCollection
 
   protected function isExpected($value)
   {
-    return $this->isExpected;;
+    return $this->isExpected;
   }
 }
 
@@ -34,63 +35,73 @@ class TestExpectationCollection extends LimeExpectationCollection
 $t = new LimeTest(21);
 
 
-$t->diag('No value expected, no value retrieved');
+// @Before
 
-  // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = LimeMock::create('LimeOutputInterface', $t);
+  $l = new TestExpectationCollection($output);
+
+
+// @After
+
+  $output = null;
+  $l = null;
+
+
+// @Test: No value expected, no value retrieved
+
   // test
+  $output->invoke('pass')->once()->anyParameters();
+  $output->invoke('fail')->never();
   $l->verify();
   // assertions
-  $t->is($mock->passes, 1, 'One test passed');
-  $t->is($mock->fails, 0, 'No test failed');
+  $output->verify();
 
 
-$t->diag('One value expected, no value retrieved');
+// @Test: One value expected, no value retrieved
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->addExpected(1);
   $l->verify();
   // assertions
-  $t->is($mock->passes, 0, 'No test passed');
-  $t->is($mock->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
 
 
-$t->diag('One value expected, one different value retrieved');
+// @Test: One value expected, one different value retrieved
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->addExpected(1);
   $l->addActual(2);
   $l->verify();
   // assertions
-  $t->is($mock->passes, 0, 'No test passed');
-  $t->is($mock->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
 
 
-$t->diag('No expectations are set, added values are ignored');
+// @Test: No expectations are set, added values are ignored
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->addActual(1);
   $l->verify();
   // assertions
-  $t->is($mock->passes, 1, 'One test passed');
-  $t->is($mock->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
-$t->diag('An exception is thrown if an unexpected value is added');
+// @Test: An exception is thrown if an unexpected value is added
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock, false);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output, false);
   $l->addExpected('Foo');
   // test
   try
@@ -104,11 +115,11 @@ $t->diag('An exception is thrown if an unexpected value is added');
   }
 
 
-$t->diag('Exactly no values are expected');
+// @Test: Exactly no values are expected
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock, false);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output, false);
   $l->setExpectNothing();
   // test
   try
@@ -122,25 +133,25 @@ $t->diag('Exactly no values are expected');
   }
 
 
-$t->diag('The expected value was added');
+// @Test: The expected value was added
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->addExpected(1);
   $l->addActual(1);
   $l->verify();
   // assertions
-  $t->is($mock->passes, 1, 'One test passed');
-  $t->is($mock->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
-$t->diag('The list can contain a mix of different types');
+// @Test: The list can contain a mix of different types
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->addExpected(1);
   $l->addExpected('Foobar');
@@ -150,55 +161,55 @@ $t->diag('The list can contain a mix of different types');
   $l->addActual(new stdClass());
   $l->verify();
   // assertions
-  $t->is($mock->passes, 1, 'One test passed');
-  $t->is($mock->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
-$t->diag('By default, values are compared with weak typing');
+// @Test: By default, values are compared with weak typing
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->addExpected(1);
   $l->addActual('1');
   $l->verify();
   // assertions
-  $t->is($mock->passes, 1, 'One test passed');
-  $t->is($mock->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
-$t->diag('If you call setStrict(), values are compared with strict typing - different types');
+// @Test: If you call setStrict(), values are compared with strict typing - different types
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->setStrict();
   $l->addExpected(1);
   $l->addActual('1');
   $l->verify();
   // assertions
-  $t->is($mock->passes, 0, 'No test passed');
-  $t->is($mock->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
 
 
-$t->diag('If you call setStrict(), values are compared with strict typing - same types');
+// @Test: If you call setStrict(), values are compared with strict typing - same types
 
   // fixtures
-  $mock = new MockLimeTest();
-  $l = new TestExpectationCollection($mock);
+  $output = new MockLimeTest();
+  $l = new TestExpectationCollection($output);
   // test
   $l->setStrict();
   $l->addExpected(1);
   $l->addActual(1);
   $l->verify();
   // assertions
-  $t->is($mock->passes, 1, 'One test passed');
-  $t->is($mock->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
-$t->diag('Calling verify() results in an exception if no test is set');
+// @Test: Calling verify() results in an exception if no test is set
 
   // fixtures
   $l = new TestExpectationCollection();

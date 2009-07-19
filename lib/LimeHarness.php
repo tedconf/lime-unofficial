@@ -73,14 +73,9 @@ class LimeHarness extends LimeRegistration
       $relativeFile = $this->getRelativeFile($file);
       $resultFile = tempnam(sys_get_temp_dir(), 'lime');
 
-      list($return, $output) = $this->shell->execute(<<<EOF
-include('$file');
-file_put_contents('$resultFile', serialize(LimeTest::toArray()));
-EOF
-      );
+      list($return, $output) = $this->shell->execute($file, array('--array', '--serialize'));
 
-      $output = file_get_contents($resultFile);
-      $stats['output'] = $output ? unserialize($output) : '';
+      $stats['output'] = $output ? @unserialize($output) : '';
       if (!$stats['output'])
       {
         $stats['output'] = array(array('file' => $file, 'tests' => array(), 'stats' => array('plan' => 1, 'total' => 1, 'failed' => array(0), 'passed' => array(), 'skipped' => array())));

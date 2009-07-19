@@ -50,7 +50,7 @@ $t->diag('The methods setUp() and tearDown() are called before and after each te
 
   // fixtures
   $test = new TestCase();
-  $test->methodCalls = new LimeExpectationList($t);
+  $test->methodCalls = new LimeExpectationList($t->getOutput());
   $test->methodCalls->addExpected('setUp');
   $test->methodCalls->addExpected('testDoSomething');
   $test->methodCalls->addExpected('tearDown');

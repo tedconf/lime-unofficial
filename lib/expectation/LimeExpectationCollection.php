@@ -72,7 +72,7 @@ abstract class LimeExpectationCollection
    * A reference to a LimeTest instance
    * @var LimeTest
    */
-  protected $test = null;
+  protected $output = null;
 
   /**
    * The array of actual values
@@ -101,9 +101,25 @@ abstract class LimeExpectationCollection
    */
   protected $strict = false;
 
-  public function __construct(LimeTest $test = null)
+  public function __construct(LimeOutputInterface $output = null)
   {
-    $this->test = $test;
+    $this->output = $output;
+  }
+
+  static protected function findCaller()
+  {
+    $traces = debug_backtrace();
+
+    $t = array_reverse($traces);
+    foreach ($t as $trace)
+    {
+      if (isset($trace['object']) && $trace['object'] instanceof LimeExpectationCollection && isset($trace['file']) && isset($trace['line']))
+      {
+        return array($trace['file'], $trace['line']);
+      }
+    }
+
+    return array($traces[0]['file'], $traces[0]['line']);
   }
 
   /**
@@ -130,22 +146,24 @@ abstract class LimeExpectationCollection
    */
   public function verify()
   {
-    if (is_null($this->test))
+    if (is_null($this->output))
     {
       throw new BadMethodCallException("A LimeTest object is required for verification");
     }
 
+    list ($file, $line) = self::findCaller();
+
     if (count($this->expected) == 0)
     {
-      $this->test->pass('No values have been expected');
+      $this->output->pass('No values have been expected', $file, $line);
     }
-    else if ($this->strict)
+    else if ($this->strict ? ($this->actual === $this->expected) : ($this->actual == $this->expected))
     {
-      $this->test->ok($this->actual === $this->expected, 'The expected values have been set');
+      $this->output->pass('The expected values have been set', $file, $line);
     }
     else
     {
-      $this->test->ok($this->actual == $this->expected, 'The expected values have been set');
+      $this->output->fail('The expected values have been set', $file, $line);
     }
   }
 

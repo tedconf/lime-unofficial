@@ -241,19 +241,19 @@ $t->diag('Exceptions can be expected');
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 1..4
 Test 1
-not ok 1 - A RuntimeException was thrown
+not ok 1 - A "RuntimeException" was thrown
 #     Failed test (%ANY%)
-#            got: NULL
-#       expected: 'RuntimeException'
+#            got: none
+#       expected: RuntimeException
 Test 2
-ok 2 - A RuntimeException was thrown
+ok 2 - A "RuntimeException" was thrown
 Test 3
-not ok 3 - A RuntimeException with code 1 was thrown
+not ok 3 - A "RuntimeException" with code "1" was thrown
 #     Failed test (%ANY%)
-#            got: 'RuntimeException (0)'
-#       expected: 'RuntimeException (1)'
+#            got: RuntimeException (0)
+#       expected: RuntimeException (1)
 Test 4
-ok 4 - A RuntimeException with code 1 was thrown
+ok 4 - A "RuntimeException" with code "1" was thrown
  Looks like you failed 2 tests of 4.
 EOF
 )).'/';
@@ -269,12 +269,12 @@ $t->diag('Old expected exceptions are ignored');
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 1..2
 Test 1
-ok 1 - A RuntimeException was thrown
+ok 1 - A "RuntimeException" was thrown
 Test 2
-not ok 2 - A LogicException was thrown
+not ok 2 - A "LogicException" was thrown
 #     Failed test (%ANY%)
-#            got: NULL
-#       expected: 'LogicException'
+#            got: none
+#       expected: LogicException
  Looks like you failed 1 tests of 2.
 EOF
 )).'/';

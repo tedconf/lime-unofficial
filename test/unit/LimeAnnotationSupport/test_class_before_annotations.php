@@ -30,9 +30,13 @@ interface TestInterfaceDefinition {}
 
 abstract class TestAbstractClassDefinition {}
 
-class TestExtendingClassDefinition extends TestClassDefinition implements TestInterfaceDefinition {}
+class TestExtendingClassDefinition extends TestClassDefinition {}
+
+class TestExtendingAbstractClassDefinition extends TestAbstractClassDefinition {}
 
 class TestImplementingClassDefinition implements TestInterfaceDefinition {}
+
+class TestExtendingAndImplementingClassDefinition extends TestClassDefinition implements TestInterfaceDefinition {}
 
 $t = new LimeTest(0);
 
@@ -53,3 +57,12 @@ else
 {
   echo "If is not matched\n";
 }
+
+// @Test
+// instantiate all classes to see whether they are known to PHP
+$class = new TestClassDefinition();
+$class = new TestClassDefinitionInOneLine();
+$class = new TestExtendingClassDefinition();
+$class = new TestExtendingAbstractClassDefinition();
+$class = new TestImplementingClassDefinition();
+$class = new TestExtendingAndImplementingClassDefinition();

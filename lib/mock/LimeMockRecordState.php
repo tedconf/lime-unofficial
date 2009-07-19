@@ -13,18 +13,18 @@ class LimeMockRecordState
 {
   protected
     $behaviour = null,
-    $test = null;
+    $output = null;
 
-  public function __construct(LimeMockBehaviourInterface $behaviour, LimeTest $test = null)
+  public function __construct(LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output = null)
   {
     $this->behaviour = $behaviour;
-    $this->test = $test;
+    $this->output = $output;
   }
 
   public function invoke($class, $method, array $parameters)
   {
     $invocation = new LimeMockInvocation($class, $method, $parameters);
-    $invocation = new LimeMockExpectedInvocation($invocation, $this->test);
+    $invocation = new LimeMockExpectedInvocation($invocation, $this->output);
 
     $this->behaviour->expect($invocation);
 

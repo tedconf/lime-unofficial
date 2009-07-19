@@ -66,7 +66,9 @@ class LimeLexerAnnotations extends LimeLexer
     $inAnnotation,
     $functionCount,
     $initialized,
-    $testVariable;
+    $testVariable,
+    $classBuffer,
+    $classImplementsInterface;
 
   /**
    * Constructor.
@@ -104,6 +106,8 @@ class LimeLexerAnnotations extends LimeLexer
     $this->initialized = false;
     $this->functionCount = 0;
     $this->functions = array();
+    $this->classBuffer = '';
+    $this->classImplementsInterface = false;
 
     foreach ($this->allowedAnnotations as $annotation)
     {
@@ -144,6 +148,30 @@ class LimeLexerAnnotations extends LimeLexer
    */
   protected function process($text, $id)
   {
+    if (!$this->inClass())
+    {
+      $this->classBuffer = '';
+      $this->classImplementsInterface = false;
+    }
+
+    // classes implementing any interfaces seem not to be recognized by PHP if
+    // they are placed after the exit() statement, so we need to leave them in
+    // the source code
+    // this functionality is covered in LimeAnnotationSupportTest 11+12
+    if ($this->inClassDeclaration())
+    {
+      if ($id == T_IMPLEMENTS)
+      {
+        $this->classImplementsInterface = true;
+        $text = $this->classBuffer.$text;
+        $this->classBuffer = '';
+      }
+      else
+      {
+        $this->classBuffer .= $text;
+      }
+    }
+
     if ($id == T_OPEN_TAG && !$this->initialized)
     {
       if (count($this->variables))
@@ -151,6 +179,10 @@ class LimeLexerAnnotations extends LimeLexer
         $text .= 'global '.implode(', ', $this->variables).';';
       }
       $this->initialized = true;
+    }
+    else if ($this->inClass() && $this->classImplementsInterface)
+    {
+      // just print
     }
     else if ($this->inClass() || $this->inFunction())
     {

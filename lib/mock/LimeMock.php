@@ -172,18 +172,20 @@ class LimeMock
    * @param  bool       $generateMethods   Whether magic methods should be generated
    * @return LimeMockInterface           The mock object
    */
-  public static function create($classOrInterface, LimeTest $test = null, $generateMethods = true)
+  public static function create($classOrInterface, $test = null, $generateMethods = true)
   {
     $name = self::generateClass($classOrInterface, $generateMethods);
+    $output = $test instanceof LimeOutputInterface ? $test : ($test ? $test->getOutput() : null);
 
-    return new $name($classOrInterface, new LimeMockUnorderedBehaviour(), $test);
+    return new $name($classOrInterface, new LimeMockUnorderedBehaviour(), $output);
   }
 
-  public static function createStrict($classOrInterface, LimeTest $test = null, $generateMethods = true)
+  public static function createStrict($classOrInterface, $test = null, $generateMethods = true)
   {
     $name = self::generateClass($classOrInterface, $generateMethods);
+    $output = $test instanceof LimeOutputInterface ? $test : ($test ? $test->getOutput() : null);
 
-    return new $name($classOrInterface, new LimeMockOrderedBehaviour(), $test);
+    return new $name($classOrInterface, new LimeMockOrderedBehaviour(), $output);
   }
 
   protected static function generateClass($classOrInterface, $generateMethods = true)

@@ -9,7 +9,7 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-require_once dirname(__FILE__).'/../../MockLimeTest.php';
+require_once dirname(__FILE__).'/../../MockLimeOutput.php';
 
 LimeAnnotationSupport::enable();
 
@@ -47,7 +47,7 @@ class TestClass
 class TestClassWithMethodsFromMock
 {
   public function __construct() {}
-  public function __call($method, $args) {}
+  public function __call($method, array $args) {}
   public function __lime_replay() {}
   public function __lime_getState() {}
 }
@@ -60,13 +60,13 @@ $t = new LimeTest(78);
 
 // @Before
 
-  $mockTest = new MockLimeTest();
-  $m = LimeMock::create('TestClass', $mockTest);
+  $output = new MockLimeOutput();
+  $m = LimeMock::create('TestClass', $output);
 
 
 // @After
 
-  $mockTest = null;
+  $output = null;
   $m = null;
 
 
@@ -189,8 +189,8 @@ $t = new LimeTest(78);
   $m->replay();
   $m->verify();
   // assertions
-  $t->is($mockTest->fails, 1, 'One test failed');
-  $t->is($mockTest->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
 
 
 // @Test: ->verify() passes if a method was called correctly
@@ -201,8 +201,8 @@ $t = new LimeTest(78);
   $m->testMethod(1, 'Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: ->verify() passes if two methods were called correctly
@@ -215,8 +215,8 @@ $t = new LimeTest(78);
   $m->testMethod2('Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: After verifying all method calls are ignored
@@ -229,8 +229,8 @@ $t = new LimeTest(78);
   $m->foobar();
   $m->hurray();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: A mock can be reset
@@ -243,8 +243,8 @@ $t = new LimeTest(78);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: An exception is thrown if a method is called with wrong parameters
@@ -276,8 +276,8 @@ $t = new LimeTest(78);
   $m->testMethod('Foobar', 1);
   $m->verify();
   // assertions
-  $t->is($mockTest->fails, 1, 'One test failed');
-  $t->is($mockTest->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
 
 
 // @Test: A method can be expected twice with different parameters
@@ -291,8 +291,8 @@ $t = new LimeTest(78);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 1, 'One test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 1, 'One test failed');
 
 
   // @Test: - Case 2: Sufficient method calls
@@ -305,8 +305,8 @@ $t = new LimeTest(78);
   $m->testMethod('Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: Methods may be called in any order
@@ -319,8 +319,8 @@ $t = new LimeTest(78);
   $m->testMethod1();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: Methods may be called any number of times
@@ -332,8 +332,8 @@ $t = new LimeTest(78);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: By default, method parameters are compared with weak typing
@@ -344,8 +344,8 @@ $t = new LimeTest(78);
   $m->testMethod('1');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: ->setStrict()
@@ -370,8 +370,8 @@ $t = new LimeTest(78);
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: ->times()
@@ -383,8 +383,8 @@ $t = new LimeTest(78);
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 0, 'No test passed');
-  $t->is($mockTest->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
 
 
   // @Test: - Case 2: Too many actual calls
@@ -408,8 +408,8 @@ $t = new LimeTest(78);
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
   // @Test: - Case 4: Call with different parameters
@@ -431,8 +431,8 @@ $t = new LimeTest(78);
   $m->replay();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 0, 'No test passed');
-  $t->is($mockTest->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
 
   // @Test: - Case 2: One actual call
 
@@ -441,8 +441,8 @@ $t = new LimeTest(78);
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
   // @Test: - Case 3: Two actual calls
 
@@ -452,8 +452,8 @@ $t = new LimeTest(78);
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: ->times() and ->returns()
@@ -478,8 +478,8 @@ $t = new LimeTest(78);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
   // @Test: - Case 1: "Wrong" parameters
 
@@ -489,8 +489,8 @@ $t = new LimeTest(78);
   $m->testMethod(1, 2, 3);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: ->between()
@@ -503,8 +503,8 @@ $t = new LimeTest(78);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 0, 'No test passed');
-  $t->is($mockTest->fails, 1, 'One test failed');
+  $t->is($output->passes, 0, 'No test passed');
+  $t->is($output->fails, 1, 'One test failed');
 
   // @Test: - Case 2: Correct number
 
@@ -515,8 +515,8 @@ $t = new LimeTest(78);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
   // @Test: - Case 3: Another correct number
 
@@ -529,8 +529,8 @@ $t = new LimeTest(78);
   $m->testMethod();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
   // @Test: - Case 4: Too many calls
 
@@ -556,8 +556,8 @@ $t = new LimeTest(78);
   $m->testMethod(1, 2, 3);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
 
   // @Test: - Case 2: Any actual calls
 
@@ -590,8 +590,8 @@ $t = new LimeTest(78);
   $m->testMethod(1);
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 1, 'One test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: The control methods like ->replay() can be mocked
@@ -614,8 +614,8 @@ $t = new LimeTest(78);
   $m->testMethod2(1, 'Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 0, 'No test passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 0, 'No test passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: If setExpectNothing() is called, no method must be called

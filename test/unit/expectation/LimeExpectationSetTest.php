@@ -16,7 +16,7 @@ require_once dirname(__FILE__).'/../../MockLimeTest.php';
 $t = new LimeTest(7);
 
 
-$t->diag('Expected values can be added in any order');
+// @Test: Expected values can be added in any order
 
   // fixtures
   $mock = new MockLimeTest();
@@ -34,7 +34,7 @@ $t->diag('Expected values can be added in any order');
   $t->is($mock->fails, 0, 'No test failed');
 
 
-$t->diag('Expected values can be added any number of times');
+// @Test: Expected values can be added any number of times
 
   // fixtures
   $mock = new MockLimeTest();
@@ -49,7 +49,7 @@ $t->diag('Expected values can be added any number of times');
   $t->is($mock->fails, 0, 'No test failed');
 
 
-$t->diag('Exceptions are thrown if unexpected values are added');
+// @Test: Exceptions are thrown if unexpected values are added
 
   // fixtures
   $mock = new MockLimeTest();
@@ -67,7 +67,7 @@ $t->diag('Exceptions are thrown if unexpected values are added');
   }
 
 
-$t->diag('setFailOnVerify() suppresses exceptions');
+// @Test: setFailOnVerify() suppresses exceptions
 
   // fixtures
   $mock = new MockLimeTest();

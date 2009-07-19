@@ -22,17 +22,13 @@ class LimeTest
     EPSILON = 0.0000000001;
 
   protected
-    $nbTests            = 0,
-    $output             = null,
-    $results            = array(),
-    $options            = array(),
-    $expectedException  = null,
-    $expectedCode       = null,
-    $actualException    = null,
-    $actualCode         = null;
-
-  static protected
-    $allResults = array();
+    $output               = null,
+    $options              = array(),
+    $expectedException    = null,
+    $expectedCode         = null,
+    $actualException      = null,
+    $actualCode           = null,
+    $expectedExceptionAt  = null;
 
   public function __construct($plan = null, array $options = array())
   {
@@ -43,29 +39,42 @@ class LimeTest
       'verbose'      => false,
     ), $options);
 
-    $this->output = $this->options['output'] ? $this->options['output'] : new LimeOutput($this->options['force_colors']);
+    list ($file, $line) = self::findCaller();
+
+    $this->output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
+    $this->output->plan($plan, $file);
+
     $this->options['base_dir'] = realpath($this->options['base_dir']);
-
-    $caller = $this->findCaller(debug_backtrace());
-    self::$allResults[] = array(
-      'file'  => $caller[0],
-      'tests' => array(),
-      'stats' => array('plan' => $plan, 'total' => 0, 'failed' => array(), 'passed' => array(), 'skipped' => array()),
-    );
-
-    $this->results = &self::$allResults[count(self::$allResults) - 1];
-
-    null !== $plan and $this->output->echoln(sprintf("1..%d", $plan));
   }
 
-  static public function reset()
+  public function __destruct()
   {
-    self::$allResults = array();
+    $this->output->flush();
   }
 
-  static public function toArray()
+  protected function getDefaultOutput($forceColors = false)
   {
-    return self::$allResults;
+    if (in_array('--xml', $GLOBALS['argv']))
+    {
+      return new LimeOutputXml();
+    }
+    else if (in_array('--array', $GLOBALS['argv']))
+    {
+      $serialize = in_array('--serialize', $GLOBALS['argv']);
+
+      return new LimeOutputArray($serialize);
+    }
+    else
+    {
+      $colorizer = LimeColorizer::isSupported() || $forceColors ? new LimeColorizer() : null;
+
+      return new LimeOutputConsoleDetailed(new LimePrinter($colorizer));
+    }
+  }
+
+  public function getOutput()
+  {
+    return $this->output;
   }
 
   static public function toXml($results = null)
@@ -128,33 +137,43 @@ class LimeTest
     return $dom->saveXml();
   }
 
-  public function __destruct()
+  static protected function findCaller()
   {
-    $plan = $this->results['stats']['plan'];
-    $passed = count($this->results['stats']['passed']);
-    $failed = count($this->results['stats']['failed']);
-    $total = $this->results['stats']['total'];
-    is_null($plan) and $plan = $total and $this->output->echoln(sprintf("1..%d", $plan));
+    $traces = debug_backtrace();
 
-    if ($total > $plan)
+    $t = array_reverse($traces);
+    foreach ($t as $trace)
     {
-      $this->output->redBar(sprintf(" Looks like you planned %d tests but ran %d extra.", $plan, $total - $plan));
-    }
-    elseif ($total < $plan)
-    {
-      $this->output->redBar(sprintf(" Looks like you planned %d tests but only ran %d.", $plan, $total));
+      if (isset($trace['object']) && $trace['object'] instanceof LimeTest && isset($trace['file']) && isset($trace['line']))
+      {
+        return array($trace['file'], $trace['line']);
+      }
     }
 
-    if ($failed)
+    // return the first call
+    $file = $traces[0]['file'];
+    if ($this->options['base_dir'])
     {
-      $this->output->redBar(sprintf(" Looks like you failed %d tests of %d.", $failed, $passed + $failed));
-    }
-    else if ($total == $plan)
-    {
-      $this->output->greenBar(" Looks like everything went fine.");
+      $file = str_replace(str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $this->options['base_dir']), '', str_replace(array('/', '\\'), $file));
     }
 
-    flush();
+    return array($file, $traces[0]['line']);
+  }
+
+  protected function test($condition, $message, $error = null)
+  {
+    list ($file, $line) = $this->findCaller(debug_backtrace());
+
+    if ($result = (boolean) $condition)
+    {
+      $this->output->pass($message, $file, $line);
+    }
+    else
+    {
+      $this->output->fail($message, $file, $line, $error);
+    }
+
+    return $result;
   }
 
   /**
@@ -167,26 +186,7 @@ class LimeTest
    */
   public function ok($exp, $message = '')
   {
-    $this->updateStats();
-
-    if ($result = (boolean) $exp)
-    {
-      $this->results['stats']['passed'][] = $this->nbTests;
-    }
-    else
-    {
-      $this->results['stats']['failed'][] = $this->nbTests;
-    }
-    $this->results['tests'][$this->nbTests]['message'] = $message;
-    $this->results['tests'][$this->nbTests]['status'] = $result;
-    $this->output->echoln(sprintf("%s %d%s", $result ? 'ok' : 'not ok', $this->nbTests, $message = $message ? sprintf('%s %s', 0 === strpos($message, '#') ? '' : ' -', $message) : ''));
-
-    if (!$result)
-    {
-      $this->output->diag(sprintf('    Failed test (%s at line %d)', str_replace(getcwd(), '.', $this->results['tests'][$this->nbTests]['file']), $this->results['tests'][$this->nbTests]['line']));
-    }
-
-    return $result;
+    return $this->test($exp, $message);
   }
 
   /**
@@ -213,12 +213,9 @@ class LimeTest
       $value = $exp1 == $exp2;
     }
 
-    if (!$result = $this->ok($value, $message))
-    {
-      $this->setLastTestErrors(array(sprintf("           got: %s", var_export($exp1, true)), sprintf("      expected: %s", var_export($exp2, true))));
-    }
+    $error = sprintf("     got: %s\nexpected: %s", var_export($exp1, true), var_export($exp2, true));
 
-    return $result;
+    return $this->test($value, $message, $error);
   }
 
   /**
@@ -232,12 +229,9 @@ class LimeTest
    */
   public function isnt($exp1, $exp2, $message = '')
   {
-    if (!$result = $this->ok($exp1 != $exp2, $message))
-    {
-      $this->setLastTestErrors(array(sprintf("      %s", var_export($exp2, true)), '          ne', sprintf("      %s", var_export($exp2, true))));
-    }
+    $error = sprintf("%s\n    ne\n%s", var_export($exp2, true), var_export($exp2, true));
 
-    return $result;
+    return $this->test($exp1 != $exp2, $message, $error);
   }
 
   /**
@@ -251,12 +245,9 @@ class LimeTest
    */
   public function like($exp, $regex, $message = '')
   {
-    if (!$result = $this->ok(preg_match($regex, $exp), $message))
-    {
-      $this->setLastTestErrors(array(sprintf("                    '%s'", $exp), sprintf("      doesn't match '%s'", $regex)));
-    }
+    $error = sprintf("              '%s'\ndoesn't match '%s'", $exp, $regex);
 
-    return $result;
+    return $this->test(preg_match($regex, $exp), $message, $error);
   }
 
   /**
@@ -270,12 +261,9 @@ class LimeTest
    */
   public function unlike($exp, $regex, $message = '')
   {
-    if (!$result = $this->ok(!preg_match($regex, $exp), $message))
-    {
-      $this->setLastTestErrors(array(sprintf("               '%s'", $exp), sprintf("      matches '%s'", $regex)));
-    }
+    $error = sprintf("              '%s'\nmatches '%s'", $exp, $regex);
 
-    return $result;
+    return $this->test(!preg_match($regex, $exp), $message, $error);
   }
 
   /**
@@ -291,12 +279,10 @@ class LimeTest
   public function compare($exp1, $op, $exp2, $message = '')
   {
     eval(sprintf("\$result = \$exp1 $op \$exp2;"));
-    if (!$this->ok($result, $message))
-    {
-      $this->setLastTestErrors(array(sprintf("      %s", str_replace("\n", '', var_export($exp1, true))), sprintf("          %s", $op), sprintf("      %s", str_replace("\n", '', var_export($exp2, true)))));
-    }
 
-    return $result;
+    $error = sprintf("%s\n    %s\n%s", str_replace("\n", '', var_export($exp1, true)), $op, str_replace("\n", '', var_export($exp2, true)));
+
+    return $this->test($result, $message, $error);
   }
 
   /**
@@ -321,11 +307,7 @@ class LimeTest
       }
     }
 
-    !$this->ok($result, $message);
-
-    !$result and $this->setLastTestErrors($failedMessages);
-
-    return $result;
+    return $this->test($result, $message, implode("\n", $failedMessages));
   }
 
   /**
@@ -340,12 +322,9 @@ class LimeTest
   public function isa($var, $class, $message = '')
   {
     $type = is_object($var) ? get_class($var) : gettype($var);
-    if (!$result = $this->ok($type == $class, $message))
-    {
-      $this->setLastTestErrors(array(sprintf("      variable isn't a '%s' it's a '%s'", $class, $type)));
-    }
+    $error = sprintf("      variable isn't a '%s' it's a '%s'", $class, $type);
 
-    return $result;
+    return $this->test($type == $class, $message, $error);
   }
 
   /**
@@ -359,12 +338,9 @@ class LimeTest
    */
   public function isDeeply($exp1, $exp2, $message = '')
   {
-    if (!$result = $this->ok($this->testIsDeeply($exp1, $exp2), $message))
-    {
-      $this->setLastTestErrors(array(sprintf("           got: %s", str_replace("\n", '', var_export($exp1, true))), sprintf("      expected: %s", str_replace("\n", '', var_export($exp2, true)))));
-    }
+    $error = sprintf("     got: %s\nexpected: %s", str_replace("\n", '', var_export($exp1, true)), str_replace("\n", '', var_export($exp2, true)));
 
-    return $result;
+    return $this->test($this->testIsDeeply($exp1, $exp2), $message, $error);
   }
 
   /**
@@ -376,7 +352,7 @@ class LimeTest
    */
   public function pass($message = '')
   {
-    return $this->ok(true, $message);
+    return $this->test(true, $message);
   }
 
   /**
@@ -388,7 +364,7 @@ class LimeTest
    */
   public function fail($message = '')
   {
-    return $this->ok(false, $message);
+    return $this->test(false, $message);
   }
 
   /**
@@ -400,7 +376,7 @@ class LimeTest
    */
   public function diag($message)
   {
-    $this->output->diag($message);
+    $this->output->comment($message);
   }
 
   /**
@@ -415,9 +391,9 @@ class LimeTest
   {
     for ($i = 0; $i < $nbTests; $i++)
     {
-      $this->pass(sprintf("# SKIP%s", $message ? ' '.$message : ''));
-      $this->results['stats']['skipped'][] = $this->nbTests;
-      array_pop($this->results['stats']['passed']);
+      list ($file, $line) = $this->findCaller();
+
+      $this->output->skip($message, $file, $line);
     }
   }
 
@@ -430,9 +406,7 @@ class LimeTest
    */
   public function todo($message = '')
   {
-    $this->pass(sprintf("# TODO%s", $message ? ' '.$message : ''));
-    $this->results['stats']['skipped'][] = $this->nbTests;
-    array_pop($this->results['stats']['passed']);
+    $this->skip('TODO: '.$message);
   }
 
   private function testIsDeeply($var1, $var2)
@@ -488,10 +462,11 @@ class LimeTest
 
   public function expect($exception, $code = null)
   {
-    $this->expectedException  = $exception;
-    $this->expectedCode       = $code;
-    $this->actualException    = null;
-    $this->actualCode         = null;
+    $this->expectedExceptionAt  = self::findCaller();
+    $this->expectedException    = $exception;
+    $this->expectedCode         = $code;
+    $this->actualException      = null;
+    $this->actualCode           = null;
   }
 
   public function handleException(Exception $exception)
@@ -518,53 +493,30 @@ class LimeTest
     {
       if (is_null($this->expectedCode))
       {
-        $this->is($this->actualException, $this->expectedException, sprintf('A "%s" was thrown', $this->expectedException));
+        $actual = $this->actualException;
+        $expected = $this->expectedException;
+        $message = sprintf('A "%s" was thrown', $this->expectedException);
       }
       else
       {
         $actual = sprintf('%s (%s)', $this->actualException, var_export($this->actualCode, true));
         $expected = sprintf('%s (%s)', $this->expectedException, var_export($this->expectedCode, true));
+        $message = sprintf('A "%s" with code "%s" was thrown', $this->expectedException, $this->expectedCode);
+      }
 
-        $this->is($actual, $expected, sprintf('A "%s" with code "%s" was thrown', $this->expectedException, $this->expectedCode));
+      list ($file, $line) = $this->expectedExceptionAt;
+
+      if ($actual == $expected)
+      {
+        $this->output->pass($message, $file, $line);
+      }
+      else
+      {
+        $error = sprintf("     got: %s\nexpected: %s", is_null($this->actualException) ? 'none' : $actual, $expected);
+        $this->output->fail($message, $file, $line, $error);
       }
     }
 
     $this->expectedException = null;
-  }
-
-  protected function updateStats()
-  {
-    ++$this->nbTests;
-    ++$this->results['stats']['total'];
-
-    list($this->results['tests'][$this->nbTests]['file'], $this->results['tests'][$this->nbTests]['line']) = $this->findCaller(debug_backtrace());
-  }
-
-  protected function setLastTestErrors(array $errors)
-  {
-    $this->output->diag($errors);
-
-    $this->results['tests'][$this->nbTests]['error'] = implode("\n", $errors);
-  }
-
-  protected function findCaller(array $traces)
-  {
-    $t = array_reverse($traces);
-    foreach ($t as $trace)
-    {
-      if (isset($trace['object']) && $trace['object'] instanceof LimeTest && isset($trace['file']) && isset($trace['line']))
-      {
-        return array($trace['file'], $trace['line']);
-      }
-    }
-
-    // return the first call
-    $last = count($traces) - 1;
-    $file = $traces[$last]['file'];
-    if ($this->options['base_dir'])
-    {
-      $file = str_replace(str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $this->options['base_dir']), '', str_replace(array('/', '\\'), $file));
-    }
-    return array($file, $traces[$last]['line']);
   }
 }

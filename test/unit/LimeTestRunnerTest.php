@@ -52,93 +52,99 @@ class TestCase
 }
 
 
-$t = new LimeTest(7);
+$t = new LimeTest(20);
 
 
 $t->diag('The before callbacks are called before each test method');
 
   // fixtures
-  $test = new TestCase($t);
+  $mock = LimeMock::createStrict('Mock', $t);
   $r = new LimeTestRunner();
-  $r->addBefore(array($test, 'setUp'));
-  $r->addTest(array($test, 'testDoSomething'));
-  $r->addTest(array($test, 'testDoSomethingElse'));
-  $test->methodCalls->addExpected('setUp');
-  $test->methodCalls->addExpected('testDoSomething');
-  $test->methodCalls->addExpected('setUp');
-  $test->methodCalls->addExpected('testDoSomethingElse');
+  $r->addBefore(array($mock, 'setUp'));
+  $r->addTest(array($mock, 'testDoSomething'));
+  $r->addTest(array($mock, 'testDoSomethingElse'));
+  $mock->setUp();
+  $mock->testDoSomething();
+  $mock->setUp();
+  $mock->testDoSomethingElse();
+  $mock->replay();
   // test
   $r->run();
   // assertions
-  $test->methodCalls->verify();
+  $mock->verify();
 
 
 $t->diag('The after callbacks are called before each test method');
 
   // fixtures
-  $test = new TestCase($t);
+  $mock = LimeMock::createStrict('Mock', $t);
   $r = new LimeTestRunner();
-  $r->addAfter(array($test, 'tearDown'));
-  $r->addTest(array($test, 'testDoSomething'));
-  $r->addTest(array($test, 'testDoSomethingElse'));
-  $test->methodCalls->addExpected('testDoSomething');
-  $test->methodCalls->addExpected('tearDown');
-  $test->methodCalls->addExpected('testDoSomethingElse');
-  $test->methodCalls->addExpected('tearDown');
+  $r->addAfter(array($mock, 'tearDown'));
+  $r->addTest(array($mock, 'testDoSomething'));
+  $r->addTest(array($mock, 'testDoSomethingElse'));
+  $mock->testDoSomething();
+  $mock->tearDown();
+  $mock->testDoSomethingElse();
+  $mock->tearDown();
+  $mock->replay();
   // test
   $r->run();
   // assertions
-  $test->methodCalls->verify();
+  $mock->verify();
 
 
 $t->diag('The before-all callbacks are called before the whole test suite');
 
   // fixtures
-  $test = new TestCase($t);
+  $mock = LimeMock::createStrict('Mock', $t);
   $r = new LimeTestRunner();
-  $r->addBeforeAll(array($test, 'setUp'));
-  $r->addTest(array($test, 'testDoSomething'));
-  $r->addTest(array($test, 'testDoSomethingElse'));
-  $test->methodCalls->addExpected('setUp');
-  $test->methodCalls->addExpected('testDoSomething');
-  $test->methodCalls->addExpected('testDoSomethingElse');
+  $r->addBeforeAll(array($mock, 'setUp'));
+  $r->addTest(array($mock, 'testDoSomething'));
+  $r->addTest(array($mock, 'testDoSomethingElse'));
+  $mock->setUp();
+  $mock->testDoSomething();
+  $mock->testDoSomethingElse();
+  $mock->replay();
   // test
   $r->run();
   // assertions
-  $test->methodCalls->verify();
+  $mock->verify();
 
 
 $t->diag('The after-all callbacks are called before the whole test suite');
 
   // fixtures
-  $test = new TestCase($t);
+  $mock = LimeMock::createStrict('Mock', $t);
   $r = new LimeTestRunner();
-  $r->addAfterAll(array($test, 'tearDown'));
-  $r->addTest(array($test, 'testDoSomething'));
-  $r->addTest(array($test, 'testDoSomethingElse'));
-  $test->methodCalls->addExpected('testDoSomething');
-  $test->methodCalls->addExpected('testDoSomethingElse');
-  $test->methodCalls->addExpected('tearDown');
+  $r->addAfterAll(array($mock, 'tearDown'));
+  $r->addTest(array($mock, 'testDoSomething'));
+  $r->addTest(array($mock, 'testDoSomethingElse'));
+  $mock->testDoSomething();
+  $mock->testDoSomethingElse();
+  $mock->tearDown();
+  $mock->replay();
   // test
   $r->run();
   // assertions
-  $test->methodCalls->verify();
+  $mock->verify();
 
 
 $t->diag('The error handlers are called when a test throws an error');
 
   // fixtures
-  $test = new TestCase($t);
+  function throwError() { 1/0; }
+  $mock = LimeMock::createStrict('Mock', $t);
   $r = new LimeTestRunner();
-  $r->addTest(array($test, 'testThrowsError'));
-  $r->addErrorHandler(array($test, 'handleErrorFailed'));
-  $r->addErrorHandler(array($test, 'handleErrorSuccessful'));
-  $test->methodCalls->addExpected('handleErrorFailed');
-  $test->methodCalls->addExpected('handleErrorSuccessful');
+  $r->addTest('throwError');
+  $r->addErrorHandler(array($mock, 'handleErrorFailed'));
+  $r->addErrorHandler(array($mock, 'handleErrorSuccessful'));
+  $mock->handleErrorFailed()->anyParameters()->returns(false);
+  $mock->handleErrorSuccessful()->anyParameters()->returns(true);
+  $mock->replay();
   // test
   $r->run();
   // assertions
-  $test->methodCalls->verify();
+  $mock->verify();
 
 
 /*
@@ -165,27 +171,33 @@ $t->diag('If no error handler returns true, the error is thrown as LimeError exc
 $t->diag('The exception handlers are called when a test throws an exception');
 
   // fixtures
-  $test = new TestCase($t);
+  $mock = LimeMock::createStrict('Mock', $t);
   $r = new LimeTestRunner();
-  $r->addTest(array($test, 'testThrowsException'));
-  $r->addExceptionHandler(array($test, 'handleErrorFailed'));
-  $r->addExceptionHandler(array($test, 'handleErrorSuccessful'));
-  $test->methodCalls->addExpected('handleErrorFailed');
-  $test->methodCalls->addExpected('handleErrorSuccessful');
+  $r->addTest(array($mock, 'testThrowsException'));
+  $r->addExceptionHandler(array($mock, 'handleErrorFailed'));
+  $r->addExceptionHandler(array($mock, 'handleErrorSuccessful'));
+  $mock->testThrowsException()->throws('Exception');
+  $mock->handleErrorFailed()->anyParameters()->returns(false);
+  $mock->handleErrorSuccessful()->anyParameters()->returns(true);
+  $mock->replay();
   // test
   $r->run();
   // assertions
-  $test->methodCalls->verify();
+  $mock->verify();
 
 
 $t->diag('If no exception handler returns true, the exception is thrown again');
 
   // fixtures
-  $test = new TestCase($t);
+  $mock = LimeMock::createStrict('Mock', $t);
   $r = new LimeTestRunner();
-  $r->addTest(array($test, 'testThrowsException'));
-  $r->addExceptionHandler(array($test, 'handleErrorFailed'));
+  $r->addTest(array($mock, 'testThrowsException'));
+  $r->addExceptionHandler(array($mock, 'handleErrorFailed'));
+  $mock->testThrowsException()->throws('Exception');
+  $mock->handleErrorFailed()->anyParameters()->returns(false);
+  $mock->replay();
   // test
+  $t->expect('Exception');
   try
   {
     $r->run();

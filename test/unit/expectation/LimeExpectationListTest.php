@@ -16,7 +16,7 @@ require_once dirname(__FILE__).'/../../MockLimeTest.php';
 $t = new LimeTest(4);
 
 
-$t->diag('Exceptions are thrown if unexpected values are added');
+// @Test: Exceptions are thrown if unexpected values are added
 
   // fixtures
   $mock = new MockLimeTest();
@@ -35,7 +35,7 @@ $t->diag('Exceptions are thrown if unexpected values are added');
   }
 
 
-$t->diag('Exceptions are thrown if expected values are added too often');
+// @Test: Exceptions are thrown if expected values are added too often
 
   // fixtures
   $mock = new MockLimeTest();
@@ -54,7 +54,7 @@ $t->diag('Exceptions are thrown if expected values are added too often');
   }
 
 
-$t->diag('setFailOnVerify() suppresses exceptions');
+// @Test: setFailOnVerify() suppresses exceptions
 
   // fixtures
   $mock = new MockLimeTest();

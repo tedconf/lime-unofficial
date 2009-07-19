@@ -10,7 +10,7 @@
  */
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
-require_once dirname(__FILE__).'/../../MockLimeTest.php';
+require_once dirname(__FILE__).'/../../MockLimeOutput.php';
 
 LimeAnnotationSupport::enable();
 
@@ -20,13 +20,13 @@ $t = new LimeTest(12);
 
 // @Before
 
-  $mockTest = new MockLimeTest();
-  $m = LimeMock::createStrict('TestClass', $mockTest);
+  $output = new MockLimeOutput();
+  $m = LimeMock::createStrict('TestClass', $output);
 
 
 // @After
 
-  $mockTest = null;
+  $output = null;
   $m = null;
 
 
@@ -40,8 +40,8 @@ $t = new LimeTest(12);
   $m->testMethod2('Foobar');
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: An exception is thrown if methods are called in the wrong order
@@ -78,8 +78,8 @@ $t = new LimeTest(12);
   $m->method2();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 1, 'One test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 1, 'One test failed');
 
 
 // @Test: The order of the tests remains intact when using times()
@@ -109,8 +109,8 @@ $t = new LimeTest(12);
   $m->method2();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 
 // @Test: The order of the tests remains intact when using atLeastOnce()
@@ -138,7 +138,7 @@ $t = new LimeTest(12);
   $m->method2();
   $m->verify();
   // assertions
-  $t->is($mockTest->passes, 2, 'Two tests passed');
-  $t->is($mockTest->fails, 0, 'No test failed');
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
 
 

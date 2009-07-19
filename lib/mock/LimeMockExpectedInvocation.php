@@ -24,7 +24,7 @@ class LimeMockExpectedInvocation
     $exception    = null,
     $strict       = false;
 
-  public function __construct(LimeMockInvocation $invocation, LimeTest $output = null)
+  public function __construct(LimeMockInvocation $invocation, LimeOutputInterface $output = null)
   {
     $this->invocation = $invocation;
     $this->output = $output;
@@ -32,6 +32,22 @@ class LimeMockExpectedInvocation
     $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherParameters($invocation);
 
     $this->atLeastOnce();
+  }
+
+  static protected function findCaller()
+  {
+    $traces = debug_backtrace();
+
+    $t = array_reverse($traces);
+    foreach ($t as $trace)
+    {
+      if (isset($trace['object']) && $trace['object'] instanceof LimeMockInterface && isset($trace['file']) && isset($trace['line']))
+      {
+        return array($trace['file'], $trace['line']);
+      }
+    }
+
+    return array($traces[0]['file'], $traces[0]['line']);
   }
 
   public function invoke()
@@ -89,7 +105,17 @@ class LimeMockExpectedInvocation
       $valid = $valid && $matcher->isComplete();
     }
 
-    $this->output->ok($valid, implode(' ', $messages));
+    list ($file, $line) = self::findCaller();
+    $message = implode(' ', $messages);
+
+    if ($valid)
+    {
+      $this->output->pass($message, $file, $line);
+    }
+    else
+    {
+      $this->output->fail($message, $file, $line);
+    }
   }
 
   public function times($times)
