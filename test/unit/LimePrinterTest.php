@@ -79,30 +79,28 @@ $t = new LimeTest(8);
   $t->is($result, 'My text', 'The result was printed');
 
 
-// @Test: setStringStyle() sets a style that is automatically applied to all strings in unformatted text
+// @Test: strings in unformatted text are automatically formatted
 
   // fixtures
-  $colorizer->colorize('Test string', 'STRING')->returns('<BLUE>Test string</BLUE>');
+  $colorizer->colorize('Test string', LimePrinter::STRING)->returns('<BLUE>Test string</BLUE>');
   $colorizer->replay();
   // test
   ob_start();
-  $printer->setStringStyle('STRING');
   $printer->printText('My text with a "Test string"');
   $result = ob_get_clean();
   // assertions
   $t->is($result, 'My text with a <BLUE>Test string</BLUE>', 'The result was colorized and printed');
 
 
-// @Test: setFunctionStyle() sets a style that is automatically applied to all functions in unformatted text
+// @Test: functions in unformatted text are automatically formatted
 
   // @Test: Case 1 - Function without prefix
 
   // fixtures
-  $colorizer->colorize('function(1, 2)', 'FUNCTION')->returns('<BLUE>function(1, 2)</BLUE>');
+  $colorizer->colorize('function(1, 2)', LimePrinter::METHOD)->returns('<BLUE>function(1, 2)</BLUE>');
   $colorizer->replay();
   // test
   ob_start();
-  $printer->setFunctionStyle('FUNCTION');
   $printer->printText('My text with a function(1, 2)');
   $result = ob_get_clean();
   // assertions
@@ -111,11 +109,10 @@ $t = new LimeTest(8);
   // @Test: Case 2 - Function with "->" prefix
 
   // fixtures
-  $colorizer->colorize('->function(1, 2)', 'FUNCTION')->returns('<BLUE>->function(1, 2)</BLUE>');
+  $colorizer->colorize('->function(1, 2)', LimePrinter::METHOD)->returns('<BLUE>->function(1, 2)</BLUE>');
   $colorizer->replay();
   // test
   ob_start();
-  $printer->setFunctionStyle('FUNCTION');
   $printer->printText('My text with a ->function(1, 2)');
   $result = ob_get_clean();
   // assertions
@@ -124,11 +121,10 @@ $t = new LimeTest(8);
   // @Test: Case 3 - Function with "::" prefix
 
   // fixtures
-  $colorizer->colorize('::function(1, 2)', 'FUNCTION')->returns('<BLUE>::function(1, 2)</BLUE>');
+  $colorizer->colorize('::function(1, 2)', LimePrinter::METHOD)->returns('<BLUE>::function(1, 2)</BLUE>');
   $colorizer->replay();
   // test
   ob_start();
-  $printer->setFunctionStyle('FUNCTION');
   $printer->printText('My text with a ::function(1, 2)');
   $result = ob_get_clean();
   // assertions
