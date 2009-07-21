@@ -11,7 +11,9 @@
 
 class LimeOutputNone implements LimeOutputInterface
 {
-  public function plan($amount, $file) {}
+  public function start($file) {}
+
+  public function plan($amount) {}
 
   public function pass($message, $file, $line) {}
 

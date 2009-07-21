@@ -86,10 +86,12 @@ $t = new LimeTest(1);
     ),
   );
   // test
-  $output->plan(3, '/test/file1');
-  $output->plan(2, '/test/file2');
+  $output->start('/test/file1');
+  $output->plan(3);
   $output->pass('Test message 1', '/test/file1', 11);
   $output->fail('Test message 2', '/test/file1', 22);
+  $output->start('/test/file2');
+  $output->plan(2);
   $output->fail('Test message 3', '/test/file2', 33, 'error message');
   $output->pass('Test message 4', '/test/file2', 44);
   $output->skip('Test message 5', '/test/file2', 55);

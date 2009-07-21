@@ -24,9 +24,14 @@ class LimeOutputRaw implements LimeOutputInterface
     print serialize(array($method, $arguments))."\n";
   }
 
-  public function plan($amount, $file)
+  public function start($file)
   {
-    $this->printCall('plan', array($amount, $file));
+    $this->printCall('start', array($file));
+  }
+
+  public function plan($amount)
+  {
+    $this->printCall('plan', array($amount));
   }
 
   public function pass($message, $file, $line)

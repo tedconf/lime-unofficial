@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(37);
+$t = new LimeTest(39);
 
 // @Before
 
@@ -27,7 +27,29 @@ $t = new LimeTest(37);
   $output = null;
 
 
-// @Test: plan() prints the amount of planned tests
+// @Test: start() prints the filename
+
+  $printer->printLine('/test/file', LimePrinter::INFO);
+  $printer->replay();
+  // test
+  $output->start('/test/file');
+  // assertions
+  $printer->verify();
+
+
+// @Test: The constructor accepts a base directory which is stripped from the file name
+
+  // fixtures
+  $output = new LimeOutputConsoleDetailed($printer, '/test');
+  $printer->printLine('/file', LimePrinter::INFO);
+  $printer->replay();
+  // test
+  $output->start('/test/file');
+  // assertions
+  $printer->verify();
+
+
+// @Test: plan() prints the test file and the amount of planned tests
 
   // fixtures
   $printer->printLine('1..2');
@@ -294,5 +316,3 @@ $t = new LimeTest(37);
   $output->flush();
   // assertions
   $printer->verify();
-
-

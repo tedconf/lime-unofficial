@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(9);
+$t = new LimeTest(10);
 
 
 // @Before
@@ -26,14 +26,24 @@ $t = new LimeTest(9);
   $output = null;
 
 
+// @Test: start() prints the method call as serialized array
+
+  // test
+  ob_start();
+  $output->start('/test/file');
+  $result = ob_get_clean();
+  // assertions
+  $t->is($result, serialize(array('start', array('/test/file')))."\n", 'The method call is serialized');
+
+
 // @Test: plan() prints the method call as serialized array
 
   // test
   ob_start();
-  $output->plan(1, '/test/file');
+  $output->plan(1);
   $result = ob_get_clean();
   // assertions
-  $t->is($result, serialize(array('plan', array(1, '/test/file')))."\n", 'The method call is serialized');
+  $t->is($result, serialize(array('plan', array(1)))."\n", 'The method call is serialized');
 
 
 // @Test: pass() prints the method call as serialized array

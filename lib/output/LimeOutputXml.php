@@ -19,9 +19,14 @@ class LimeOutputXml implements LimeOutputInterface
     $this->output = new LimeOutputArray();
   }
 
-  public function plan($amount, $file)
+  public function start($file)
   {
-    return $this->output->plan($amount, $file);
+    return $this->output->start($file);
+  }
+
+  public function plan($amount)
+  {
+    return $this->output->plan($amount);
   }
 
   public function pass($message, $file, $line)

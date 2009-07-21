@@ -12,6 +12,7 @@
 class LimeOutputConsoleDetailed implements LimeOutputInterface
 {
   protected
+    $baseDir = null,
     $expected = null,
     $passed = 0,
     $actual = 0,
@@ -19,12 +20,23 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $errors = 0,
     $printer = null;
 
-  public function __construct(LimePrinter $printer)
+  public function __construct(LimePrinter $printer, $baseDir = null)
   {
     $this->printer = $printer;
+    $this->baseDir = $baseDir;
   }
 
-  public function plan($amount, $file)
+  public function start($file)
+  {
+    if (!is_null($this->baseDir))
+    {
+      $file = str_replace($this->baseDir, '', $file);
+    }
+
+    $this->printer->printLine($file, LimePrinter::INFO);
+  }
+
+  public function plan($amount)
   {
     $this->expected = $amount;
     $this->printer->printLine('1..'.$amount);

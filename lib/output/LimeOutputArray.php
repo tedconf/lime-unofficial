@@ -13,49 +13,47 @@ class LimeOutputArray implements LimeOutputInterface
 {
   protected
     $serialize = false,
-    $results = array();
+    $results = array(),
+    $currentResults = null;
 
   public function __construct($serialize = false)
   {
     $this->serialize = $serialize;
   }
 
-  public function plan($amount, $file)
+  public function start($file)
   {
-    $results =& $this->getResults($file);
+    $this->currentResults =& $this->getResults($file);
+  }
 
-    $results['stats']['plan'] = $amount;
+  public function plan($amount)
+  {
+    $this->currentResults['stats']['plan'] = $amount;
   }
 
   public function pass($message, $file, $line)
   {
-    $results =& $this->getResults($file);
-
-    $results['stats']['total']++;
-    $results['stats']['passed'][] = $this->addTest(true, $line, $file, $message);
+    $this->currentResults['stats']['total']++;
+    $this->currentResults['stats']['passed'][] = $this->addTest(true, $line, $file, $message);
   }
 
   public function fail($message, $file, $line, $error = null)
   {
-    $results =& $this->getResults($file);
-
     $index = $this->addTest(false, $line, $file, $message);
 
-    $results['stats']['total']++;
-    $results['stats']['failed'][] = $index;
+    $this->currentResults['stats']['total']++;
+    $this->currentResults['stats']['failed'][] = $index;
 
     if (!is_null($error))
     {
-      $results['tests'][$index]['error'] = $error;
+      $this->currentResults['tests'][$index]['error'] = $error;
     }
   }
 
   public function skip($message, $file, $line)
   {
-    $results =& $this->getResults($file);
-
-    $results['stats']['total']++;
-    $results['stats']['skipped'][] = $this->addTest(true, $line, $file, $message);
+    $this->currentResults['stats']['total']++;
+    $this->currentResults['stats']['skipped'][] = $this->addTest(true, $line, $file, $message);
   }
 
   public function warning($message, $file, $line)
@@ -116,10 +114,9 @@ class LimeOutputArray implements LimeOutputInterface
 
   protected function addTest($status, $line, $file, $message)
   {
-    $results =& $this->getResults($file);
-    $index = count($results['tests']) + 1;
+    $index = count($this->currentResults['tests']) + 1;
 
-    $results['tests'][$index] = array(
+    $this->currentResults['tests'][$index] = array(
       'line' => $line,
       'file' => $file,
       'message' => $message,
