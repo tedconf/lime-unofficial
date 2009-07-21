@@ -20,7 +20,8 @@ class LimePrinter
     ERROR = 5,
     HAPPY = 6,
     STRING = 7,
-    METHOD = 8;
+    METHOD = 8,
+    INFO = 9;
 
   protected
     $colorizer = null;
@@ -38,6 +39,7 @@ class LimePrinter
       $colorizer->setStyle(self::HAPPY, array('fg' => 'white', 'bg' => 'green', 'bold' => true));
       $colorizer->setStyle(self::STRING, array('fg' => 'cyan'));
       $colorizer->setStyle(self::METHOD, array('fg' => 'cyan'));
+      $colorizer->setStyle(self::INFO, array('fg' => 'cyan', 'bold' => true));
     }
 
     $this->colorizer = $colorizer;
