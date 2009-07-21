@@ -38,7 +38,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
   public function plan($amount)
   {
-    $this->expected = $amount;
+    $this->expected += $amount;
     $this->printer->printLine('1..'.$amount);
   }
 

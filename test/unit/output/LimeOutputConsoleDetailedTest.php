@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(39);
+$t = new LimeTest(40);
 
 // @Before
 
@@ -181,7 +181,7 @@ $t = new LimeTest(39);
   // @Test: Case 1 - Too many tests
 
   // fixtures
-  $output->plan(1, '/test/file');
+  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $output->pass('Second test', '/test/file', 22);
   $printer->reset();
@@ -195,7 +195,7 @@ $t = new LimeTest(39);
   // @Test: Case 2 - Too many tests including failed tests
 
   // fixtures
-  $output->plan(1, '/test/file');
+  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $output->fail('Second test', '/test/file', 22);
   $printer->reset();
@@ -223,7 +223,7 @@ $t = new LimeTest(39);
   // @Test: Case 4 - Correct number of tests
 
   // fixtures
-  $output->plan(1, '/test/file');
+  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $printer->reset();
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
@@ -279,7 +279,7 @@ $t = new LimeTest(39);
   // @Test: Case 8 - Skipped tests
 
   // fixtures
-  $output->plan(1, '/test/file');
+  $output->plan(1);
   $output->skip('First test', '/test/file', 11);
   $printer->reset();
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
@@ -292,7 +292,7 @@ $t = new LimeTest(39);
   // @Test: Case 9 - Successful but warnings
 
   // fixtures
-  $output->plan(1, '/test/file');
+  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $output->warning('Some warning', '/test/file', 11);
   $printer->reset();
@@ -306,11 +306,26 @@ $t = new LimeTest(39);
   // @Test: Case 9 - Successful but errors
 
   // fixtures
-  $output->plan(1, '/test/file');
+  $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $output->error('Some error', '/test/file', 11);
   $printer->reset();
   $printer->printBox(' Looks like some errors occurred.', LimePrinter::ERROR);
+  $printer->replay();
+  // test
+  $output->flush();
+  // assertions
+  $printer->verify();
+
+  // @Test: Case 10 - Several plans
+
+  // fixtures
+  $output->plan(1);
+  $output->pass('First test', '/test/file', 11);
+  $output->plan(1);
+  $output->pass('Second test', '/test/file', 11);
+  $printer->reset();
+  $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test
   $output->flush();
