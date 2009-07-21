@@ -39,16 +39,17 @@ class LimeTest
       'verbose'      => false,
     ), $options);
 
+    $this->options['base_dir'] = realpath($this->options['base_dir']);
+
     list ($file, $line) = self::findCaller();
 
     $this->output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
+    $this->output->start($file);
 
     if (!is_null($plan))
     {
-      $this->output->plan($plan, $file);
+      $this->output->plan($plan);
     }
-
-    $this->options['base_dir'] = realpath($this->options['base_dir']);
 
     set_error_handler(array($this, 'handleError'));
     set_exception_handler(array($this, 'handleException'));
@@ -82,7 +83,7 @@ class LimeTest
     {
       $colorizer = LimeColorizer::isSupported() || $forceColors ? new LimeColorizer() : null;
 
-      return new LimeOutputConsoleDetailed(new LimePrinter($colorizer));
+      return new LimeOutputConsoleDetailed(new LimePrinter($colorizer), $this->options['base_dir']);
     }
   }
 
