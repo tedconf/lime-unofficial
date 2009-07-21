@@ -64,7 +64,11 @@ class LimeTest
 
   protected function getDefaultOutput($forceColors = false)
   {
-    if (in_array('--xml', $GLOBALS['argv']))
+    if (in_array('--raw', $GLOBALS['argv']))
+    {
+      return new LimeOutputRaw();
+    }
+    else if (in_array('--xml', $GLOBALS['argv']))
     {
       return new LimeOutputXml();
     }

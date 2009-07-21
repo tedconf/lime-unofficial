@@ -104,16 +104,37 @@ class LimeShell
       $file = $tmpFile;
     }
 
+    ob_start();
+    passthru($this->buildCommand($file, $arguments), $return);
+    $output = ob_get_clean();
+
+    return array($return, $output);
+  }
+
+  public function executeCallback($callback, $file, array $arguments = array())
+  {
+    $handle = popen($this->buildCommand($file, $arguments), 'r');
+    $output = '';
+
+    while (!feof($handle))
+    {
+      $line = fread($handle, 2048);
+      call_user_func($callback, $line);
+
+      $output .= $line;
+    }
+
+    return array(pclose($handle), $output);
+  }
+
+  protected function buildCommand($file, array $arguments = array())
+  {
     foreach ($arguments as &$argument)
     {
       $argument = escapeshellarg($argument);
     }
 
-    ob_start();
     // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing
-    passthru(sprintf('cd & %s %s %s 2>&1', escapeshellarg($this->executable), escapeshellarg($file), implode(' ', $arguments)), $return);
-    $output = ob_get_clean();
-
-    return array($return, $output);
+    return sprintf('cd & %s %s %s 2>&1', escapeshellarg($this->executable), escapeshellarg($file), implode(' ', $arguments));
   }
 }
