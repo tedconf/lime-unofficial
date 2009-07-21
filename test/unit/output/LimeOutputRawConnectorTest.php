@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(6);
+$t = new LimeTest(9);
 
 
 // @Before
@@ -38,6 +38,25 @@ $t = new LimeTest(6);
   file_put_contents($file, <<<EOF
 <?php
 echo serialize(array("plan", array(1, "/test/file")))."\n";
+EOF
+  );
+  // test
+  $connector->connect($file);
+  // assertions
+  $output->verify();
+
+
+// @Test: The file is called with the argument --raw
+
+  // fixtures
+  $output->plan(1, '/test/file');
+  $output->replay();
+  file_put_contents($file, <<<EOF
+<?php
+if (in_array('--raw', \$GLOBALS['argv']))
+{
+  echo serialize(array("plan", array(1, "/test/file")))."\n";
+}
 EOF
   );
   // test
@@ -90,6 +109,40 @@ echo serialize(array("pass", array("A passed test", "/test/file", 11)))."\n";
 echo serialize(array("pass", array("Another passed test", "/test/file", 11)))."\n";
 EOF
   );
+  // test
+  $connector->connect($file);
+  // assertions
+  $output->verify();
+
+
+// @Test: A split serialized array can be read correctly
+
+  // fixtures
+  $output->pass('A passed test', '/test/file', 11);
+  $output->replay();
+  file_put_contents($file, <<<EOF
+<?php
+\$serialized = serialize(array("pass", array("A passed test", "/test/file", 11)))."\n";
+\$strings =  str_split(\$serialized, strlen(\$serialized)/2 + 1);
+echo \$strings[0];
+echo \$strings[1];
+EOF
+  );
+  // test
+  $connector->connect($file);
+  // assertions
+  $output->verify();
+
+
+// @Test: Escaped arguments are unescaped
+
+  // fixtures
+  $output->comment("A \\n\\r comment \n with line \r breaks");
+  $output->replay();
+  // don't use <<<EOF here because of escaping
+  // escape string again, because all backslashes (\) must be escaped in
+  // single quoted strings
+  file_put_contents($file, addcslashes('<?php echo serialize(array("comment", array("A \\\\n\\\\r comment \\n with line \\r breaks")))."\n";', '\\'));
   // test
   $connector->connect($file);
   // assertions

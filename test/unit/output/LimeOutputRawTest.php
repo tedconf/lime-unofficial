@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(8);
+$t = new LimeTest(9);
 
 
 // @Before
@@ -104,3 +104,13 @@ $t = new LimeTest(8);
   $result = ob_get_clean();
   // assertions
   $t->is($result, serialize(array('flush', array()))."\n", 'The method call is serialized');
+
+
+// @Test: Strings in arguments are escaped
+
+  // test
+  ob_start();
+  $output->comment("A \\n\\r comment \n with line \r breaks");
+  $result = ob_get_clean();
+  // assertions
+  $t->is($result, serialize(array('comment', array('A \\n\\r comment \n with line \r breaks')))."\n", 'LFs and CRs are escaped');

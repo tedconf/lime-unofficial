@@ -13,6 +13,14 @@ class LimeOutputRaw implements LimeOutputInterface
 {
   protected function printCall($method, array $arguments = array())
   {
+    foreach ($arguments as &$argument)
+    {
+      if (is_string($argument))
+      {
+        $argument = str_replace(array("\n", "\r"), array('\n', '\r'), $argument);
+      }
+    }
+
     print serialize(array($method, $arguments))."\n";
   }
 

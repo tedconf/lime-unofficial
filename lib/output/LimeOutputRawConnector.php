@@ -13,6 +13,7 @@ class LimeOutputRawConnector
 {
   protected
     $error = false,
+    $buffer = '',
     $output = null;
 
   public function __construct(LimeOutputInterface $output)
@@ -22,33 +23,60 @@ class LimeOutputRawConnector
 
   public function connect($file, array $arguments = array())
   {
+    if (!in_array('--raw', $arguments))
+    {
+      $arguments[] = '--raw';
+    }
+
+    $this->buffer = '';
+
     $shell = new LimeShell();
-    $shell->executeCallback(array($this, 'call'), $file, $arguments);
+    $shell->executeCallback(array($this, 'unserializeLines'), $file, $arguments);
+
+    if (!empty($this->buffer))
+    {
+      throw new RuntimeException(sprintf('Could not unserialize "%s"', $this->buffer));
+    }
   }
 
-  public function call($lines)
+  public function unserializeLines($lines)
   {
-    foreach (explode("\n", $lines) as $methodAndArguments)
+    $this->buffer .= $lines;
+
+    $lines = explode("\n", $this->buffer);
+
+    while ($line = array_shift($lines))
     {
-      if (!empty($methodAndArguments))
+      if (!empty($line))
       {
         $this->error = false;
 
         set_error_handler(array($this, 'failedUnserialize'));
-        list($method, $arguments) = unserialize($methodAndArguments);
+        list($method, $arguments) = unserialize($line);
         restore_error_handler();
 
         if ($this->error)
         {
-          throw new RuntimeException(sprintf('Could not unserialize "%s"', $methodAndArguments));
+          // prepend the line again, maybe we can unserialize later
+          array_unshift($lines, $line);
+          break;
         }
 
         if ($method != 'flush')
         {
+          foreach ($arguments as &$argument)
+          {
+            if (is_string($argument))
+            {
+              $argument = stripcslashes($argument);
+            }
+          }
           call_user_func_array(array($this->output, $method), $arguments);
         }
       }
     }
+
+    $this->buffer = implode("\n", $lines);
   }
 
   public function failedUnserialize()
