@@ -6,6 +6,7 @@ require_once(dirname(__FILE__).'/setup.php');
 $t->compare(1, '>', 1);
 ?>
 --EXPECTF--
+/test/unit/LimeTest/setup.php
 not ok 1
 #     Failed test (%s/cmp_ok_fails.php at line 3)
 #       1

@@ -8,6 +8,7 @@ $t->isDeeply(array(1, 2, 3), array());
 $t->isDeeply(array(), array(1, 2, 3));
 ?>
 --EXPECTF--
+/test/unit/LimeTest/setup.php
 not ok 1
 #     Failed test (%s/is_deeply_fails.php at line 3)
 #            got: array (  0 => 1,  1 => 2,  2 =>   array (    1 => 'foo',    'a' => '4',  ),)
