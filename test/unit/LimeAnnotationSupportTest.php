@@ -360,7 +360,7 @@ $t->diag('Line numbers in error messages remain the same as in the original file
   list($result, $actual) = execute($file = 'test_line_number.php');
   // assertion
   $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, '/on line 25$/', 'like');
+  $t->isOutput($actual, '/on line 25(?!\d)/', 'like');
 
 
 $t->diag('The last line in an annotated file can be a comment (bugfix)');
