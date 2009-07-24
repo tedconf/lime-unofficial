@@ -122,6 +122,42 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->printer->printLine('# '.$message, LimePrinter::COMMENT);
   }
 
+  public static function getMessages($actual, $expected, $passed, $errors, $warnings)
+  {
+    $messages = array();
+
+    if ($passed == $expected && $passed === $actual && $errors == 0)
+    {
+      if ($warnings > 0)
+      {
+        $messages[] = array('Looks like you\'re nearly there.', LimePrinter::WARNING);
+      }
+      else
+      {
+        $messages[] = array('Looks like everything went fine.', LimePrinter::HAPPY);
+      }
+    }
+    else if ($passed != $actual)
+    {
+      $messages[] = array(sprintf('Looks like you failed %s tests of %s.', $actual - $passed, $actual), LimePrinter::ERROR);
+    }
+    else if ($errors > 0)
+    {
+      $messages[] = array('Looks like some errors occurred.', LimePrinter::ERROR);
+    }
+
+    if ($actual > $expected)
+    {
+      $messages[] = array(sprintf('Looks like you planned %s tests but ran %s extra.', $expected, $actual - $expected), LimePrinter::ERROR);
+    }
+    else if ($actual < $expected)
+    {
+      $messages[] = array(sprintf('Looks like you planned %s tests but only ran %s.', $expected, $actual), LimePrinter::ERROR);
+    }
+
+    return $messages;
+  }
+
   public function flush()
   {
     if (is_null($this->expected))
@@ -129,33 +165,13 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
       $this->plan($this->actual, null);
     }
 
-    if ($this->passed == $this->expected && $this->passed === $this->actual && $this->errors == 0)
-    {
-      if ($this->warnings > 0)
-      {
-        $this->printer->printBox(' Looks like you\'re nearly there.', LimePrinter::WARNING);
-      }
-      else
-      {
-        $this->printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
-      }
-    }
-    else if ($this->passed != $this->actual)
-    {
-      $this->printer->printBox(sprintf(' Looks like you failed %s tests of %s.', $this->actual - $this->passed, $this->actual), LimePrinter::ERROR);
-    }
-    else if ($this->errors > 0)
-    {
-      $this->printer->printBox(' Looks like some errors occurred.', LimePrinter::ERROR);
-    }
+    $messages = self::getMessages($this->actual, $this->expected, $this->passed, $this->errors, $this->warnings);
 
-    if ($this->actual > $this->expected)
+    foreach ($messages as $message)
     {
-      $this->printer->printBox(sprintf(' Looks like you planned %s tests but ran %s extra.', $this->expected, $this->actual - $this->expected), LimePrinter::ERROR);
-    }
-    else if ($this->actual < $this->expected)
-    {
-      $this->printer->printBox(sprintf(' Looks like you planned %s tests but only ran %s.', $this->expected, $this->actual), LimePrinter::ERROR);
+      list ($message, $style) = $message;
+
+      $this->printer->printBox(' '.$message, $style);
     }
   }
 }
