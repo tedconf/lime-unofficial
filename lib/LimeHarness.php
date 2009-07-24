@@ -65,7 +65,7 @@ class LimeHarness extends LimeRegistration
     // sort the files to be able to predict the order
     sort($this->files);
 
-    $connector = new LimeOutputRawConnector($this->output);
+    $connector = new LimeOutputPipe($this->output);
 
     foreach ($this->files as $file)
     {

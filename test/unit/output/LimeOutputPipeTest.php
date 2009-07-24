@@ -20,7 +20,7 @@ $t = new LimeTest(9);
 
   $file = tempnam(sys_get_temp_dir(), 'lime');
   $output = LimeMock::create('LimeOutputInterface', $t);
-  $connector = new LimeOutputRawConnector($output);
+  $connector = new LimeOutputPipe($output);
 
 
 // @After

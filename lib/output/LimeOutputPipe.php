@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputRawConnector
+class LimeOutputPipe
 {
   protected
     $error = false,
