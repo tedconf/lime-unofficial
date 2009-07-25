@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(9);
+$t = new LimeTest(12);
 
 
 // @Before
@@ -81,14 +81,15 @@ EOF
   $output->verify();
 
 
-// @Test: The call to flush() is NOT passed
+// @Test: Method calls can be suppressed by passing the first constructor parameter
 
   // fixtures
-  $output->flush()->never();
+  $output->invoke('pass')->never();
   $output->replay();
+  $connector = new LimeOutputPipe($output, array('pass'));
   file_put_contents($file, <<<EOF
 <?php
-echo serialize(array("flush", array()))."\n";
+echo serialize(array("pass", array("A passed test", "/test/file", 11)))."\n";
 EOF
   );
   // test
@@ -157,3 +158,29 @@ EOF
   $t->expect('RuntimeException');
   $connector->connect($file);
 
+
+// @Test: A PHP error is passed to error() - invalid identifier
+
+  // @Test: Case 1 - Invalid identifier
+
+  // fixtures
+  $output->error("Parse error: syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1);
+  $output->replay();
+  file_put_contents($file, '<?php $1invalidname;');
+  // test
+  $connector->connect($file);
+  // assertions
+  $output->verify();
+
+
+  // @Test: Case 2 - Failed require
+
+  // fixtures
+  $output->warning("Warning: require(foobar.php): failed to open stream: No such file or directory", $file, 1);
+  $output->error("Fatal error: require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1);
+  $output->replay();
+  file_put_contents($file, '<?php require "foobar.php";');
+  // test
+  $connector->connect($file);
+  // assertions
+  $output->verify();

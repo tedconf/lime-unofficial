@@ -12,13 +12,15 @@
 class LimeOutputPipe
 {
   protected
+    $suppressedMethods = array(),
     $error = false,
     $buffer = '',
     $output = null;
 
-  public function __construct(LimeOutputInterface $output)
+  public function __construct(LimeOutputInterface $output, array $suppressedMethods = array())
   {
     $this->output = $output;
+    $this->suppressedMethods = $suppressedMethods;
   }
 
   public function connect($file, array $arguments = array())
@@ -62,7 +64,7 @@ class LimeOutputPipe
           break;
         }
 
-        if ($method != 'flush')
+        if (!in_array($method, $this->suppressedMethods))
         {
           foreach ($arguments as &$argument)
           {
@@ -77,6 +79,33 @@ class LimeOutputPipe
     }
 
     $this->buffer = implode("\n", $lines);
+
+    while (!empty($this->buffer))
+    {
+      if (preg_match('/^\s*([\w\s]+)(: .+) in (.+) on line (\d+)/', $this->buffer, $matches))
+      {
+        $this->buffer = trim(substr($this->buffer, strlen($matches[0])));
+
+        if ($matches[1] == 'Warning')
+        {
+          $this->output->warning($matches[1].$matches[2], $matches[3], $matches[4]);
+        }
+        else
+        {
+          $this->output->error($matches[1].$matches[2], $matches[3], $matches[4]);
+        }
+
+        // consume Xdebug call stack
+        while (preg_match('/^(Call Stack:|\d\.\d+\s+\d+\s+\d+\.\s+.+:\d+)/', $this->buffer, $matches))
+        {
+          $this->buffer = trim(substr($this->buffer, strlen($matches[0])));
+        }
+      }
+      else
+      {
+        break;
+      }
+    }
   }
 
   public function failedUnserialize()
