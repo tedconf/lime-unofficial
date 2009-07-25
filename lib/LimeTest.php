@@ -122,7 +122,14 @@ class LimeTest
    */
   public function ok($exp, $message = '')
   {
-    return $this->test($exp, $message);
+    if ((boolean)$exp)
+    {
+      return $this->pass($message);
+    }
+    else
+    {
+      return $this->fail($message);
+    }
   }
 
   /**
@@ -136,22 +143,49 @@ class LimeTest
    */
   public function is($exp1, $exp2, $message = '')
   {
-    if (is_object($exp1) || is_object($exp2))
-    {
-      $value = $exp1 === $exp2;
-    }
-    else if (is_float($exp1) && is_float($exp2))
-    {
-      $value = abs($exp1 - $exp2) < self::EPSILON;
-    }
-    else
-    {
-      $value = $exp1 == $exp2;
-    }
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
 
-    $error = sprintf("     got: %s\nexpected: %s", var_export($exp1, true), var_export($exp2, true));
+    try
+    {
+      $exp1->assertEquals($exp2);
 
-    return $this->test($value, $message, $error);
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("     got: %s\nexpected: %s", $e->getActual(10), $e->getExpected(10));
+
+      return $this->fail($message, $error);
+    }
+  }
+
+  /**
+   * Compares two values and passes if they are identical (===)
+   *
+   * @param mixed  $exp1    left value
+   * @param mixed  $exp2    right value
+   * @param string $message display output message when the test passes
+   *
+   * @return boolean
+   */
+  public function same($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertEquals($exp2, true);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("     got: %s\nexpected: %s", $e->getActual(10), $e->getExpected(10));
+
+      return $this->fail($message, $error);
+    }
   }
 
   /**
@@ -165,9 +199,49 @@ class LimeTest
    */
   public function isnt($exp1, $exp2, $message = '')
   {
-    $error = sprintf("%s\n    ne\n%s", var_export($exp2, true), var_export($exp2, true));
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
 
-    return $this->test($exp1 != $exp2, $message, $error);
+    try
+    {
+      $exp1->assertNotEquals($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("%s\n    ne\n%s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
+  }
+
+  /**
+   * Compares two values and passes if they are not identical (!==)
+   *
+   * @param mixed  $exp1    left value
+   * @param mixed  $exp2    right value
+   * @param string $message display output message when the test passes
+   *
+   * @return boolean
+   */
+  public function isntSame($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertNotEquals($exp2, true);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("%s\n    ne\n%s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
   }
 
   /**
@@ -179,11 +253,23 @@ class LimeTest
    *
    * @return boolean
    */
-  public function like($exp, $regex, $message = '')
+  public function like($exp1, $exp2, $message = '')
   {
-    $error = sprintf("              '%s'\ndoesn't match '%s'", $exp, $regex);
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
 
-    return $this->test(preg_match($regex, $exp), $message, $error);
+    try
+    {
+      $exp1->assertLike($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("              %s\ndoesn't match %s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
   }
 
   /**
@@ -195,11 +281,99 @@ class LimeTest
    *
    * @return boolean
    */
-  public function unlike($exp, $regex, $message = '')
+  public function unlike($exp1, $exp2, $message = '')
   {
-    $error = sprintf("         '%s'\nmatches '%s'", $exp, $regex);
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
 
-    return $this->test(!preg_match($regex, $exp), $message, $error);
+    try
+    {
+      $exp1->assertUnlike($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("         %s\nmatches %s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
+  }
+
+  public function greaterThan($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertGreaterThan($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("         %s\nis not > %s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
+  }
+
+  public function greaterThanEqual($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertGreaterThanOrEqual($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("          %s\nis not >= %s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
+  }
+
+  public function lessThan($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertLessThan($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("         %s\nis not < %s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
+  }
+
+  public function lessThanEqual($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertLessThanOrEqual($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("          %s\nis not <= %s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
   }
 
   /**
@@ -214,11 +388,27 @@ class LimeTest
    */
   public function compare($exp1, $op, $exp2, $message = '')
   {
-    eval(sprintf("\$result = \$exp1 $op \$exp2;"));
-
-    $error = sprintf("%s\n    %s\n%s", str_replace("\n", '', var_export($exp1, true)), $op, str_replace("\n", '', var_export($exp2, true)));
-
-    return $this->test($result, $message, $error);
+    switch ($op)
+    {
+      case '===':
+        return $this->same($exp1, $exp2, $message);
+      case '!==':
+        return $this->isntSame($exp1, $exp2, $message);
+      case '==':
+        return $this->is($exp1, $exp2, $message);
+      case '!=':
+        return $this->isnt($exp1, $exp2, $message);
+      case '<':
+        return $this->lessThan($exp1, $exp2, $message);
+      case '<=':
+        return $this->lessThanEqual($exp1, $exp2, $message);
+      case '>':
+        return $this->greaterThan($exp1, $exp2, $message);
+      case '>=':
+        return $this->greaterThanEqual($exp1, $exp2, $message);
+      default:
+        throw new InvalidArgumentException(sprintf('Unknown operation "%s"', $op));
+    }
   }
 
   /**
@@ -274,9 +464,7 @@ class LimeTest
    */
   public function isDeeply($exp1, $exp2, $message = '')
   {
-    $error = sprintf("     got: %s\nexpected: %s", str_replace("\n", '', var_export($exp1, true)), str_replace("\n", '', var_export($exp2, true)));
-
-    return $this->test($this->testIsDeeply($exp1, $exp2), $message, $error);
+    return $this->is($exp1, $exp2, $message);
   }
 
   /**
@@ -288,7 +476,11 @@ class LimeTest
    */
   public function pass($message = '')
   {
-    return $this->test(true, $message);
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
+    $this->output->pass($message, $file, $line);
+
+    return true;
   }
 
   /**
@@ -298,9 +490,13 @@ class LimeTest
    *
    * @return false
    */
-  public function fail($message = '')
+  public function fail($message = '', $error = null)
   {
-    return $this->test(false, $message);
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
+    $this->output->fail($message, $file, $line, $error);
+
+    return false;
   }
 
   /**
@@ -345,42 +541,6 @@ class LimeTest
     $this->skip(trim('TODO '.$message));
   }
 
-  private function testIsDeeply($var1, $var2)
-  {
-    if (gettype($var1) != gettype($var2))
-    {
-      return false;
-    }
-
-    if (is_array($var1))
-    {
-      ksort($var1);
-      ksort($var2);
-
-      $keys1 = array_keys($var1);
-      $keys2 = array_keys($var2);
-      if (array_diff($keys1, $keys2) || array_diff($keys2, $keys1))
-      {
-        return false;
-      }
-      $isEqual = true;
-      foreach ($var1 as $key => $value)
-      {
-        $isEqual = $this->testIsDeeply($var1[$key], $var2[$key]);
-        if ($isEqual === false)
-        {
-          break;
-        }
-      }
-
-      return $isEqual;
-    }
-    else
-    {
-      return $var1 === $var2;
-    }
-  }
-
   public function comment($message)
   {
     $this->output->comment($message);
@@ -409,7 +569,7 @@ class LimeTest
       $this->expectedException = new LimeExpectedException($class, $code, $file, $line);
     }
 
-    $this->actualException      = null;
+    $this->actualException = null;
   }
 
   protected function trimPath($path)

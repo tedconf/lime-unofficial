@@ -107,6 +107,10 @@ class LimeAutoloader
       {
         $file .= 'mock/';
       }
+      else if (0 === strpos($class, 'LimeTester'))
+      {
+        $file .= 'tester/';
+      }
 
       $file .= $class.'.php';
 
