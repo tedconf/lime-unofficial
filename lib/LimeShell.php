@@ -19,6 +19,11 @@
  */
 class LimeShell
 {
+  const
+    SUCCESS = 0,
+    FAILED  = 1,
+    UNKNOWN = 255;
+
   protected
     $executable = null;
 

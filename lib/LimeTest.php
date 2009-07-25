@@ -79,6 +79,10 @@ class LimeTest
 
       return new LimeOutputArray($serialize);
     }
+    else if (in_array('--coverage', $GLOBALS['argv']))
+    {
+      return new LimeOutputCoverage();
+    }
     else
     {
       $colorizer = LimeColorizer::isSupported() || $forceColors ? new LimeColorizer() : null;
