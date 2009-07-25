@@ -92,66 +92,6 @@ class LimeTest
     return $this->output;
   }
 
-  static public function toXml($results = null)
-  {
-    if (is_null($results))
-    {
-      $results = self::$allResults;
-    }
-
-    $dom = new DOMDocument('1.0', 'UTF-8');
-    $dom->formatOutput = true;
-    $dom->appendChild($testsuites = $dom->createElement('testsuites'));
-
-    $errors = 0;
-    $failures = 0;
-    $errors = 0;
-    $skipped = 0;
-    $assertions = 0;
-
-    foreach ($results as $result)
-    {
-      $testsuites->appendChild($testSuite = $dom->createElement('testsuite'));
-      $testSuite->setAttribute('name', basename($result['file'], '.php'));
-      $testSuite->setAttribute('file', $result['file']);
-      $testSuite->setAttribute('failures', count($result['stats']['failed']));
-      $testSuite->setAttribute('errors', 0);
-      $testSuite->setAttribute('skipped', count($result['stats']['skipped']));
-      $testSuite->setAttribute('tests', $result['stats']['plan']);
-      $testSuite->setAttribute('assertions', $result['stats']['plan']);
-
-      $failures += count($result['stats']['failed']);
-      $skipped += count($result['stats']['skipped']);
-      $assertions += $result['stats']['plan'];
-
-      foreach ($result['tests'] as $test)
-      {
-        $testSuite->appendChild($testCase = $dom->createElement('testcase'));
-        $testCase->setAttribute('name', $test['message']);
-        $testCase->setAttribute('file', $test['file']);
-        $testCase->setAttribute('line', $test['line']);
-        $testCase->setAttribute('assertions', 1);
-        if (!$test['status'])
-        {
-          $testCase->appendChild($failure = $dom->createElement('failure'));
-          $failure->setAttribute('type', 'lime');
-          if ($test['error'])
-          {
-            $failure->appendChild($dom->createTextNode($test['error']));
-          }
-        }
-      }
-    }
-
-    $testsuites->setAttribute('failures', $failures);
-    $testsuites->setAttribute('errors', $errors);
-    $testsuites->setAttribute('tests', $assertions);
-    $testsuites->setAttribute('assertions', $assertions);
-    $testsuites->setAttribute('skipped', $skipped);
-
-    return $dom->saveXml();
-  }
-
   static protected function findCaller()
   {
     $traces = debug_backtrace();
