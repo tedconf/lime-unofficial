@@ -34,22 +34,6 @@ class LimeMockExpectedInvocation
     $this->atLeastOnce();
   }
 
-  static protected function findCaller()
-  {
-    $traces = debug_backtrace();
-
-    $t = array_reverse($traces);
-    foreach ($t as $trace)
-    {
-      if (isset($trace['object']) && $trace['object'] instanceof LimeMockInterface && isset($trace['file']) && isset($trace['line']))
-      {
-        return array($trace['file'], $trace['line']);
-      }
-    }
-
-    return array($traces[0]['file'], $traces[0]['line']);
-  }
-
   public function invoke()
   {
     if (!is_null($this->exception))
@@ -105,7 +89,7 @@ class LimeMockExpectedInvocation
       $valid = $valid && $matcher->isComplete();
     }
 
-    list ($file, $line) = self::findCaller();
+    list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
     $message = implode(' ', $messages);
 
     if ($valid)

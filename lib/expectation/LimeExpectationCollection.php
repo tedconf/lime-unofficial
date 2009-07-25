@@ -106,22 +106,6 @@ abstract class LimeExpectationCollection
     $this->output = $output;
   }
 
-  static protected function findCaller()
-  {
-    $traces = debug_backtrace();
-
-    $t = array_reverse($traces);
-    foreach ($t as $trace)
-    {
-      if (isset($trace['object']) && $trace['object'] instanceof LimeExpectationCollection && isset($trace['file']) && isset($trace['line']))
-      {
-        return array($trace['file'], $trace['line']);
-      }
-    }
-
-    return array($traces[0]['file'], $traces[0]['line']);
-  }
-
   /**
    * (non-PHPdoc)
    * @see lib/lime_verifiable#setFailOnVerify()
@@ -151,7 +135,7 @@ abstract class LimeExpectationCollection
       throw new BadMethodCallException("A LimeTest object is required for verification");
     }
 
-    list ($file, $line) = self::findCaller();
+    list ($file, $line) = LimeTrace::findCaller('LimeExpectationCollection');
 
     if (count($this->expected) == 0)
     {

@@ -41,7 +41,7 @@ class LimeTest
 
     $this->options['base_dir'] = realpath($this->options['base_dir']);
 
-    list ($file, $line) = self::findCaller();
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
     $this->output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
     $this->output->start($file);
@@ -92,32 +92,9 @@ class LimeTest
     return $this->output;
   }
 
-  static protected function findCaller()
-  {
-    $traces = debug_backtrace();
-
-    $t = array_reverse($traces);
-    foreach ($t as $trace)
-    {
-      if (isset($trace['object']) && $trace['object'] instanceof LimeTest && isset($trace['file']) && isset($trace['line']))
-      {
-        return array($trace['file'], $trace['line']);
-      }
-    }
-
-    // return the first call
-    $file = $traces[0]['file'];
-    if ($this->options['base_dir'])
-    {
-      $file = str_replace(str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $this->options['base_dir']), '', str_replace(array('/', '\\'), $file));
-    }
-
-    return array($file, $traces[0]['line']);
-  }
-
   protected function test($condition, $message, $error = null)
   {
-    list ($file, $line) = $this->findCaller(debug_backtrace());
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
     if ($result = (boolean) $condition)
     {
@@ -346,7 +323,7 @@ class LimeTest
   {
     for ($i = 0; $i < $nbTests; $i++)
     {
-      list ($file, $line) = $this->findCaller();
+      list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
       $this->output->skip($message, $file, $line);
     }
@@ -417,7 +394,7 @@ class LimeTest
 
   public function expect($exception, $code = null)
   {
-    $this->expectedExceptionAt  = self::findCaller();
+    $this->expectedExceptionAt  = LimeTrace::findCaller('LimeTest');
     $this->expectedException    = $exception;
     $this->expectedCode         = $code;
     $this->actualException      = null;
