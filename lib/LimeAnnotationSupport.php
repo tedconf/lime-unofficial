@@ -77,9 +77,10 @@ class LimeAnnotationSupport
     $enabled      = false;
 
   protected
-    $path   = null,
-    $test   = null,
-    $lexer  = null;
+    $originalPath = null,
+    $path         = null,
+    $test         = null,
+    $lexer        = null;
 
   /**
    * Enables annotation support in a script file.
@@ -130,33 +131,21 @@ class LimeAnnotationSupport
    */
   protected function __construct($path, LimeTestRunner $testRunner)
   {
-    $this->path = $path;
+    $this->originalPath = $path;
+    $this->path = dirname($path).'/@'.basename($path);
     $this->testRunner = $testRunner;
 
-    if (file_exists($path.'.bak'))
-    {
-      unlink($path.'.bak');
-    }
-
-    rename($path, $path.'.bak');
-    copy($path.'.bak', $path);
-
-    // this is necessary to make sure the destructor is executed upon
-    // fatal errors
-    register_shutdown_function(array($this, '__destruct'));
+    register_shutdown_function(array($this, 'cleanup'));
   }
 
   /**
-   * Destructor.
-   *
-   * Restores the backup created in the constructor.
+   * Removes the transformed script file.
    */
-  public function __destruct()
+  public function cleanup()
   {
-    if (file_exists($this->path) && file_exists($this->path.'.bak'))
+    if (file_exists($this->path))
     {
       unlink($this->path);
-      rename($this->path.'.bak', $this->path);
     }
   }
 
@@ -166,8 +155,13 @@ class LimeAnnotationSupport
    */
   protected function execute()
   {
+    if (file_exists($this->path))
+    {
+      unlink($this->path);
+    }
+
     $this->lexer = new LimeLexerAnnotations($this->path, self::$annotations);
-    $callbacks = $this->lexer->parse($this->path);
+    $callbacks = $this->lexer->parse($this->originalPath);
 
     $this->includeTestFile();
 

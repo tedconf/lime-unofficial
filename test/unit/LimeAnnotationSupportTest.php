@@ -71,7 +71,7 @@ $t->diag('Code annotated with @Before is executed once before every test');
   list($result, $actual) = execute($file = 'test_before.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Before
 Test 1
@@ -89,7 +89,7 @@ $t->diag('Code annotated with @After is executed once after every test');
   list($result, $actual) = execute($file = 'test_after.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Test 1
 After
@@ -107,7 +107,7 @@ $t->diag('Code annotated with @BeforeAll is executed once before the test suite'
   list($result, $actual) = execute($file = 'test_before_all.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Before All
 Test 1
@@ -124,7 +124,7 @@ $t->diag('Code annotated with @AfterAll is executed once after the test suite');
   list($result, $actual) = execute($file = 'test_after_all.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Test 1
 Test 2
@@ -141,7 +141,7 @@ $t->diag('Code before the first annotations is executed normally');
   list($result, $actual) = execute($file = 'test_code_before_annotations.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Before annotation
 Before
@@ -158,7 +158,7 @@ $t->diag('Classes can be defined before the annotations');
   list($result, $actual) = execute($file = 'test_class_before_annotations.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Try is not matched
 If is not matched
@@ -175,7 +175,7 @@ $t->diag('Functions can be defined before the annotations');
   list($result, $actual) = execute($file = 'test_function_before_annotations.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Test
  Looks like everything went fine.
@@ -199,7 +199,7 @@ $t->diag('Variables from the @Before scope are available in all other scopes');
   list($result, $actual) = execute($file = 'test_scope_before.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Before
 BeforeTest
@@ -216,7 +216,7 @@ $t->diag('Variables from the global scope are available in all other scopes');
   list($result, $actual) = execute($file = 'test_scope_global.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Global
 GlobalBefore
@@ -234,7 +234,7 @@ $t->diag('Tests annotated with @Test may have comments');
   list($result, $actual) = execute($file = 'test_comments.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Test 1
 # This test is commented with "double" and 'single' quotes
@@ -251,7 +251,7 @@ $t->diag('Exceptions can be expected');
   list($result, $actual) = execute($file = 'test_expect.php');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
-$root/$file
+$root/@$file
 1..4
 Test 1
 not ok 1 - A "RuntimeException" was thrown
@@ -280,7 +280,7 @@ $t->diag('Old expected exceptions are ignored');
   list($result, $actual) = execute($file = 'test_expect_ignore_old.php');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
-$root/$file
+$root/@$file
 1..2
 Test 1
 ok 1 - A "RuntimeException" was thrown
@@ -302,7 +302,7 @@ $t->diag('Annotations can be commented out with /*...*/');
   list($result, $actual) = execute($file = 'test_multiline_comments.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Test 1
 Test 3
@@ -369,7 +369,7 @@ $t->diag('The last line in an annotated file can be a comment (bugfix)');
   list($result, $actual) = execute($file = 'test_last_line_commented.php');
   // assertion
   $expected = <<<EOF
-$root/$file
+$root/@$file
 1..0
 Test
  Looks like everything went fine.
