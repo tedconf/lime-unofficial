@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(5);
+$t = new LimeTest(6);
 
 
 // @Test: assertEquals() throws an exception if the other tester is no LimeTesterArray
@@ -21,6 +21,16 @@ $t = new LimeTest(5);
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterScalar(false);
+  // test
+  $t->expect('LimeNotEqualException');
+  $actual->assertEquals($expected);
+
+
+// @Test: assertEquals() throws an exception if the other tester is a LimeTesterObject
+
+  // fixtures
+  $actual = new LimeTesterArray(array());
+  $expected = new LimeTesterObject(new stdClass());
   // test
   $t->expect('LimeNotEqualException');
   $actual->assertEquals($expected);
@@ -70,6 +80,15 @@ $t = new LimeTest(5);
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterScalar(false);
+  // test
+  $actual->assertNotEquals($expected);
+
+
+// @Test: assertNotEquals() throws no exception if the other tester is a LimeTesterObject
+
+  // fixtures
+  $actual = new LimeTesterArray(array());
+  $expected = new LimeTesterObject(new stdClass());
   // test
   $actual->assertNotEquals($expected);
 

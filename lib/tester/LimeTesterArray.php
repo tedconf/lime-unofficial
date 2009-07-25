@@ -26,7 +26,7 @@ class LimeTesterArray extends LimeTester
 
   public function assertEquals($expected, $strict = false)
   {
-    if (get_class($expected) !== 'LimeTesterArray')
+    if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
       throw new LimeNotEqualException($this, $expected);
     }
@@ -60,7 +60,7 @@ class LimeTesterArray extends LimeTester
 
   public function assertNotEquals($expected, $strict = false)
   {
-    if (get_class($expected) !== 'LimeTesterArray')
+    if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
       return;
     }

@@ -11,8 +11,12 @@
 
 class LimeTesterObject extends LimeTesterArray
 {
+  private
+    $object = null;
+
   public function __construct($object)
   {
+    $this->object = $object;
     $this->type = get_class($object);
 
     $array = array();
@@ -43,5 +47,31 @@ class LimeTesterObject extends LimeTesterArray
   protected function getType()
   {
     return 'object('.$this->type.')';
+  }
+
+  public function assertEquals($expected, $strict = false)
+  {
+    parent::assertEquals($expected, $strict);
+
+    // still no exceptions, so properties are the same
+    if ($strict && $this->object !== $expected->object)
+    {
+      throw new LimeNotEqualException($this, $expected);
+    }
+  }
+
+  public function assertNotEquals($expected, $strict = false)
+  {
+    try
+    {
+      parent::assertNotEquals($expected, $strict);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      if (!$strict || $this->object === $expected->object)
+      {
+        throw $e;
+      }
+    }
   }
 }
