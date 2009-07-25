@@ -11,53 +11,67 @@
 
 include dirname(__FILE__).'/../bootstrap/unit.php';
 
+LimeAnnotationSupport::enable();
 
 class TestCase extends LimeTestCase
 {
-  public $methodCalls;
-
-  public function __construct()
-  {
-    parent::__construct(null, array('output' => new LimeOutputNone()));
-  }
+  public $impl;
 
   public function setUp()
   {
-    $this->methodCalls->addActual('setUp');
+    $this->impl->setUp();
   }
 
   public function tearDown()
   {
-    $this->methodCalls->addActual('tearDown');
+    $this->impl->tearDown();
   }
 
   public function testDoSomething()
   {
-    $this->methodCalls->addActual('testDoSomething');
+    $this->impl->testDoSomething();
   }
 
   public function testDoSomethingElse()
   {
-    $this->methodCalls->addActual('testDoSomethingElse');
+    $this->impl->testDoSomethingElse();
   }
 }
 
 
-$t = new LimeTest(1);
+$t = new LimeTest(8);
 
 
-$t->diag('The methods setUp() and tearDown() are called before and after each test method');
+// @Before
+
+  $output = LimeMock::create('LimeOutputInterface', $t);
+  $test = new TestCase(null, array('output' => $output));
+  $output->reset();
+  $test->impl = LimeMock::createStrict('Test', $t);
+
+
+// @Test: The methods setUp() and tearDown() are called before and after each test method
 
   // fixtures
-  $test = new TestCase();
-  $test->methodCalls = new LimeExpectationList($t->getOutput());
-  $test->methodCalls->addExpected('setUp');
-  $test->methodCalls->addExpected('testDoSomething');
-  $test->methodCalls->addExpected('tearDown');
-  $test->methodCalls->addExpected('setUp');
-  $test->methodCalls->addExpected('testDoSomethingElse');
-  $test->methodCalls->addExpected('tearDown');
+  $test->impl->setUp();
+  $test->impl->testDoSomething();
+  $test->impl->tearDown();
+  $test->impl->setUp();
+  $test->impl->testDoSomethingElse();
+  $test->impl->tearDown();
+  $test->impl->replay();
   // test
   $test->run();
   // assertions
-  $test->methodCalls->verify();
+  $test->impl->verify();
+
+
+// @Test: The method names are converted to comments
+
+  $output->comment('Do something');
+  $output->comment('Do something else');
+  $output->replay();
+  // test
+  $test->run();
+  // assertions
+  $output->verify();

@@ -34,13 +34,30 @@
 class LimeTestRunner
 {
   protected
+    $output             = null,
     $beforeAllCallbacks = array(),
     $afterAllCallbacks  = array(),
     $beforeCallbacks    = array(),
     $afterCallbacks     = array(),
     $testCallbacks      = array(),
+    $testComments       = array(),
     $errorCallbacks     = array(),
     $exceptionCallbacks = array();
+
+  /**
+   * Constructor.
+   *
+   * @param LimeOutputInterface $output
+   */
+  public function __construct(LimeOutputInterface $output = null)
+  {
+    if (is_null($output))
+    {
+      $output = new LimeOutputNone();
+    }
+
+    $this->output = $output;
+  }
 
   /**
    * Runs all registered callbacks.
@@ -52,8 +69,13 @@ class LimeTestRunner
       call_user_func($callback);
     }
 
-    foreach ($this->testCallbacks as $testCallback)
+    foreach ($this->testCallbacks as $key => $testCallback)
     {
+      if (!empty($this->testComments[$key]))
+      {
+        $this->output->comment($this->testComments[$key]);
+      }
+
       foreach ($this->beforeCallbacks as $callback)
       {
         call_user_func($callback);
@@ -136,10 +158,11 @@ class LimeTestRunner
    * @param  callable $callback
    * @throws InvalidArgumentException  If the argument is no callbale
    */
-  public function addTest($callback)
+  public function addTest($callback, $comment = '')
   {
     $this->assertIsCallable($callback);
     $this->testCallbacks[] = $callback;
+    $this->testComments[] = $comment;
   }
 
   /**

@@ -18,7 +18,7 @@ class LimeTestCase extends LimeTest
   {
     parent::__construct($plan, $options);
 
-    $this->testRunner = new LimeTestRunner();
+    $this->testRunner = new LimeTestRunner($this->getOutput());
     $this->testRunner->addBefore(array($this, 'setUp'));
     $this->testRunner->addAfter(array($this, 'tearDown'));
 
@@ -31,7 +31,7 @@ class LimeTestCase extends LimeTest
     {
       if (strpos($method, 'test') === 0 && strlen($method) > 4)
       {
-        $this->testRunner->addTest(array($this, $method));
+        $this->testRunner->addTest(array($this, $method), $this->humanize($method));
       }
     }
   }
@@ -43,5 +43,17 @@ class LimeTestCase extends LimeTest
   public function run()
   {
     $this->testRunner->run();
+  }
+
+  protected function humanize($method)
+  {
+    if (substr($method, 0, 4) == 'test')
+    {
+      $method = substr($method, 4);
+    }
+
+    $method = preg_replace('/([a-z])([A-Z])/', '$1 $2', $method);
+
+    return ucfirst(strtolower($method));
   }
 }

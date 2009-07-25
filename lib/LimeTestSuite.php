@@ -69,6 +69,7 @@ class LimeTestSuite extends LimeRegistration
 
     foreach ($this->files as $file)
     {
+      // start the file explicitly in case the file contains syntax errors
       $this->output->start($file);
       $connector->connect($file);
     }

@@ -52,7 +52,24 @@ class TestCase
 }
 
 
-$t = new LimeTest(20);
+$t = new LimeTest(21);
+
+
+$t->diag('The test comments are printed');
+
+  // fixtures
+  $output = LimeMock::create('LimeOutputInterface', $t);
+  $output->comment('A test comment');
+  $output->replay();
+  $mock = LimeMock::create('Mock');
+  $mock->testDoSomething();
+  $mock->replay();
+  $r = new LimeTestRunner($output);
+  $r->addTest(array($mock, 'testDoSomething'), 'A test comment');
+  // test
+  $r->run();
+  // assertions
+  $output->verify();
 
 
 $t->diag('The before callbacks are called before each test method');

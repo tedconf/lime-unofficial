@@ -198,17 +198,12 @@ class LimeLexerTransformAnnotations extends LimeLexerAnnotationAware
     else if ($this->inAnnotationDeclaration())
     {
       $functionName = '__lime_annotation_'.($this->functionCount++);
-      $this->functions[$this->getCurrentAnnotation()][] = $functionName;
+      $this->functions[$this->getCurrentAnnotation()][] = array($functionName, $this->getCurrentAnnotationComment());
 
       $text = $this->firstAnnotation ? '' : '} ';
       $this->firstAnnotation = false;
       $variables = count($this->variables) ? sprintf('global %s;', implode(', ', $this->variables)) : '';
       $text .= sprintf("function %s() { %s\n", $functionName, $variables);
-
-      if ($this->getCurrentAnnotationComment())
-      {
-        $text .= ' '.$this->testVariable.'->comment("'.str_replace('"', '\"', $this->getCurrentAnnotationComment()).'");';
-      }
     }
 
     fwrite($this->file, $text);

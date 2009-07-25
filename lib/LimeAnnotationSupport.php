@@ -91,7 +91,7 @@ class LimeAnnotationSupport
     {
       self::$enabled = true;
 
-      $support = new LimeAnnotationSupport(self::getScriptPath(), new LimeTestRunner());
+      $support = new LimeAnnotationSupport(self::getScriptPath());
       $support->execute();
 
       exit;
@@ -128,11 +128,10 @@ class LimeAnnotationSupport
    *
    * Creates a backup of the given file with the extension .bak.
    */
-  protected function __construct($path, LimeTestRunner $testRunner)
+  protected function __construct($path)
   {
     $this->originalPath = $path;
     $this->path = dirname($path).'/@'.basename($path);
-    $this->testRunner = $testRunner;
 
     register_shutdown_function(array($this, 'cleanup'));
   }
@@ -164,23 +163,26 @@ class LimeAnnotationSupport
 
     $this->includeTestFile();
 
+    $testRunner = new LimeTestRunner($this->test ? $this->test->getOutput() : null);
+
     foreach ($callbacks as $annotation => $callbacks)
     {
       $addMethod = 'add'.$annotation;
-      foreach ($callbacks as $callback)
+      foreach ($callbacks as $list)
       {
-        $this->testRunner->$addMethod($callback);
+        list ($callback, $comment) = $list;
+        $testRunner->$addMethod($callback, $comment);
       }
     }
 
     if ($this->test instanceof LimeTest)
     {
-      $this->testRunner->addExceptionHandler(array($this->test, 'handleException'));
-      $this->testRunner->addErrorHandler(array($this->test, 'handleError'));
-      $this->testRunner->addAfter(array($this->test, 'verifyException'));
+      $testRunner->addExceptionHandler(array($this->test, 'handleException'));
+      $testRunner->addErrorHandler(array($this->test, 'handleError'));
+      $testRunner->addAfter(array($this->test, 'verifyException'));
     }
 
-    $this->testRunner->run();
+    $testRunner->run();
   }
 
   /**
