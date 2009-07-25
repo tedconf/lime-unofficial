@@ -292,7 +292,7 @@ $t = new LimeTest(79);
   $printer->invoke('printText')->anyParameters();
   $printer->invoke('printLine')->anyParameters();
   $printer->printBox(' All tests successful.', LimePrinter::HAPPY);
-  $printer->printBox(' Files=2, Tests=3', LimePrinter::HAPPY);
+  $printer->printBox(' Files=2, Tests=3, Time=00:01', LimePrinter::HAPPY);
   $printer->replay();
   $output = new LimeOutputConsoleSummary($printer);
   // test

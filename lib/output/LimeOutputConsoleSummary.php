@@ -14,6 +14,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
   protected
     $printer = null,
     $baseDir = null,
+    $startTime = 0,
     $file = null,
     $actualFiles = 0,
     $failedFiles = 0,
@@ -29,6 +30,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
   {
     $this->printer = $printer;
     $this->baseDir = $baseDir;
+    $this->startTime = time();
   }
 
   public function start($file)
@@ -74,11 +76,11 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
       {
         $this->printer->printText('    ');
         $this->printer->printText('Passed: '.$this->passed);
-        $this->printer->printText(str_repeat(' ', 15 - strlen('Passed: '.$this->passed)));
+        $this->printer->printText(str_repeat(' ', 6 - strlen($this->passed)));
         $this->printer->printText('Failed: '.$this->failed, $this->failed > 0 ? LimePrinter::NOT_OK : null);
-        $this->printer->printText(str_repeat(' ', 15 - strlen('Failed: '.$this->failed)));
+        $this->printer->printText(str_repeat(' ', 6 - strlen($this->failed)));
         $this->printer->printText('Warnings: '.$this->warnings, $this->warnings > 0 ? LimePrinter::WARNING : null);
-        $this->printer->printText(str_repeat(' ', 15 - strlen('Warnings: '.$this->warnings)));
+        $this->printer->printText(str_repeat(' ', 6 - strlen($this->warnings)));
         $this->printer->printLine('Errors: '.$this->errors, $this->errors > 0 ? LimePrinter::NOT_OK : null);
       }
 
@@ -143,7 +145,9 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     }
     else
     {
-      $stats = sprintf(' Files=%d, Tests=%d', $this->actualFiles, $this->actualTests);
+      $time = max(1, time() - $this->startTime);
+      $stats = sprintf(' Files=%d, Tests=%d, Time=%02d:%02d',
+          $this->actualFiles, $this->actualTests, round($time/60), $time%60);
 
       $this->printer->printBox(' All tests successful.', LimePrinter::HAPPY);
       $this->printer->printBox($stats, LimePrinter::HAPPY);
