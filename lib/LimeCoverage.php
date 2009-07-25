@@ -15,13 +15,13 @@ class LimeCoverage extends LimeRegistration
     $files      = array(),
     $extension  = '.php',
     $baseDir    = '',
-    $harness    = null,
+    $suite      = null,
     $verbose    = false,
     $coverage   = array();
 
-  public function __construct(LimeHarness $harness)
+  public function __construct(LimeTestSuite $suite)
   {
-    $this->harness = $harness;
+    $this->suite = $suite;
 
     if (!function_exists('xdebug_start_code_coverage'))
     {
@@ -33,27 +33,27 @@ class LimeCoverage extends LimeRegistration
       throw new Exception('You must set xdebug.extended_info to 1 in your php.ini to use lime coverage.');
     }
   }
-    
+
   public function setFiles($files)
   {
     if (!is_array($files))
     {
       $files = array($files);
     }
-    
+
   	$this->files = $files;
   }
-  
+
   public function setExtension($extension)
   {
   	$this->extension = $extension;
   }
-  
+
   public function setBaseDir($baseDir)
   {
   	$this->baseDir = $baseDir;
   }
-  
+
   public function setVerbose($verbose)
   {
   	$this->verbose = $verbose;
@@ -61,7 +61,7 @@ class LimeCoverage extends LimeRegistration
 
   public function run()
   {
-    if (!count($this->harness->files))
+    if (!count($this->suite->files))
     {
       throw new Exception('You must register some test files before running coverage!');
     }
@@ -73,7 +73,7 @@ class LimeCoverage extends LimeRegistration
 
     $this->coverage = array();
 
-    $this->process($this->harness->files);
+    $this->process($this->suite->files);
 
     $this->output($this->files);
   }
@@ -92,7 +92,7 @@ EOF;
       file_put_contents($tmpFile, $tmp);
       ob_start();
       // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing
-      passthru(sprintf('cd & %s %s 2>&1', escapeshellarg($this->harness->executable), escapeshellarg($tmpFile)), $return);
+      passthru(sprintf('cd & %s %s 2>&1', escapeshellarg($this->suite->executable), escapeshellarg($tmpFile)), $return);
       $retval = ob_get_clean();
 
       if (0 != $return) // test exited without success
@@ -101,7 +101,7 @@ EOF;
         // it's a bug in their code and not symfony's
 
         // TODO: can this line be replaced by a call to ->error()?
-        $this->harness->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $return), LimeOutput::ERROR);
+        $this->suite->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $return), LimeOutput::ERROR);
       }
 
       if (false === $cov = @unserialize(substr($retval, strpos($retval, '<PHP_SER>') + 9, strpos($retval, '</PHP_SER>') - 9)))
@@ -116,7 +116,7 @@ EOF;
         {
           // failed to serialize, but PHP warned us that this might have happened.
           // so we should ignore and move on
-          continue; // continue foreach loop through $this->harness->files
+          continue; // continue foreach loop through $this->suite->files
         }
       }
 
@@ -177,7 +177,7 @@ EOF;
         $totalLines = count($this->getPhpLines(file_get_contents($file)));
       }
 
-      $output = $this->harness->output;
+      $output = $this->suite->output;
       $percent = $totalLines ? count($coveredLines) * 100 / $totalLines : 0;
 
       $totalPhpLines += $totalLines;

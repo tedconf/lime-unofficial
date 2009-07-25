@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeHarness extends LimeRegistration
+class LimeTestSuite extends LimeRegistration
 {
   protected
     $options    = array(),

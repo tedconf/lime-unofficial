@@ -102,7 +102,7 @@ class lime_colorizer extends LimeColorizer
   }
 }
 
-class lime_harness extends LimeHarness
+class lime_harness extends LimeTestSuite
 {
   public function __construct($options = array())
   {
