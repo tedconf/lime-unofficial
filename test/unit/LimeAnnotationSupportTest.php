@@ -21,7 +21,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(34);
+$t = new LimeAnnotationSupportTest(35);
 
 $root = '/test/unit/LimeAnnotationSupport';
 
@@ -222,6 +222,21 @@ Global
 GlobalBefore
 GlobalBeforeTest
 GlobalBeforeTestAfter
+ Looks like everything went fine.
+EOF;
+  $t->is($result, 0, 'The file returned exit status 0 (success)');
+
+
+$t->diag('Variables from other annotations are NOT available in all other scopes');
+
+  // test
+  list($result, $actual) = execute($file = 'test_scope_private.php');
+  // assertion
+  $expected = <<<EOF
+$root/@$file
+1..0
+Is not set
+Is not set
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');

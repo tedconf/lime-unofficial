@@ -12,14 +12,25 @@
 /**
  * Extracts all global variables from a source file.
  *
+ * This lexer includes all global variables that are not inside annotations,
+ * except variables from the @Before scope, which are included as well.
+ *
  * @package    lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
-class LimeLexerVariables extends LimeLexer
+class LimeLexerVariables extends LimeLexerAnnotationAware
 {
   protected
+    $includedAnnotations = array(),
     $variables = array();
+
+  public function __construct(array $allowedAnnotations = array(), array $includedAnnotations = array())
+  {
+    parent::__construct($allowedAnnotations);
+
+    $this->includedAnnotations = $includedAnnotations;
+  }
 
   /**
    * (non-PHPdoc)
@@ -27,7 +38,8 @@ class LimeLexerVariables extends LimeLexer
    */
   protected function process($text, $id)
   {
-    if ($id == T_VARIABLE && !$this->inClass() && !$this->inFunction())
+    if ($id == T_VARIABLE && !$this->inClass() && !$this->inFunction()
+        && (!$this->inAnnotation() || in_array($this->getCurrentAnnotation(), $this->includedAnnotations)))
     {
       $this->variables[] = $text;
     }

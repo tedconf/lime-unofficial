@@ -88,7 +88,9 @@ abstract class LimeLexer
             break;
         }
 
+        $this->beforeProcess($token, null);
         $this->process($token, null);
+        $this->afterProcess($token, null);
 
         switch ($token)
         {
@@ -229,7 +231,9 @@ abstract class LimeLexer
             break;
         }
 
+        $this->beforeProcess($text, $id);
         $this->process($text, $id);
+        $this->afterProcess($text, $id);
       }
 
       if (!$this->continue)
@@ -239,6 +243,14 @@ abstract class LimeLexer
     }
 
     return $this->getResult();
+  }
+
+  protected function beforeProcess($text, $id)
+  {
+  }
+
+  protected function afterProcess($text, $id)
+  {
   }
 
   /**

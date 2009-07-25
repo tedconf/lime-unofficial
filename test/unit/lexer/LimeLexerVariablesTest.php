@@ -12,7 +12,7 @@
 include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 
-$t = new LimeTest(2);
+$t = new LimeTest(4);
 
 
 $t->diag('All variables are extracted from the text');
@@ -51,4 +51,46 @@ EOF
 );
   // assertions
   $expected = array('$a');
+  $t->is($actual, $expected, 'The correct variables are returned');
+
+
+$t->diag('Variables in annotations are ignored');
+
+  // fixtures
+  $l = new LimeLexerVariables(array('Annotation'));
+  // test
+  $actual = $l->parse(<<<EOF
+<?php
+\$a = 0;
+
+// @Annotation
+\$b = 1;
+
+// @Annotation
+\$c = 1;
+EOF
+);
+  // assertions
+  $expected = array('$a');
+  $t->is($actual, $expected, 'The correct variables are returned');
+
+
+$t->diag('Variables in the given included annotations are included');
+
+  // fixtures
+  $l = new LimeLexerVariables(array('Annotation', 'Include'), array('Include'));
+  // test
+  $actual = $l->parse(<<<EOF
+<?php
+\$a = 0;
+
+// @Include
+\$b = 1;
+
+// @Annotation
+\$c = 1;
+EOF
+);
+  // assertions
+  $expected = array('$a', '$b');
   $t->is($actual, $expected, 'The correct variables are returned');

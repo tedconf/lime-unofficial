@@ -16,7 +16,7 @@
  * by annotation name.
  *
  * <code>
- * $lexer = new LimeLexerAnnotations('path/to/transformed/file.php', array('First', 'Second'));
+ * $lexer = new LimeLexerTransformAnnotations('path/to/transformed/file.php', array('First', 'Second'));
  * $functions = $lexer->parse('/path/to/original/file.php');
  *
  * // => array('First' => array(...), 'Second' => array(...))
@@ -55,20 +55,22 @@
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
-class LimeLexerAnnotations extends LimeLexer
+class LimeLexerTransformAnnotations extends LimeLexerAnnotationAware
 {
+  protected static
+    $annotations  = array('Test', 'Before', 'After', 'BeforeAll', 'AfterAll');
+
   protected
-    $allowedAnnotations,
     $fileName,
     $file,
     $variables,
     $functions,
-    $inAnnotation,
     $functionCount,
     $initialized,
     $testVariable,
     $classBuffer,
-    $classNotLoaded;
+    $classNotLoaded,
+    $firstAnnotation;
 
   /**
    * Constructor.
@@ -77,10 +79,11 @@ class LimeLexerAnnotations extends LimeLexer
    *                                     will be written.
    * @param  array  $allowedAnnotations  The allowed annotations.
    */
-  public function __construct($targetFile, array $allowedAnnotations)
+  public function __construct($targetFile)
   {
+    parent::__construct(self::$annotations);
+
     $this->fileName = $targetFile;
-    $this->allowedAnnotations = $allowedAnnotations;
   }
 
   /**
@@ -96,20 +99,20 @@ class LimeLexerAnnotations extends LimeLexer
       $content = file_get_contents($content);
     }
 
-    $lexer = new LimeLexerVariables();
+    $lexer = new LimeLexerVariables($this->getAllowedAnnotations(), array('Before'));
     $this->variables = $lexer->parse($content);
 
     $lexer = new LimeLexerTestVariable();
     $this->testVariable = $lexer->parse($content);
 
-    $this->inAnnotation = false;
     $this->initialized = false;
     $this->functionCount = 0;
     $this->functions = array();
     $this->classBuffer = '';
     $this->classNotLoaded = false;
+    $this->firstAnnotation = true;
 
-    foreach ($this->allowedAnnotations as $annotation)
+    foreach ($this->getAllowedAnnotations() as $annotation)
     {
       $this->functions[$annotation] = array();
     }
@@ -119,7 +122,7 @@ class LimeLexerAnnotations extends LimeLexer
 
     $result = parent::parse($content);
 
-    if ($this->inAnnotation)
+    if ($this->inAnnotation())
     {
       fwrite($this->file, "\n}");
     }
@@ -192,24 +195,19 @@ class LimeLexerAnnotations extends LimeLexer
     {
       $text = str_repeat("\n", count(explode("\n", $text)) - 1);
     }
-    else if ($id = T_COMMENT && strpos($text, '//') === 0)
+    else if ($this->inAnnotationDeclaration())
     {
-      list($annotation, $comment) = $this->extractAnnotation($text);
+      $functionName = '__lime_annotation_'.($this->functionCount++);
+      $this->functions[$this->getCurrentAnnotation()][] = $functionName;
 
-      if (!is_null($annotation))
+      $text = $this->firstAnnotation ? '' : '} ';
+      $this->firstAnnotation = false;
+      $variables = count($this->variables) ? sprintf('global %s;', implode(', ', $this->variables)) : '';
+      $text .= sprintf("function %s() { %s\n", $functionName, $variables);
+
+      if ($this->getCurrentAnnotationComment())
       {
-        $functionName = '__lime_annotation_'.($this->functionCount++);
-        $this->functions[$annotation][] = $functionName;
-
-        $text = $this->inAnnotation ? '} ' : '';
-        $this->inAnnotation = true;
-        $variables = count($this->variables) ? sprintf('global %s;', implode(', ', $this->variables)) : '';
-        $text .= sprintf("function %s() { %s\n", $functionName, $variables);
-
-        if (!empty($comment))
-        {
-          $text .= ' '.$this->testVariable.'->comment("'.str_replace('"', '\"', $comment).'");';
-        }
+        $text .= ' '.$this->testVariable.'->comment("'.str_replace('"', '\"', $this->getCurrentAnnotationComment()).'");';
       }
     }
 
@@ -223,45 +221,5 @@ class LimeLexerAnnotations extends LimeLexer
   protected function getResult()
   {
     return $this->functions;
-  }
-
-  /**
-   * Extracts an annotation from a single-line comment and validates it.
-   *
-   * Possible valid annotations are:
-   * <code>
-   * // @Annotation
-   * // @Annotation: Some comment here
-   * </code>
-   *
-   * The results for those annotations are:
-   * <code>
-   * array('Annotation', null);
-   * array('Annotation', 'Some comment here');
-   * </code>
-   *
-   * @param  string $text  Some code
-   *
-   * @return array         An array with the annotation name and the annotation
-   *                       comment. If either of both cannot be read, it is NULL.
-   */
-  protected function extractAnnotation($text)
-  {
-    if (preg_match('/^\/\/\s*@(\w+)([:\s]+(.*))?\s*$/', $text, $matches))
-    {
-      $annotation = $matches[1];
-      $data = count($matches) > 3 ? trim($matches[3]) : null;
-
-      if (!in_array($annotation, $this->allowedAnnotations))
-      {
-        throw new LogicException(sprintf('The annotation "%s" is not valid', $annotation));
-      }
-
-      return array($annotation, $data);
-    }
-    else
-    {
-      return array(null, null);
-    }
   }
 }

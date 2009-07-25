@@ -73,7 +73,6 @@
 class LimeAnnotationSupport
 {
   protected static
-    $annotations  = array('Test', 'Before', 'After', 'BeforeAll', 'AfterAll'),
     $enabled      = false;
 
   protected
@@ -160,7 +159,7 @@ class LimeAnnotationSupport
       unlink($this->path);
     }
 
-    $this->lexer = new LimeLexerAnnotations($this->path, self::$annotations);
+    $this->lexer = new LimeLexerTransformAnnotations($this->path);
     $callbacks = $this->lexer->parse($this->originalPath);
 
     $this->includeTestFile();
