@@ -396,13 +396,20 @@ class LimeTest
     $this->output->error($message);
   }
 
-  public function expect($exception, $code = null)
+  public function expect($class, $code = null)
   {
-    $this->expectedExceptionAt  = LimeTrace::findCaller('LimeTest');
-    $this->expectedException    = $exception;
-    $this->expectedCode         = $code;
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
+    if ($class instanceof Exception)
+    {
+      $this->expectedException = new LimeExpectedException(get_class($class), $class->getCode(), $file, $line);
+    }
+    else
+    {
+      $this->expectedException = new LimeExpectedException($class, $code, $file, $line);
+    }
+
     $this->actualException      = null;
-    $this->actualCode           = null;
   }
 
   protected function trimPath($path)
@@ -436,8 +443,7 @@ class LimeTest
   {
     if (!is_null($this->expectedException))
     {
-      $this->actualException = get_class($exception);
-      $this->actualCode = $exception->getCode();
+      $this->actualException = $exception;
     }
     else
     {
@@ -453,28 +459,28 @@ class LimeTest
   {
     if (!is_null($this->expectedException))
     {
-      if (is_null($this->expectedCode))
+      $expected = $this->expectedException;
+      $actual = LimeExpectedException::create($this->actualException);
+
+      if (is_null($expected->getCode()))
       {
-        $actual = $this->actualException;
-        $expected = $this->expectedException;
-        $message = sprintf('A "%s" was thrown', $this->expectedException);
+        $message = sprintf('A "%s" was thrown', $expected->getClass());
       }
       else
       {
-        $actual = sprintf('%s (%s)', $this->actualException, var_export($this->actualCode, true));
-        $expected = sprintf('%s (%s)', $this->expectedException, var_export($this->expectedCode, true));
-        $message = sprintf('A "%s" with code "%s" was thrown', $this->expectedException, $this->expectedCode);
+        $message = sprintf('A "%s" with code "%s" was thrown', $expected->getClass(), $expected->getCode());
       }
 
-      list ($file, $line) = $this->expectedExceptionAt;
+      $file = $expected->getFile();
+      $line = $expected->getLine();
 
-      if ($actual == $expected)
+      if ($expected->equals($actual))
       {
         $this->output->pass($message, $file, $line);
       }
       else
       {
-        $error = sprintf("     got: %s\nexpected: %s", is_null($this->actualException) ? 'none' : $actual, $expected);
+        $error = sprintf("     got: %s\nexpected: %s", $actual, $expected);
         $this->output->fail($message, $file, $line, $error);
       }
     }

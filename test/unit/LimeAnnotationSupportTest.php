@@ -21,7 +21,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(35);
+$t = new LimeAnnotationSupportTest(37);
 
 $root = '/test/unit/LimeAnnotationSupport';
 
@@ -283,6 +283,30 @@ not ok 3 - A "RuntimeException" with code "1" was thrown
 Test 4
 ok 4 - A "RuntimeException" with code "1" was thrown
  Looks like you failed 2 tests of 4.
+EOF
+, '/')).'/';
+  $t->is($result, 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($actual, $expected, 'like');
+
+
+$t->diag('Exception objects can be expected');
+
+  // test
+  list($result, $actual) = execute($file = 'test_expect_object.php');
+  // assertion
+  $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
+$root/@$file
+1..3
+Test 1
+ok 1 - A "RuntimeException" with code "0" was thrown
+Test 2
+not ok 2 - A "RuntimeException" with code "1" was thrown
+#     Failed test (%ANY%)
+#            got: RuntimeException (0)
+#       expected: RuntimeException (1)
+Test 3
+ok 3 - A "RuntimeException" with code "1" was thrown
+ Looks like you failed 1 tests of 3.
 EOF
 , '/')).'/';
   $t->is($result, 0, 'The file returned exit status 0 (success)');
