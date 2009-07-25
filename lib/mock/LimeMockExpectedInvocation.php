@@ -38,7 +38,14 @@ class LimeMockExpectedInvocation
   {
     if (!is_null($this->exception))
     {
-      throw new $this->exception();
+      if (is_string($this->exception))
+      {
+        throw new $this->exception();
+      }
+      else
+      {
+        throw $this->exception;
+      }
     }
 
     return $this->returnValue;

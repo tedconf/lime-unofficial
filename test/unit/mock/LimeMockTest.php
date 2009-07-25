@@ -55,7 +55,7 @@ class TestClassWithMethodsFromMock
 class TestException extends Exception {}
 
 
-$t = new LimeTest(78);
+$t = new LimeTest(79);
 
 
 // @Before
@@ -168,6 +168,17 @@ $t = new LimeTest(78);
   $m->testMethod()->throws('TestException');
   $m->replay();
   $t->expect('TestException');
+  // test
+  $m->testMethod();
+
+
+// @Test: Exceptions can be stubbed using objects
+
+  // fixtures
+  $m = LimeMock::create('TestClass');
+  $m->testMethod()->throws(new TestException());
+  $m->replay();
+  $t->expect('TestException'); // TODO: It would be good if we could test for the exact object
   // test
   $m->testMethod();
 
