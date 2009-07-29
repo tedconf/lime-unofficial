@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(40);
+$t = new LimeTest(41);
 
 // @Before
 
@@ -161,6 +161,17 @@ $t = new LimeTest(40);
   $printer->replay();
   // test
   $output->error('A very important error', '/test/file', 11);
+  // assertions
+  $printer->verify();
+
+
+// @Test: info() prints an information
+
+  // fixtures
+  $printer->printLine('# My information', LimePrinter::INFO);
+  $printer->replay();
+  // test
+  $output->info('My information', '/test/file', 11);
   // assertions
   $printer->verify();
 

@@ -129,6 +129,8 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $this->errors++;
   }
 
+  public function info($message) {}
+
   public function comment($message) {}
 
   public function flush()

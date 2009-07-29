@@ -117,6 +117,11 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
   }
 
+  public function info($message)
+  {
+    $this->printer->printLine('# '.$message, LimePrinter::INFO);
+  }
+
   public function comment($message)
   {
     $this->printer->printLine('# '.$message, LimePrinter::COMMENT);

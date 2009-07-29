@@ -25,6 +25,8 @@ interface LimeOutputInterface
 
   public function error($message, $file, $line);
 
+  public function info($message);
+
   public function comment($message);
 
   public function flush();

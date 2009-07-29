@@ -64,6 +64,10 @@ class LimeOutputArray implements LimeOutputInterface
   {
   }
 
+  public function info($message)
+  {
+  }
+
   public function comment($message)
   {
   }
