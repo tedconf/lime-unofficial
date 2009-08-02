@@ -26,9 +26,25 @@ class LimeTesterScalar extends LimeTester
     return var_export($this->value, true);
   }
 
+  private function equals(LimeTesterInterface $other)
+  {
+    $exp1 = $this->value;
+    $exp2 = $other->value;
+
+    // always compare as strings to avoid strange behaviour
+    // otherwise 0 == 'Foobar'
+    if (is_string($exp1) || is_string($exp2))
+    {
+      $exp1 = (string)$exp1;
+      $exp2 = (string)$exp2;
+    }
+
+    return $exp1 == $exp2;
+  }
+
   public function assertEquals(LimeTesterInterface $expected)
   {
-    if ($this->value != $expected->value)
+    if (!$this->equals($expected))
     {
       throw new LimeNotEqualException($this, $expected);
     }
@@ -44,7 +60,7 @@ class LimeTesterScalar extends LimeTester
 
   public function assertNotEquals(LimeTesterInterface $expected)
   {
-    if ($this->value == $expected->value)
+    if ($this->equals($expected))
     {
       throw new LimeNotEqualException($this, $expected);
     }

@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(3);
+$t = new LimeTest(4);
 
 
 // @Test: assertEquals() throws an exception if the values differ
@@ -21,6 +21,17 @@ $t = new LimeTest(3);
   // fixtures
   $actual = new LimeTesterScalar('a');
   $expected = new LimeTesterScalar('b');
+  // test
+  $t->expect('LimeNotEqualException');
+  $actual->assertEquals($expected);
+
+
+// @Test: assertEquals() throws an exception if the values differ and standard comparison succeeds
+
+  // fixtures
+  // 0 == 'Foobar' => true!
+  $actual = new LimeTesterScalar(0);
+  $expected = new LimeTesterScalar('Foobar');
   // test
   $t->expect('LimeNotEqualException');
   $actual->assertEquals($expected);
@@ -52,6 +63,16 @@ $t = new LimeTest(3);
   $expected = new LimeTesterScalar(1);
   // test
   $t->expect('LimeNotEqualException');
+  $actual->assertNotEquals($expected);
+
+
+// @Test: assertNotEquals() throws no exception if values differ but standard comparison succeeds
+
+  // fixtures
+  // 0 == 'Foobar' => true!
+  $actual = new LimeTesterScalar(0);
+  $expected = new LimeTesterScalar('Foobar');
+  // test
   $actual->assertNotEquals($expected);
 
 
