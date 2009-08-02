@@ -13,23 +13,23 @@ interface LimeTesterInterface
 {
   public function __toString();
 
-  public function assertEquals($expected);
+  public function assertEquals(LimeTesterInterface $expected);
 
-  public function assertNotEquals($expected);
+  public function assertNotEquals(LimeTesterInterface $expected);
 
-  public function assertSame($expected);
+  public function assertSame(LimeTesterInterface $expected);
 
-  public function assertNotSame($expected);
+  public function assertNotSame(LimeTesterInterface $expected);
 
-  public function assertLike($expected);
+  public function assertLike(LimeTesterInterface $expected);
 
-  public function assertUnlike($expected);
+  public function assertUnlike(LimeTesterInterface $expected);
 
-  public function assertGreaterThan($expected);
+  public function assertGreaterThan(LimeTesterInterface $expected);
 
-  public function assertGreaterThanOrEqual($expected);
+  public function assertGreaterThanOrEqual(LimeTesterInterface $expected);
 
-  public function assertLessThan($expected);
+  public function assertLessThan(LimeTesterInterface $expected);
 
-  public function assertLessThanOrEqual($expected);
+  public function assertLessThanOrEqual(LimeTesterInterface $expected);
 }

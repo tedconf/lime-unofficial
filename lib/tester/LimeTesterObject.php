@@ -59,7 +59,7 @@ class LimeTesterObject extends LimeTesterArray
     return 'object('.$this->type.')';
   }
 
-  public function assertSame($expected)
+  public function assertSame(LimeTesterInterface $expected)
   {
     $this->assertEquals($expected);
 
@@ -70,7 +70,7 @@ class LimeTesterObject extends LimeTesterArray
     }
   }
 
-  public function assertNotSame($expected)
+  public function assertNotSame(LimeTesterInterface $expected)
   {
     try
     {

@@ -114,52 +114,52 @@ abstract class LimeTester implements LimeTesterInterface
     throw new BadMethodCallException(sprintf('"%s" is not implemtented for type "%s"', $method, $this->type));
   }
 
-  public function assertEquals($expected)
+  public function assertEquals(LimeTesterInterface $expected)
   {
     $this->notImplemented('==');
   }
 
-  public function assertNotEquals($expected)
+  public function assertNotEquals(LimeTesterInterface $expected)
   {
     $this->notImplemented('!=');
   }
 
-  public function assertSame($expected)
+  public function assertSame(LimeTesterInterface $expected)
   {
     $this->notImplemented('===');
   }
 
-  public function assertNotSame($expected)
+  public function assertNotSame(LimeTesterInterface $expected)
   {
     $this->notImplemented('!==');
   }
 
-  public function assertLike($expected)
+  public function assertLike(LimeTesterInterface $expected)
   {
     $this->notImplemented('like');
   }
 
-  public function assertUnlike($expected)
+  public function assertUnlike(LimeTesterInterface $expected)
   {
     $this->notImplemented('unlike');
   }
 
-  public function assertGreaterThan($expected)
+  public function assertGreaterThan(LimeTesterInterface $expected)
   {
     $this->notImplemented('>');
   }
 
-  public function assertGreaterThanOrEqual($expected)
+  public function assertGreaterThanOrEqual(LimeTesterInterface $expected)
   {
     $this->notImplemented('>=');
   }
 
-  public function assertLessThan($expected)
+  public function assertLessThan(LimeTesterInterface $expected)
   {
     $this->notImplemented('<');
   }
 
-  public function assertLessThanOrEqual($expected)
+  public function assertLessThanOrEqual(LimeTesterInterface $expected)
   {
     $this->notImplemented('<=');
   }

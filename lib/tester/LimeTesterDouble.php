@@ -34,7 +34,7 @@ class LimeTesterDouble extends LimeTesterInteger
     }
   }
 
-  public function assertEquals($expected)
+  public function assertEquals(LimeTesterInterface $expected)
   {
     if (abs($this->value - $expected->value) >= self::EPSILON)
     {
@@ -42,7 +42,7 @@ class LimeTesterDouble extends LimeTesterInteger
     }
   }
 
-  public function assertNotEquals($expected)
+  public function assertNotEquals(LimeTesterInterface $expected)
   {
     if (abs($this->value - $expected->value) < self::EPSILON)
     {
@@ -50,7 +50,7 @@ class LimeTesterDouble extends LimeTesterInteger
     }
   }
 
-  public function assertSame($expected)
+  public function assertSame(LimeTesterInterface $expected)
   {
     $this->assertEquals($expected);
 
@@ -60,7 +60,7 @@ class LimeTesterDouble extends LimeTesterInteger
     }
   }
 
-  public function assertNotSame($expected)
+  public function assertNotSame(LimeTesterInterface $expected)
   {
     try
     {

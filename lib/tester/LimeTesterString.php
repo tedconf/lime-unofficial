@@ -19,7 +19,7 @@ class LimeTesterString extends LimeTesterScalar
     return "'".$this->value."'";
   }
 
-  public function assertLike($expected)
+  public function assertLike(LimeTesterInterface $expected)
   {
     if (!preg_match($expected->value, $this->value))
     {
@@ -27,7 +27,7 @@ class LimeTesterString extends LimeTesterScalar
     }
   }
 
-  public function assertUnlike($expected)
+  public function assertUnlike(LimeTesterInterface $expected)
   {
     if (preg_match($expected->value, $this->value))
     {

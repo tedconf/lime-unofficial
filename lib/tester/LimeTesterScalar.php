@@ -26,7 +26,7 @@ class LimeTesterScalar extends LimeTester
     return var_export($this->value, true);
   }
 
-  public function assertEquals($expected)
+  public function assertEquals(LimeTesterInterface $expected)
   {
     if ($this->value != $expected->value)
     {
@@ -34,7 +34,7 @@ class LimeTesterScalar extends LimeTester
     }
   }
 
-  public function assertSame($expected)
+  public function assertSame(LimeTesterInterface $expected)
   {
     if ($this->value !== $expected->value)
     {
@@ -42,7 +42,7 @@ class LimeTesterScalar extends LimeTester
     }
   }
 
-  public function assertNotEquals($expected)
+  public function assertNotEquals(LimeTesterInterface $expected)
   {
     if ($this->value == $expected->value)
     {
@@ -50,7 +50,7 @@ class LimeTesterScalar extends LimeTester
     }
   }
 
-  public function assertNotSame($expected)
+  public function assertNotSame(LimeTesterInterface $expected)
   {
     if ($this->value === $expected->value)
     {
@@ -58,7 +58,7 @@ class LimeTesterScalar extends LimeTester
     }
   }
 
-  public function assertGreaterThan($expected)
+  public function assertGreaterThan(LimeTesterInterface $expected)
   {
     if ($this->value <= $expected->value)
     {
@@ -66,7 +66,7 @@ class LimeTesterScalar extends LimeTester
     }
   }
 
-  public function assertGreaterThanOrEqual($expected)
+  public function assertGreaterThanOrEqual(LimeTesterInterface $expected)
   {
     if ($this->value < $expected->value)
     {
@@ -74,7 +74,7 @@ class LimeTesterScalar extends LimeTester
     }
   }
 
-  public function assertLessThanOrEqual($expected)
+  public function assertLessThanOrEqual(LimeTesterInterface $expected)
   {
     if ($this->value > $expected->value)
     {
@@ -82,7 +82,7 @@ class LimeTesterScalar extends LimeTester
     }
   }
 
-  public function assertLessThan($expected)
+  public function assertLessThan(LimeTesterInterface $expected)
   {
     if ($this->value >= $expected->value)
     {
