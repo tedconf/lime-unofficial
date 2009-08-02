@@ -125,3 +125,92 @@ class LimeAutoloader
     return false;
   }
 }
+
+/**
+ * Prints the given value to the error stream in a nicely formatted way.
+ *
+ * @param mixed $value
+ */
+function lime_debug($value)
+{
+  $result = "";
+
+  if (is_object($value) || is_array($value))
+  {
+    $result = is_object($value) ? sprintf("object(%s) (\n", get_class($value)) : "array (";
+
+    if (is_object($value))
+    {
+      $value = LimeTesterObject::toArray($value);
+    }
+
+    foreach ($value as $key => $val)
+    {
+      if (is_object($val) || is_array($val))
+      {
+        $output = is_object($val) ? sprintf("object(%s) (", get_class($val)) : "array (";
+
+        if (is_object($val))
+        {
+          $val = LimeTesterObject::toArray($val);
+        }
+
+        if (count($val) > 0)
+        {
+          $output .= "\n    ...\n  ";
+        }
+
+        $output .= ")";
+      }
+      else
+      {
+        if (is_string($val) && strlen($val) > 60)
+        {
+          $val = substr($val, 0, 57).'...';
+        }
+
+        $output = lime_colorize($val);
+      }
+
+      $result .= sprintf("  %s => %s,\n", var_export($key, true), $output);
+    }
+
+    $result .= ")";
+  }
+  else
+  {
+    $result = lime_colorize($value);
+  }
+
+  fwrite(STDERR, $result."\n");
+}
+
+/**
+ * Returns a colorized export of the given value depending on its type.
+ *
+ * @param  mixed $value
+ * @return string
+ */
+function lime_colorize($value)
+{
+  static $colorizer = null;
+
+  if (is_null($colorizer) && LimeColorizer::isSupported())
+  {
+    $colorizer = new LimeColorizer();
+    $colorizer->setStyle('string', array('fg' => 'cyan'));
+    $colorizer->setStyle('integer', array('fg' => 'green'));
+    $colorizer->setStyle('double', array('fg' => 'green'));
+    $colorizer->setStyle('boolean', array('fg' => 'red'));
+  }
+
+  $type = gettype($value);
+  $value = var_export($value, true);
+
+  if (!is_null($colorizer) && in_array($type, array('string', 'integer', 'double', 'boolean')))
+  {
+    $value = $colorizer->colorize($value, $type);
+  }
+
+  return $value;
+}

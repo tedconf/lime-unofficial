@@ -14,10 +14,12 @@ class LimeTesterObject extends LimeTesterArray
   private
     $object = null;
 
-  public function __construct($object)
+  public static function toArray($object)
   {
-    $this->object = $object;
-    $this->type = get_class($object);
+    if (!is_object($object))
+    {
+      throw new InvalidArgumentException('The argument must be an object');
+    }
 
     $array = array();
 
@@ -27,9 +29,9 @@ class LimeTesterObject extends LimeTesterArray
       if ($key{0} == "\0")
       {
         // private properties start with the class
-        if (strpos($key, $this->type) === 1)
+        if (strpos($key, get_class($object)) === 1)
         {
-          $key = substr($key, strlen($this->type)+2);
+          $key = substr($key, strlen(get_class($object))+2);
         }
         // protected properties start with *
         else
@@ -41,7 +43,15 @@ class LimeTesterObject extends LimeTesterArray
       $array[$key] = $value;
     }
 
-    parent::__construct($array);
+    return $array;
+  }
+
+  public function __construct($object)
+  {
+    $this->object = $object;
+    $this->type = get_class($object);
+
+    parent::__construct(self::toArray($object));
   }
 
   protected function getType()
