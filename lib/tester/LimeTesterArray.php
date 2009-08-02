@@ -12,7 +12,7 @@
 class LimeTesterArray extends LimeTester
 {
   protected
-    $type = 'array';
+    $type         = 'array';
 
   public function __construct(array $array)
   {
@@ -80,6 +80,74 @@ class LimeTesterArray extends LimeTester
       {
         throw new LimeTesterException($this, $expected);
       }
+    }
+  }
+
+  public function assertSame(LimeTesterInterface $expected)
+  {
+    if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
+    {
+      throw new LimeTesterException($this, $expected);
+    }
+
+    reset($this->value);
+
+    foreach ($expected->value as $key => $value)
+    {
+      if (current($this->value) === false)
+      {
+        throw new LimeTesterException($this, $expected->dumpExcerpt($key, $value));
+      }
+
+      if ($key != key($this->value))
+      {
+        throw new LimeTesterException($this->dumpExcerpt(key($this->value), current($this->value)), $expected->dumpExcerpt($key, $value));
+      }
+
+      try
+      {
+        current($this->value)->assertSame($value);
+      }
+      catch (LimeTesterException $e)
+      {
+        throw new LimeTesterException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
+      }
+
+      next($this->value);
+    }
+
+    if (current($this->value) !== false)
+    {
+      throw new LimeTesterException($this->dumpExcerpt(key($this->value), current($this->value)), $expected);
+    }
+  }
+
+  public function assertNotSame(LimeTesterInterface $expected)
+  {
+    if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
+    {
+      return;
+    }
+
+    reset($this->value);
+
+    foreach ($expected->value as $key => $value)
+    {
+      if (current($this->value) === false || $key != key($this->value))
+      {
+        return;
+      }
+
+      try
+      {
+        current($this->value)->assertNotSame($value);
+      }
+      catch (LimeTesterException $e)
+      {
+        throw new LimeTesterException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
+      }
+
+      next($this->value);
     }
   }
 
