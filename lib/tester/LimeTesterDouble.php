@@ -34,23 +34,44 @@ class LimeTesterDouble extends LimeTesterInteger
     }
   }
 
-  public function assertEquals($expected, $strict = false)
+  public function assertEquals($expected)
   {
-    $equal = abs($this->value - $expected->value) < self::EPSILON;
-
-    if (!$equal || ($strict && gettype($this->value) != gettype($expected->value)))
+    if (abs($this->value - $expected->value) >= self::EPSILON)
     {
       throw new LimeNotEqualException($this, $expected);
     }
   }
 
-  public function assertNotEquals($expected, $strict = false)
+  public function assertNotEquals($expected)
   {
-    $equal = abs($this->value - $expected->value) < self::EPSILON;
-
-    if ($equal && (!$strict || gettype($this->value) == gettype($expected->value)))
+    if (abs($this->value - $expected->value) < self::EPSILON)
     {
       throw new LimeNotEqualException($this, $expected);
+    }
+  }
+
+  public function assertSame($expected)
+  {
+    $this->assertEquals($expected);
+
+    if (gettype($this->value) != gettype($expected->value))
+    {
+      throw new LimeNotEqualException($this, $expected);
+    }
+  }
+
+  public function assertNotSame($expected)
+  {
+    try
+    {
+      $this->assertEquals($expected);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      if (gettype($this->value) == gettype($expected->value))
+      {
+        throw $e;
+      }
     }
   }
 }

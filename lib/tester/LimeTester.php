@@ -114,14 +114,24 @@ abstract class LimeTester implements LimeTesterInterface
     throw new BadMethodCallException(sprintf('"%s" is not implemtented for type "%s"', $method, $this->type));
   }
 
-  public function assertEquals($expected, $strict = false)
+  public function assertEquals($expected)
   {
     $this->notImplemented('==');
   }
 
-  public function assertNotEquals($expected, $strict = false)
+  public function assertNotEquals($expected)
   {
     $this->notImplemented('!=');
+  }
+
+  public function assertSame($expected)
+  {
+    $this->notImplemented('===');
+  }
+
+  public function assertNotSame($expected)
+  {
+    $this->notImplemented('!==');
   }
 
   public function assertLike($expected)

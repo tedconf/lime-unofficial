@@ -13,9 +13,13 @@ interface LimeTesterInterface
 {
   public function __toString();
 
-  public function assertEquals($expected, $strict = false);
+  public function assertEquals($expected);
 
-  public function assertNotEquals($expected, $strict = false);
+  public function assertNotEquals($expected);
+
+  public function assertSame($expected);
+
+  public function assertNotSame($expected);
 
   public function assertLike($expected);
 

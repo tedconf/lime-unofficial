@@ -14,7 +14,7 @@ class LimeTesterResource extends LimeTester
   protected
     $type = 'resource';
 
-  public function assertEquals($expected, $strict = false)
+  public function assertEquals($expected)
   {
   }
 

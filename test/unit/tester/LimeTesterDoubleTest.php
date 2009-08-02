@@ -31,14 +31,14 @@ $t = new LimeTest(3);
   $actual->assertEquals($expected);
 
 
-// @Test: assertEquals() throws an exception if the types of the values differ and strict is set
+// @Test: assertSame() throws an exception if the types of the values differ
 
   // fixtures
   $actual = new LimeTesterDouble(1.0);
   $expected = new LimeTesterString('1.0');
   // test
   $t->expect('LimeNotEqualException');
-  $actual->assertEquals($expected, true);
+  $actual->assertSame($expected);
 
 
 // @Test: assertNotEquals() throws an exception if the difference between the doubles is very small
@@ -51,11 +51,11 @@ $t = new LimeTest(3);
   $actual->assertNotEquals($expected);
 
 
-// @Test: assertNotEquals() throws no exception if the types of the values differ and strict is set
+// @Test: assertNotSame() throws no exception if the types of the values differ
 
   // fixtures
   $actual = new LimeTesterDouble(1.0);
   $expected = new LimeTesterString('1.0');
   // test
-  $actual->assertNotEquals($expected, true);
+  $actual->assertNotSame($expected);
 

@@ -57,14 +57,14 @@ $t = new LimeTest(5);
   $actual->assertEquals($expected);
 
 
-// @Test: assertEquals() throws an exception if objects are not the same and strict is set
+// @Test: assertSame() throws an exception if objects are not the same
 
   // fixtures
   $actual = new LimeTesterObject(new TestClass());
   $expected = new LimeTesterObject(new TestClass());
   // test
   $t->expect('LimeNotEqualException');
-  $actual->assertEquals($expected, true);
+  $actual->assertSame($expected);
 
 
 // @Test: assertEquals() throws no exception if objects are the same and strict is set
@@ -96,7 +96,7 @@ $t = new LimeTest(5);
   $actual->assertNotEquals($expected);
 
 
-// @Test: assertNotEquals() throws an exception if the objects are identical and strict is set
+// @Test: assertNotSame() throws an exception if the objects are identical and strict is set
 
   // fixtures
   $object = new TestClass();
@@ -104,14 +104,14 @@ $t = new LimeTest(5);
   $expected = new LimeTesterObject($object);
   // test
   $t->expect('LimeNotEqualException');
-  $actual->assertNotEquals($expected, true);
+  $actual->assertNotSame($expected);
 
 
-// @Test: assertNotEquals() throws no exception if the objects are equal but strict is set
+// @Test: assertNotSame() throws no exception if the objects are equal but strict is set
 
   // fixtures
   $actual = new LimeTesterObject(new TestClass());
   $expected = new LimeTesterObject(new TestClass());
   // test
-  $actual->assertNotEquals($expected, true);
+  $actual->assertNotSame($expected);
 

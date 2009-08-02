@@ -59,26 +59,26 @@ class LimeTesterObject extends LimeTesterArray
     return 'object('.$this->type.')';
   }
 
-  public function assertEquals($expected, $strict = false)
+  public function assertSame($expected)
   {
-    parent::assertEquals($expected, $strict);
+    $this->assertEquals($expected);
 
     // still no exceptions, so properties are the same
-    if ($strict && $this->object !== $expected->object)
+    if ($this->object !== $expected->object)
     {
       throw new LimeNotEqualException($this, $expected);
     }
   }
 
-  public function assertNotEquals($expected, $strict = false)
+  public function assertNotSame($expected)
   {
     try
     {
-      parent::assertNotEquals($expected, $strict);
+      $this->assertNotEquals($expected);
     }
     catch (LimeNotEqualException $e)
     {
-      if (!$strict || $this->object === $expected->object)
+      if ($this->object === $expected->object)
       {
         throw $e;
       }

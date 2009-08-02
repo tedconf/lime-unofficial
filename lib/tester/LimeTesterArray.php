@@ -24,7 +24,7 @@ class LimeTesterArray extends LimeTester
     parent::__construct($array);
   }
 
-  public function assertEquals($expected, $strict = false)
+  public function assertEquals($expected)
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
@@ -42,7 +42,7 @@ class LimeTesterArray extends LimeTester
 
       try
       {
-        $remaining[$key]->assertEquals($value, $strict);
+        $remaining[$key]->assertEquals($value);
       }
       catch (LimeNotEqualException $e)
       {
@@ -58,7 +58,7 @@ class LimeTesterArray extends LimeTester
     }
   }
 
-  public function assertNotEquals($expected, $strict = false)
+  public function assertNotEquals($expected)
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
@@ -74,7 +74,7 @@ class LimeTesterArray extends LimeTester
 
       try
       {
-        $this->value[$key]->assertNotEquals($value, $strict);
+        $this->value[$key]->assertNotEquals($value);
       }
       catch (LimeNotEqualException $e)
       {
