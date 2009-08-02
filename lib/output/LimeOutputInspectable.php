@@ -1,0 +1,106 @@
+<?php
+
+/*
+ * This file is part of the symfony framework.
+ *
+ * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+class LimeOutputInspectable implements LimeOutputInterface
+{
+  private
+    $output = null,
+    $passed = 0,
+    $failed = 0,
+    $skipped = 0,
+    $errors = 0,
+    $warnings = 0;
+
+  public function __construct(LimeOutputInterface $output = null)
+  {
+    $this->output = is_null($output) ? new LimeOutputNone() : $output;
+  }
+
+  public function getPassed()
+  {
+    return $this->passed;
+  }
+
+  public function getFailed()
+  {
+    return $this->failed;
+  }
+
+  public function getSkipped()
+  {
+    return $this->skipped;
+  }
+
+  public function getErrors()
+  {
+    return $this->errors;
+  }
+
+  public function getWarnings()
+  {
+    return $this->warnings;
+  }
+
+  public function start($file)
+  {
+    $this->output->start($file);
+  }
+
+  public function plan($amount)
+  {
+    $this->output->plan($amount);
+  }
+
+  public function pass($message, $file, $line)
+  {
+    $this->passed++;
+    $this->output->pass($message, $file, $line);
+  }
+
+  public function fail($message, $file, $line, $error = null)
+  {
+    $this->failed++;
+    $this->output->fail($message, $file, $line, $error);
+  }
+
+  public function skip($message, $file, $line)
+  {
+    $this->skipped++;
+    $this->output->skip($message, $file, $line);
+  }
+
+  public function warning($message, $file, $line)
+  {
+    $this->warnings++;
+    $this->output->warning($message, $file, $line);
+  }
+
+  public function error($message, $file, $line)
+  {
+    $this->errors++;
+    $this->output->error($message, $file, $line);
+  }
+
+  public function info($message)
+  {
+    $this->output->info($message);
+  }
+
+  public function comment($message)
+  {
+    $this->output->comment($message);
+  }
+
+  public function flush()
+  {
+    $this->output->flush();
+  }
+}

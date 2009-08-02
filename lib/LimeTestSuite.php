@@ -28,7 +28,9 @@ class LimeTestSuite extends LimeRegistration
 
     $this->options['base_dir'] = realpath($this->options['base_dir']);
 
-    $this->output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
+    $output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
+
+    $this->output = new LimeOutputInspectable($output);
   }
 
   protected function getDefaultOutput($forceColors = false)
@@ -76,7 +78,11 @@ class LimeTestSuite extends LimeRegistration
 
     $this->output->flush();
 
-    // should return correct error value
-    return true;
+    $failed = $this->output->getFailed();
+    $errors = $this->output->getErrors();
+    $warnings = $this->output->getWarnings();
+    $skipped = $this->output->getSkipped();
+
+    return 0 == ($failed + $errors + $warnings + $skipped);
   }
 }
