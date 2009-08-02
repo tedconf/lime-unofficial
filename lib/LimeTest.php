@@ -18,9 +18,6 @@
  */
 class LimeTest
 {
-  const
-    EPSILON = 0.0000000001;
-
   protected
     $output               = null,
     $options              = array(),
@@ -572,16 +569,6 @@ class LimeTest
     $this->actualException = null;
   }
 
-  protected function trimPath($path)
-  {
-    if (array_key_exists('base_dir', $this->options))
-    {
-      $path = str_replace($this->options['base_dir'], '', $path);
-    }
-
-    return $path;
-  }
-
   public function handleError($code, $message, $file, $line, $context)
   {
     switch ($code)
@@ -594,7 +581,7 @@ class LimeTest
         break;
     }
 
-    $this->output->warning($message, $this->trimPath($file), $line);
+    $this->output->warning($message, $file, $line);
 
     return true;
   }
@@ -609,7 +596,7 @@ class LimeTest
     {
       $message = get_class($exception).': '.$exception->getMessage();
 
-      $this->output->error($message, $this->trimPath($exception->getFile()), $exception->getLine());
+      $this->output->error($message, $exception->getFile(), $exception->getLine());
     }
 
     return true;
