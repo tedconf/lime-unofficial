@@ -22,7 +22,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterScalar(false);
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertEquals($expected);
 
 
@@ -32,7 +32,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterObject(new stdClass());
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertEquals($expected);
 
 
@@ -42,7 +42,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterArray(array(0 => 1));
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertEquals($expected);
 
 
@@ -52,7 +52,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array());
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertEquals($expected);
 
 
@@ -62,7 +62,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array(0 => 2));
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertEquals($expected);
 
 
@@ -99,7 +99,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array(0 => 1));
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertNotEquals($expected);
 
 
@@ -109,7 +109,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = LimeTester::create(0);
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertContains($expected);
 
 
@@ -128,7 +128,7 @@ $t = new LimeTest(8);
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = LimeTester::create(1);
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertNotContains($expected);
 
 

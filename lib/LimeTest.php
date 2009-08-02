@@ -149,7 +149,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("     got: %s\nexpected: %s", $e->getActual(10), $e->getExpected(10));
 
@@ -177,7 +177,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("     got: %s\nexpected: %s", $e->getActual(10), $e->getExpected(10));
 
@@ -205,7 +205,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("%s\n    ne\n%s", $e->getActual(), $e->getExpected());
 
@@ -233,7 +233,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("%s\n    ne\n%s", $e->getActual(), $e->getExpected());
 
@@ -261,7 +261,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("              %s\ndoesn't match %s", $e->getActual(), $e->getExpected());
 
@@ -289,7 +289,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("         %s\nmatches %s", $e->getActual(), $e->getExpected());
 
@@ -308,7 +308,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("         %s\nis not > %s", $e->getActual(), $e->getExpected());
 
@@ -327,7 +327,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("          %s\nis not >= %s", $e->getActual(), $e->getExpected());
 
@@ -346,7 +346,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("         %s\nis not < %s", $e->getActual(), $e->getExpected());
 
@@ -365,7 +365,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("          %s\nis not <= %s", $e->getActual(), $e->getExpected());
 
@@ -419,7 +419,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("%s\n    doesn't contain\n%s", $e->getActual(), $e->getExpected());
 
@@ -438,7 +438,7 @@ class LimeTest
 
       return $this->pass($message);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       $error = sprintf("%s\n    must not contain\n%s", $e->getActual(), $e->getExpected());
 

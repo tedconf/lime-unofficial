@@ -23,7 +23,7 @@ class LimeTesterString extends LimeTesterScalar
   {
     if (!preg_match($expected->value, $this->value))
     {
-      throw new LimeNotEqualException($this, $expected);
+      throw new LimeTesterException($this, $expected);
     }
   }
 
@@ -31,7 +31,7 @@ class LimeTesterString extends LimeTesterScalar
   {
     if (preg_match($expected->value, $this->value))
     {
-      throw new LimeNotEqualException($this, $expected);
+      throw new LimeTesterException($this, $expected);
     }
   }
 }

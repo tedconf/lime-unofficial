@@ -37,7 +37,7 @@ $t = new LimeTest(3);
   $actual = new LimeTesterDouble(1.0);
   $expected = new LimeTesterString('1.0');
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertSame($expected);
 
 
@@ -47,7 +47,7 @@ $t = new LimeTest(3);
   $actual = new LimeTesterDouble(1/3);
   $expected = new LimeTesterDouble(1 - 2/3);
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertNotEquals($expected);
 
 

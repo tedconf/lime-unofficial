@@ -66,7 +66,7 @@ class LimeTesterObject extends LimeTesterArray
     // still no exceptions, so properties are the same
     if ($this->object !== $expected->object)
     {
-      throw new LimeNotEqualException($this, $expected);
+      throw new LimeTesterException($this, $expected);
     }
   }
 
@@ -76,7 +76,7 @@ class LimeTesterObject extends LimeTesterArray
     {
       $this->assertNotEquals($expected);
     }
-    catch (LimeNotEqualException $e)
+    catch (LimeTesterException $e)
     {
       if ($this->object === $expected->object)
       {

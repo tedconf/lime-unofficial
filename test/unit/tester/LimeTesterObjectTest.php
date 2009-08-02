@@ -34,7 +34,7 @@ $t = new LimeTest(5);
   $actual = new LimeTesterObject(new TestClass());
   $expected = new LimeTesterScalar(false);
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertEquals($expected);
 
 
@@ -44,7 +44,7 @@ $t = new LimeTest(5);
   $actual = new LimeTesterObject(new TestClass(0));
   $expected = new LimeTesterObject(new TestClass(1));
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertEquals($expected);
 
 
@@ -63,7 +63,7 @@ $t = new LimeTest(5);
   $actual = new LimeTesterObject(new TestClass());
   $expected = new LimeTesterObject(new TestClass());
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertSame($expected);
 
 
@@ -92,7 +92,7 @@ $t = new LimeTest(5);
   $actual = new LimeTesterObject(new TestClass());
   $expected = new LimeTesterObject(new TestClass());
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertNotEquals($expected);
 
 
@@ -103,7 +103,7 @@ $t = new LimeTest(5);
   $actual = new LimeTesterObject($object);
   $expected = new LimeTesterObject($object);
   // test
-  $t->expect('LimeNotEqualException');
+  $t->expect('LimeTesterException');
   $actual->assertNotSame($expected);
 
 
