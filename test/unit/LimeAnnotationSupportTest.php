@@ -21,7 +21,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(37);
+$t = new LimeAnnotationSupportTest(39);
 
 $root = '/test/unit/LimeAnnotationSupport';
 
@@ -411,6 +411,24 @@ $t->diag('The last line in an annotated file can be a comment (bugfix)');
 $root/@$file
 1..0
 Test
+ Looks like everything went fine.
+EOF;
+  $t->is($result, 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($actual, $expected);
+
+
+$t->diag('The annotation support can be enabled in included bootstrap files');
+
+  // test
+  list($result, $actual) = execute($file = 'test_include.php');
+  // assertion
+  $expected = <<<EOF
+$root/@$file
+1..0
+Before
+Test 1
+Before
+Test 2
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');

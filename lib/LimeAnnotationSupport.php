@@ -105,15 +105,8 @@ class LimeAnnotationSupport
    */
   protected static function getScriptPath()
   {
-    $script = null;
-
     $traces = debug_backtrace();
-    $file = __FILE__;
-
-    for ($i = 0; $i < count($traces) && $file == __FILE__; ++$i)
-    {
-      $file = $traces[$i]['file'];
-    }
+    $file = $traces[count($traces)-1]['file'];
 
     if (!is_file($file))
     {
