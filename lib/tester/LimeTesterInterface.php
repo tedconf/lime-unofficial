@@ -32,4 +32,8 @@ interface LimeTesterInterface
   public function assertLessThan(LimeTesterInterface $expected);
 
   public function assertLessThanOrEqual(LimeTesterInterface $expected);
+
+  public function assertContains(LimeTesterInterface $expected);
+
+  public function assertNotContains(LimeTesterInterface $expected);
 }

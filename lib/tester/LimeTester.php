@@ -163,4 +163,14 @@ abstract class LimeTester implements LimeTesterInterface
   {
     $this->notImplemented('<=');
   }
+
+  public function assertContains(LimeTesterInterface $expected)
+  {
+    $this->notImplemented('contains');
+  }
+
+  public function assertNotContains(LimeTesterInterface $expected)
+  {
+    $this->notImplemented('contains not');
+  }
 }

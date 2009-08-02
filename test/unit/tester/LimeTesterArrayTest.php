@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(6);
+$t = new LimeTest(8);
 
 
 // @Test: assertEquals() throws an exception if the other tester is no LimeTesterArray
@@ -101,4 +101,42 @@ $t = new LimeTest(6);
   // test
   $t->expect('LimeNotEqualException');
   $actual->assertNotEquals($expected);
+
+
+// @Test: assertContains() throws an exception if a value is not in the array
+
+  // fixtures
+  $actual = new LimeTesterArray(array(0 => 1));
+  $expected = LimeTester::create(0);
+  // test
+  $t->expect('LimeNotEqualException');
+  $actual->assertContains($expected);
+
+
+// @Test: assertContains() throws no exception if a value is in the array
+
+  // fixtures
+  $actual = new LimeTesterArray(array(0 => 1));
+  $expected = LimeTester::create(1);
+  // test
+  $actual->assertContains($expected);
+
+
+// @Test: assertNotContains() throws an exception if a value is in the array
+
+  // fixtures
+  $actual = new LimeTesterArray(array(0 => 1));
+  $expected = LimeTester::create(1);
+  // test
+  $t->expect('LimeNotEqualException');
+  $actual->assertNotContains($expected);
+
+
+// @Test: assertNotContains() throws no exception if a value is not in the array
+
+  // fixtures
+  $actual = new LimeTesterArray(array(0 => 1));
+  $expected = LimeTester::create(0);
+  // test
+  $actual->assertNotContains($expected);
 

@@ -37,7 +37,7 @@ class LimeTesterArray extends LimeTester
     {
       if (!array_key_exists($key, $remaining))
       {
-        throw new LimeNotEqualException($this, $expected->excerpt($key, $value));
+        throw new LimeNotEqualException($this, $expected->dumpExcerpt($key, $value));
       }
 
       try
@@ -46,7 +46,7 @@ class LimeTesterArray extends LimeTester
       }
       catch (LimeNotEqualException $e)
       {
-        throw new LimeNotEqualException($this->excerpt($key, $e->getActual()), $expected->excerpt($key, $e->getExpected()));
+        throw new LimeNotEqualException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
       }
 
       unset($remaining[$key]);
@@ -54,7 +54,7 @@ class LimeTesterArray extends LimeTester
 
     foreach ($remaining as $key => $value)
     {
-      throw new LimeNotEqualException($this->excerpt($key, $value), $expected);
+      throw new LimeNotEqualException($this->dumpExcerpt($key, $value), $expected);
     }
   }
 
@@ -78,14 +78,53 @@ class LimeTesterArray extends LimeTester
       }
       catch (LimeNotEqualException $e)
       {
-        throw new LimeNotEqualException($this->excerpt(), $expected->excerpt());
+        throw new LimeNotEqualException($this, $expected);
+      }
+    }
+  }
+
+  public function assertContains(LimeTesterInterface $expected)
+  {
+    foreach ($this->value as $key => $value)
+    {
+      try
+      {
+        $value->assertEquals($expected);
+        return;
+      }
+      catch (LimeNotEqualException $e)
+      {
+      }
+    }
+
+    throw new LimeNotEqualException($this->dumpAll(), $expected);
+  }
+
+  public function assertNotContains(LimeTesterInterface $expected)
+  {
+    foreach ($this->value as $key => $value)
+    {
+      $equal = true;
+
+      try
+      {
+        $value->assertEquals($expected);
+      }
+      catch (LimeNotEqualException $e)
+      {
+        $equal = false;
+      }
+
+      if ($equal)
+      {
+        throw new LimeNotEqualException($this->dumpAll(), $expected);
       }
     }
   }
 
   public function __toString()
   {
-    return $this->excerpt();
+    return $this->dumpExcerpt();
   }
 
   protected function getType()
@@ -93,15 +132,30 @@ class LimeTesterArray extends LimeTester
     return 'array';
   }
 
-  protected function excerpt($key = null, $value = null)
+  protected function dumpAll()
   {
     $result = $this->getType().' (';
 
-    if (empty($this->value))
+    if (!empty($this->value))
     {
-      $result .= ')';
+      $result .= "\n";
+
+      foreach ($this->value as $k => $v)
+      {
+        $result .= sprintf("  %s => %s,\n", var_export($k, true), $this->indent($v));
+      }
     }
-    else
+
+    $result .= ')';
+
+    return $result;
+  }
+
+  protected function dumpExcerpt($key = null, $value = null)
+  {
+    $result = $this->getType().' (';
+
+    if (!empty($this->value))
     {
       $truncated = false;
       $result .= "\n";
@@ -120,9 +174,9 @@ class LimeTesterArray extends LimeTester
           $truncated = false;
         }
       }
-
-      $result .= ')';
     }
+
+    $result .= ')';
 
     return $result;
   }
