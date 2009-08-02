@@ -16,9 +16,32 @@ class LimeTesterResource extends LimeTester
 
   public function assertEquals(LimeTesterInterface $expected)
   {
+    if ($this->value != $expected->value)
+    {
+      throw new LimeTesterException($this, $expected);
+    }
+  }
+
+  public function assertNotEquals(LimeTesterInterface $expected)
+  {
+    if ($this->value == $expected->value)
+    {
+      throw new LimeTesterException($this, $expected);
+    }
+  }
+
+  public function assertSame(LimeTesterInterface $expected)
+  {
+    $this->assertEquals($expected);
+  }
+
+  public function assertNotSame(LimeTesterInterface $expected)
+  {
+    $this->assertNotEquals($expected);
   }
 
   public function __toString()
   {
+    return sprintf('resource(%s) of type (%s)', (integer)$this->value, get_resource_type($this->value));
   }
 }
