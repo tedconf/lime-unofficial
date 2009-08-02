@@ -109,68 +109,63 @@ abstract class LimeTester implements LimeTesterInterface
     $this->value = $value;
   }
 
-  private function notImplemented($method)
-  {
-    throw new BadMethodCallException(sprintf('"%s" is not implemtented for type "%s"', $method, $this->type));
-  }
-
   public function assertEquals(LimeTesterInterface $expected)
   {
-    $this->notImplemented('==');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertNotEquals(LimeTesterInterface $expected)
   {
-    $this->notImplemented('!=');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertSame(LimeTesterInterface $expected)
   {
-    $this->notImplemented('===');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertNotSame(LimeTesterInterface $expected)
   {
-    $this->notImplemented('!==');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertLike(LimeTesterInterface $expected)
   {
-    $this->notImplemented('like');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertUnlike(LimeTesterInterface $expected)
   {
-    $this->notImplemented('unlike');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertGreaterThan(LimeTesterInterface $expected)
   {
-    $this->notImplemented('>');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertGreaterThanOrEqual(LimeTesterInterface $expected)
   {
-    $this->notImplemented('>=');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertLessThan(LimeTesterInterface $expected)
   {
-    $this->notImplemented('<');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertLessThanOrEqual(LimeTesterInterface $expected)
   {
-    $this->notImplemented('<=');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertContains(LimeTesterInterface $expected)
   {
-    $this->notImplemented('contains');
+    throw new LimeNotEqualException($this, $expected);
   }
 
   public function assertNotContains(LimeTesterInterface $expected)
   {
-    $this->notImplemented('contains not');
+    throw new LimeNotEqualException($this, $expected);
   }
 }
