@@ -173,7 +173,7 @@ class LimeTest
 
     try
     {
-      $exp1->assertEquals($exp2, true);
+      $exp1->assertSame($exp2);
 
       return $this->pass($message);
     }
@@ -207,7 +207,7 @@ class LimeTest
     }
     catch (LimeTesterException $e)
     {
-      $error = sprintf("%s\n    ne\n%s", $e->getActual(), $e->getExpected());
+      $error = sprintf("%s\n    must not be\n%s", $e->getActual(), $e->getExpected());
 
       return $this->fail($message, $error);
     }
@@ -229,13 +229,13 @@ class LimeTest
 
     try
     {
-      $exp1->assertNotEquals($exp2, true);
+      $exp1->assertNotSame($exp2);
 
       return $this->pass($message);
     }
     catch (LimeTesterException $e)
     {
-      $error = sprintf("%s\n    ne\n%s", $e->getActual(), $e->getExpected());
+      $error = sprintf("%s\n    must not be\n%s", $e->getActual(), $e->getExpected());
 
       return $this->fail($message, $error);
     }
