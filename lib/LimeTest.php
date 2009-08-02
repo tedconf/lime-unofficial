@@ -408,6 +408,44 @@ class LimeTest
     }
   }
 
+  public function contains($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertContains($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("%s\n    doesn't contain\n%s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
+  }
+
+  public function containsNot($exp1, $exp2, $message = '')
+  {
+    $exp1 = LimeTester::create($exp1);
+    $exp2 = LimeTester::create($exp2);
+
+    try
+    {
+      $exp1->assertNotContains($exp2);
+
+      return $this->pass($message);
+    }
+    catch (LimeNotEqualException $e)
+    {
+      $error = sprintf("%s\n    must not contain\n%s", $e->getActual(), $e->getExpected());
+
+      return $this->fail($message, $error);
+    }
+  }
+
   /**
    * Checks the availability of a method for an object or a class
    *
