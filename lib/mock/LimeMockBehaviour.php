@@ -27,7 +27,7 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
   {
     if (!$this->verified && !$this->failOnVerify && ($this->expectNothing || count($this->invocations) > 0))
     {
-      throw new LimeAssertionException('Unexpected method call', $invocation);
+      throw new LimeMockException($invocation, array(), array());
     }
   }
 

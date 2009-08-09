@@ -142,35 +142,39 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
 
-    if ($this->options['verbose'])
+    $this->printer->printLine('Exception trace:', LimePrinter::COMMENT);
+
+    $this->printTrace(null, $exception->getFile(), $exception->getLine());
+
+    foreach ($exception->getTrace() as $trace)
     {
-      $this->printer->printLine('Exception trace:', LimePrinter::COMMENT);
-
-      $this->printTrace(null, $exception->getFile(), $exception->getLine());
-
-      foreach ($exception->getTrace() as $trace)
+      // hide the part of the trace that is responsible for getting the
+      // annotations to work
+      if (strpos($trace['function'], '__lime_annotation_') === 0 && !$this->options['verbose'])
       {
-        if (array_key_exists('class', $trace))
-        {
-          $method = sprintf('%s%s%s()', $trace['class'], $trace['type'], $trace['function']);
-        }
-        else
-        {
-          $method = sprintf('%s()', $trace['function']);
-        }
-
-        if (array_key_exists('file', $trace))
-        {
-          $this->printTrace($method, $trace['file'], $trace['line']);
-        }
-        else
-        {
-          $this->printTrace($method);
-        }
+        break;
       }
 
-      $this->printer->printLine('');
+      if (array_key_exists('class', $trace))
+      {
+        $method = sprintf('%s%s%s()', $trace['class'], $trace['type'], $trace['function']);
+      }
+      else
+      {
+        $method = sprintf('%s()', $trace['function']);
+      }
+
+      if (array_key_exists('file', $trace))
+      {
+        $this->printTrace($method, $trace['file'], $trace['line']);
+      }
+      else
+      {
+        $this->printTrace($method);
+      }
     }
+
+    $this->printer->printLine('');
   }
 
   private function printTrace($method = null, $file = null, $line = null)

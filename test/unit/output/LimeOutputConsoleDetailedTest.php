@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(58);
+$t = new LimeTest(64);
 
 // @Before
 
@@ -217,6 +217,9 @@ $t = new LimeTest(58);
 
   // fixtures
   $printer->printLargeBox("LimeError: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
+  $printer->printLine('Exception trace:', LimePrinter::COMMENT);
+  $printer->any('printText')->atLeastOnce();
+  $printer->any('printLine')->atLeastOnce();
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));
@@ -229,6 +232,9 @@ $t = new LimeTest(58);
   // fixtures
   $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
   $printer->printLargeBox("LimeError: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
+  $printer->printLine('Exception trace:', LimePrinter::COMMENT);
+  $printer->any('printText')->atLeastOnce();
+  $printer->any('printLine')->atLeastOnce();
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));

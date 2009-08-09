@@ -50,7 +50,7 @@ $t = new LimeTest(12);
   $m->method1();
   $m->method2();
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->method2();
 
@@ -61,7 +61,7 @@ $t = new LimeTest(12);
   $m->method1();
   $m->replay();
   $m->method1();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   $m->method2();
 
 
@@ -90,7 +90,7 @@ $t = new LimeTest(12);
   $m->method1()->times(3);
   $m->method2();
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->method1();
   $m->method1();
@@ -121,7 +121,7 @@ $t = new LimeTest(12);
   $m->method1()->atLeastOnce();
   $m->method2();
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->method2();
 

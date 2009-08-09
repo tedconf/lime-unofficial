@@ -47,7 +47,7 @@ class TestClass
 class TestClassWithMethodsFromMock
 {
   public function __construct() {}
-  public function __call($method, array $args) {}
+  public function __call($method, $args) {}
   public function __lime_replay() {}
   public function __lime_getState() {}
 }
@@ -284,7 +284,7 @@ $t = new LimeTest(80);
   // fixture
   $m->testMethod(1, 'Foobar');
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->testMethod(1);
 
@@ -294,7 +294,7 @@ $t = new LimeTest(80);
   // fixture
   $m->testMethod(1, 'Foobar');
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->testMethod('Foobar', 1);
 
@@ -388,7 +388,7 @@ $t = new LimeTest(80);
   $m->setStrict();
   $m->testMethod(1);
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->testMethod('1');
 
@@ -426,7 +426,7 @@ $t = new LimeTest(80);
   $m->replay();
   $m->testMethod(1);
   $m->testMethod(1);
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->testMethod(1);
 
@@ -450,7 +450,7 @@ $t = new LimeTest(80);
   $m->testMethod(1)->times(2);
   $m->replay();
   $m->testMethod(1);
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->testMethod();
 
@@ -573,7 +573,7 @@ $t = new LimeTest(80);
   $m->testMethod();
   $m->testMethod();
   $m->testMethod();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   $m->testMethod();
 
 
@@ -598,7 +598,7 @@ $t = new LimeTest(80);
   $m->testMethod()->never();
   $m->replay();
   $m->testMethod(1, 2, 3);
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   $m->testMethod();
 
 
@@ -609,7 +609,7 @@ $t = new LimeTest(80);
   // fixture
   $m->testMethod(1)->strict();
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->testMethod('1');
 
@@ -655,6 +655,6 @@ $t = new LimeTest(80);
   // fixture
   $m->setExpectNothing();
   $m->replay();
-  $t->expect('LimeAssertionException');
+  $t->expect('LimeMockException');
   // test
   $m->testMethod();

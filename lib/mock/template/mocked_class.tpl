@@ -12,9 +12,17 @@
     $this->state = new LimeMockRecordState($this->behaviour, $output);
   }
   
-  public function __call($method, array $parameters)
+  public function __call($method, $parameters)
   {
-    return $this->state->invoke($this->class, $method, $parameters);
+    try
+    {
+      return $this->state->invoke($this->class, $method, $parameters);
+    }
+    catch (LimeMockException $e)
+    {
+      // hide the internal trace to not distract when debugging test errors
+      throw new LimeMockException($e->getInvocation(), $e->getExpectedInvocations(), $e->getPastInvocations());
+    }
   }
   
   public function __lime_replay()
@@ -29,7 +37,7 @@
   
   <?php if ($generate_methods): ?>
   public function replay() { return $this->__lime_replay(); }
-  public function any($method, array $parameters = array()) { return $this->state->invoke($this->class, $method); }
+  public function any($method) { return $this->__call($method, LimeMockInvocation::ANY_PARAMETERS); }
   public function reset() { return $this->state->reset(); }
   public function verify() { return $this->state->verify(); }
   public function setStrict() { return $this->state->setStrict(); }

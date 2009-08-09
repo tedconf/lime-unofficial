@@ -1,6 +1,6 @@
 <?php
 
-class LimeMockInvocationException extends Exception
+class LimeMockException extends Exception
 {
   private
     $invocation           = null,
@@ -14,6 +14,21 @@ class LimeMockInvocationException extends Exception
     $this->expectedInvocations = $expectedInvocations;
     $this->pastInvocations = $pastInvocations;
 
-    parent::__construct('Unexpected method call: ' . $invocation);
+    parent::__construct('Unexpected call: ' . $invocation);
+  }
+
+  public function getInvocation()
+  {
+    return $this->invocation;
+  }
+
+  public function getExpectedInvocations()
+  {
+    return $this->expectedInvocations;
+  }
+
+  public function getPastInvocations()
+  {
+    return $this->pastInvocations;
   }
 }
