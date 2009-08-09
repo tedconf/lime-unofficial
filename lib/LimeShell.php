@@ -149,17 +149,12 @@ class LimeShell
   public function executeCallback($callback, $file, array $arguments = array())
   {
     $handle = popen($this->buildCommand($file, $arguments), 'r');
-    $output = '';
 
     while (!feof($handle))
     {
       $line = fread($handle, 2048);
       call_user_func($callback, $line);
-
-      $output .= $line;
     }
-
-    return array(pclose($handle), $output);
   }
 
   protected function buildCommand($file, array $arguments = array())

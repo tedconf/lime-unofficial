@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(11);
+$t = new LimeTest(9);
 
 
 // @Before
@@ -96,6 +96,4 @@ EOF
   // test
   list($returnValue, $output) = $shell->executeCallback(array($mock, 'callback'), $file);
   // assertions
-  $t->is($returnValue, 1, 'The return value is correct');
-  $t->is($output, "Hello World!Foo\nBar", 'The output is correct');
   $mock->verify();
