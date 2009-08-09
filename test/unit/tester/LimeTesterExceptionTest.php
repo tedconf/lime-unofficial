@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(5);
+$t = new LimeTest(1);
 
 
 // @Test: assertEquals() throws an exception if exceptions don't match
