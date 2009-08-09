@@ -21,7 +21,8 @@ class LimePrinter
     HAPPY = 6,
     STRING = 7,
     METHOD = 8,
-    INFO = 9;
+    INFO = 9,
+    TRACE = 10;
 
   protected
     $colorizer = null;
@@ -40,6 +41,7 @@ class LimePrinter
       $colorizer->setStyle(self::STRING, array('fg' => 'cyan'));
       $colorizer->setStyle(self::METHOD, array('fg' => 'cyan'));
       $colorizer->setStyle(self::INFO, array('fg' => 'cyan', 'bold' => true));
+      $colorizer->setStyle(self::TRACE, array('fg' => 'green', 'bold' => true));
     }
 
     $this->colorizer = $colorizer;
@@ -66,12 +68,12 @@ class LimePrinter
     $text = trim($text);
     $text = wordwrap($text, 75, "\n");
 
-    print $space;
+    print "\n".$space;
     foreach (explode("\n", $text) as $line)
     {
       print $this->colorize(str_pad('  '.$line, 80, ' '), $style)."\n";
     }
-    print $space;
+    print $space."\n";
   }
 
   protected function colorize($text, $style)
@@ -84,7 +86,7 @@ class LimePrinter
     {
       if (is_null($style))
       {
-        return preg_replace_callback('/("[^"]+"|(->|::)?\w+\([^\)]*\))/', array($this, 'autoColorize'), $text);
+        return preg_replace_callback('/("[^"]+"'/*|(->|::)?\w+\([^\)]*\)*/.')/', array($this, 'autoColorize'), $text);
       }
       else
       {

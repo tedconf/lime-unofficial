@@ -119,6 +119,57 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
         $exception->getMessage(), $this->stripBaseDir($exception->getFile()), $exception->getLine());
 
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
+
+    if ($this->options['verbose'])
+    {
+      $this->printer->printLine('Exception trace:', LimePrinter::COMMENT);
+
+      $this->printTrace(null, $exception->getFile(), $exception->getLine());
+
+      foreach ($exception->getTrace() as $trace)
+      {
+        if (array_key_exists('class', $trace))
+        {
+          $method = sprintf('%s%s%s()', $trace['class'], $trace['type'], $trace['function']);
+        }
+        else
+        {
+          $method = sprintf('%s()', $trace['function']);
+        }
+
+        if (array_key_exists('file', $trace))
+        {
+          $this->printTrace($method, $trace['file'], $trace['line']);
+        }
+        else
+        {
+          $this->printTrace($method);
+        }
+      }
+
+      $this->printer->printLine('');
+    }
+  }
+
+  private function printTrace($method = null, $file = null, $line = null)
+  {
+    if (!is_null($method))
+    {
+      $method .= ' ';
+    }
+
+    $this->printer->printText('  '.$method.'at ');
+
+    if (!is_null($file) && !is_null($line))
+    {
+      $this->printer->printText($this->stripBaseDir($file), LimePrinter::TRACE);
+      $this->printer->printText(':');
+      $this->printer->printLine($line, LimePrinter::TRACE);
+    }
+    else
+    {
+      $this->printer->printLine('[internal function]');
+    }
   }
 
   public function info($message)

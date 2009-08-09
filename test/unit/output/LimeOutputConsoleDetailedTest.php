@@ -179,7 +179,7 @@ $t = new LimeTest(45);
   $printer->verify();
 
 
-// @Test: error() prints an warning
+// @Test: error() prints an error
 
   // fixtures
   $printer->printLargeBox("LimeError: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
@@ -200,13 +200,6 @@ $t = new LimeTest(45);
   $output->error(new LimeError('A very important error', '/test/file', 11));
   // assertions
   $printer->verify();
-
-
-// @Test: error() prints the stack trace if the option "verbose" is set
-
-  // fixtures
-//  $output = new LimeOutputConsoleDetailed($printer, array('verbose' => true));
-//  $printer
 
 
 // @Test: info() prints an information
