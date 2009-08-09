@@ -23,7 +23,7 @@ class LimeAnnotationSupportTest extends LimeTest
 
 $t = new LimeAnnotationSupportTest(39);
 
-$root = '/test/unit/LimeAnnotationSupport';
+$root = '# /test/unit/LimeAnnotationSupport';
 
 function _backup($file)
 {

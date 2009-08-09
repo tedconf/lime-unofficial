@@ -49,6 +49,11 @@ class LimeOutputRaw implements LimeOutputInterface
     $this->printCall('skip', array($message, $file, $line));
   }
 
+  public function todo($message, $file, $line)
+  {
+    $this->printCall('todo', array($message, $file, $line));
+  }
+
   public function warning($message, $file, $line)
   {
     $this->printCall('warning', array($message, $file, $line));
@@ -57,11 +62,6 @@ class LimeOutputRaw implements LimeOutputInterface
   public function error(Exception $exception)
   {
     $this->printCall('error', array($exception));
-  }
-
-  public function info($message)
-  {
-    $this->printCall('info', array($message));
   }
 
   public function comment($message)

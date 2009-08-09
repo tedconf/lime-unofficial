@@ -118,7 +118,7 @@ class LimeMockInvocation
       {
         if (is_string($value))
         {
-          $value = str_replace(array("\n", "\t", "\r"), array('\n', '\t', '\r'), $value);
+          $value = str_replace(array("\0", "\n", "\t", "\r"), array('\0', '\n', '\t', '\r'), $value);
           $value = strlen($value) > 30 ? substr($value, 0, 30).'...' : $value;
           $parameters[$key] = '"'.$value.'"';
         }

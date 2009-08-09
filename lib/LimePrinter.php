@@ -22,7 +22,8 @@ class LimePrinter
     STRING = 7,
     METHOD = 8,
     INFO = 9,
-    TRACE = 10;
+    TRACE = 10,
+    TODO = 11;
 
   protected
     $colorizer = null;
@@ -35,6 +36,7 @@ class LimePrinter
       $colorizer->setStyle(self::NOT_OK, array('bg' => 'red', 'fg' => 'white', 'bold' => true));
       $colorizer->setStyle(self::COMMENT, array('fg' => 'yellow'));
       $colorizer->setStyle(self::SKIP, array('fg' => 'yellow', 'bold' => true));
+      $colorizer->setStyle(self::TODO, array('fg' => 'yellow', 'bold' => true));
       $colorizer->setStyle(self::WARNING, array('fg' => 'white', 'bg' => 'yellow', 'bold' => true));
       $colorizer->setStyle(self::ERROR, array('bg' => 'red', 'fg' => 'white', 'bold' => true));
       $colorizer->setStyle(self::HAPPY, array('fg' => 'white', 'bg' => 'green', 'bold' => true));

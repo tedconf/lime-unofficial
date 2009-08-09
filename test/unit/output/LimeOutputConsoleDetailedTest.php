@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(45);
+$t = new LimeTest(58);
 
 // @Before
 
@@ -29,7 +29,7 @@ $t = new LimeTest(45);
 
 // @Test: start() prints the filename
 
-  $printer->printLine('/test/file', LimePrinter::INFO);
+  $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->replay();
   // test
   $output->start('/test/file');
@@ -41,7 +41,7 @@ $t = new LimeTest(45);
 
   // fixtures
   $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
-  $printer->printLine('/file', LimePrinter::INFO);
+  $printer->printLine('# /file', LimePrinter::INFO);
   $printer->replay();
   // test
   $output->start('/test/file');
@@ -133,10 +133,12 @@ $t = new LimeTest(45);
 // @Test: skip() prints and counts skipped tests
 
   // fixtures
-  $printer->printText('skip 1', LimePrinter::SKIP);
-  $printer->printLine(' - A skipped test');
-  $printer->printText('skip 2', LimePrinter::SKIP);
-  $printer->printLine(' - Another skipped test');
+  $printer->printText('ok 1', LimePrinter::SKIP);
+  $printer->printText(' - A skipped test ');
+  $printer->printLine('# SKIP', LimePrinter::SKIP);
+  $printer->printText('ok 2', LimePrinter::SKIP);
+  $printer->printText(' - Another skipped test ');
+  $printer->printLine('# SKIP', LimePrinter::SKIP);
   $printer->replay();
   // test
   $output->skip('A skipped test', '/test/file', 11);
@@ -148,10 +150,42 @@ $t = new LimeTest(45);
 // @Test: skip() prints no message if none is given
 
   // fixtures
-  $printer->printLine('skip 1', LimePrinter::SKIP);
+  $printer->printText('ok 1', LimePrinter::SKIP);
+  $printer->printText(' ');
+  $printer->printLine('# SKIP', LimePrinter::SKIP);
   $printer->replay();
   // test
   $output->skip('', '/test/file', 11);
+  // assertions
+  $printer->verify();
+
+
+// @Test: todo() prints and counts todos
+
+  // fixtures
+  $printer->printText('not ok 1', LimePrinter::TODO);
+  $printer->printText(' - A todo ');
+  $printer->printLine('# TODO', LimePrinter::TODO);
+  $printer->printText('not ok 2', LimePrinter::TODO);
+  $printer->printText(' - Another todo ');
+  $printer->printLine('# TODO', LimePrinter::TODO);
+  $printer->replay();
+  // test
+  $output->todo('A todo', '/test/file', 11);
+  $output->todo('Another todo', '/test/file', 22);
+  // assertions
+  $printer->verify();
+
+
+// @Test: todo() prints no message if none is given
+
+  // fixtures
+  $printer->printText('not ok 1', LimePrinter::TODO);
+  $printer->printText(' ');
+  $printer->printLine('# TODO', LimePrinter::TODO);
+  $printer->replay();
+  // test
+  $output->todo('', '/test/file', 11);
   // assertions
   $printer->verify();
 

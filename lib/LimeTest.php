@@ -546,10 +546,10 @@ class LimeTest
    */
   public function skip($message = '', $nbTests = 1)
   {
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
     for ($i = 0; $i < $nbTests; $i++)
     {
-      list ($file, $line) = LimeTrace::findCaller('LimeTest');
-
       $this->output->skip($message, $file, $line);
     }
   }
@@ -563,7 +563,9 @@ class LimeTest
    */
   public function todo($message = '')
   {
-    $this->skip(trim('TODO '.$message));
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
+    $this->output->todo($message, $file, $line);
   }
 
   public function comment($message)

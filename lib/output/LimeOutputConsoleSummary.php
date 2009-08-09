@@ -119,6 +119,10 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
   public function skip($message, $file, $line) {}
 
+  public function todo($message, $file, $line)
+  {
+  }
+
   public function warning($message, $file, $line)
   {
     $this->warnings++;
@@ -128,8 +132,6 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
   {
     $this->errors++;
   }
-
-  public function info($message) {}
 
   public function comment($message) {}
 

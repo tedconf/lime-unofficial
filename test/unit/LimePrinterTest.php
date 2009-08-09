@@ -50,6 +50,7 @@ $t = new LimeTest(6);
   $printer->printLine('My text', 'RED');
   $result = ob_get_clean();
   // assertions
+  $t->todo('asdf', 3);
   $t->is($result, "<RED>My text</RED>\n", 'The result was colorized and printed');
 
 

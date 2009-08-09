@@ -56,15 +56,15 @@ class LimeOutputArray implements LimeOutputInterface
     $this->currentResults['stats']['skipped'][] = $this->addTest(true, $line, $file, $message);
   }
 
+  public function todo($message, $file, $line)
+  {
+  }
+
   public function warning($message, $file, $line)
   {
   }
 
   public function error(Exception $exception)
-  {
-  }
-
-  public function info($message)
   {
   }
 

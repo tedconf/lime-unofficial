@@ -36,7 +36,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
   public function start($file)
   {
-    $this->printer->printLine($this->stripBaseDir($file), LimePrinter::INFO);
+    $this->printer->printLine('# '.$this->stripBaseDir($file), LimePrinter::INFO);
   }
 
   public function plan($amount)
@@ -93,13 +93,35 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
     if (empty($message))
     {
-      $this->printer->printLine('skip '.$this->actual, LimePrinter::SKIP);
+      $this->printer->printText('ok '.$this->actual, LimePrinter::SKIP);
+      $this->printer->printText(' ');
     }
     else
     {
-      $this->printer->printText('skip '.$this->actual, LimePrinter::SKIP);
-      $this->printer->printLine(' - '.$message);
+      $this->printer->printText('ok '.$this->actual, LimePrinter::SKIP);
+      $this->printer->printText(' - '.$message.' ');
     }
+
+    $this->printer->printLine('# SKIP', LimePrinter::SKIP);
+  }
+
+  public function todo($message, $file, $line)
+  {
+    $this->actual++;
+    $this->passed++;
+
+    if (empty($message))
+    {
+      $this->printer->printText('not ok '.$this->actual, LimePrinter::TODO);
+      $this->printer->printText(' ');
+    }
+    else
+    {
+      $this->printer->printText('not ok '.$this->actual, LimePrinter::TODO);
+      $this->printer->printText(' - '.$message.' ');
+    }
+
+    $this->printer->printLine('# TODO', LimePrinter::TODO);
   }
 
   public function warning($message, $file, $line)

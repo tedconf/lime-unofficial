@@ -16,6 +16,7 @@ class LimeOutputInspectable implements LimeOutputInterface
     $passed = 0,
     $failed = 0,
     $skipped = 0,
+    $todos = 0,
     $errors = 0,
     $warnings = 0;
 
@@ -37,6 +38,11 @@ class LimeOutputInspectable implements LimeOutputInterface
   public function getSkipped()
   {
     return $this->skipped;
+  }
+
+  public function getTodos()
+  {
+    return $this->todos;
   }
 
   public function getErrors()
@@ -77,6 +83,12 @@ class LimeOutputInspectable implements LimeOutputInterface
     $this->output->skip($message, $file, $line);
   }
 
+  public function todo($message, $file, $line)
+  {
+    $this->todos++;
+    $this->output->todo($message, $file, $line);
+  }
+
   public function warning($message, $file, $line)
   {
     $this->warnings++;
@@ -87,11 +99,6 @@ class LimeOutputInspectable implements LimeOutputInterface
   {
     $this->errors++;
     $this->output->error($exception);
-  }
-
-  public function info($message)
-  {
-    $this->output->info($message);
   }
 
   public function comment($message)

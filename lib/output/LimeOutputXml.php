@@ -44,6 +44,11 @@ class LimeOutputXml implements LimeOutputInterface
     return $this->output->skip($message, $file, $line);
   }
 
+  public function todo($message, $file, $line)
+  {
+    return $this->output->todo($message, $file, $line);
+  }
+
   public function warning($message, $file, $line)
   {
     return $this->output->warning($message, $file, $line);

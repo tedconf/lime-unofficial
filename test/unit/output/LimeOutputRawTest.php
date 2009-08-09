@@ -76,6 +76,16 @@ $t = new LimeTest(11);
   $t->is($result, serialize(array('skip', array('A skipped test', '/test/file', 11)))."\n", 'The method call is serialized');
 
 
+// @Test: todo() prints the method call as serialized array
+
+  // test
+  ob_start();
+  $output->todo('A todo', '/test/file', 11);
+  $result = ob_get_clean();
+  // assertions
+  $t->is($result, serialize(array('todo', array('A todo', '/test/file', 11)))."\n", 'The method call is serialized');
+
+
 // @Test: warning() prints the method call as serialized array
 
   // test
@@ -94,16 +104,6 @@ $t = new LimeTest(11);
   $result = ob_get_clean();
   // assertions
   $t->is($result, serialize(array('error', array($error)))."\n", 'The method call is serialized');
-
-
-// @Test: info() prints the method call as serialized array
-
-  // test
-  ob_start();
-  $output->info('An information');
-  $result = ob_get_clean();
-  // assertions
-  $t->is($result, serialize(array('info', array('An information')))."\n", 'The method call is serialized');
 
 
 // @Test: comment() prints the method call as serialized array
