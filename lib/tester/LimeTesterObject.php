@@ -29,18 +29,21 @@ class LimeTesterObject extends LimeTesterArray
 
     foreach ((array)$object as $key => $value)
     {
-      // private and protected properties start with \0
+      // properties are transformed to keys in the following way:
+
+      // private   $property => "\0Classname\0property"
+      // protected $property => "\0*\0property"
+      // public    $property => "property"
+
       if ($key{0} == "\0")
       {
-        // private properties start with the class
-        if (strpos($key, get_class($object)) === 1)
-        {
-          $key = substr($key, strlen(get_class($object))+2);
-        }
-        // protected properties start with *
-        else
+        if ($key{1} == '*')
         {
           $key = substr($key, 3);
+        }
+        else
+        {
+          $key = substr($key, strlen(get_class($object)) + 2);
         }
       }
 
