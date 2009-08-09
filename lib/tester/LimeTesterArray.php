@@ -28,7 +28,7 @@ class LimeTesterArray extends LimeTester
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
 
     $remaining = $this->value;
@@ -37,16 +37,16 @@ class LimeTesterArray extends LimeTester
     {
       if (!array_key_exists($key, $remaining))
       {
-        throw new LimeTesterException($this, $expected->dumpExcerpt($key, $value));
+        throw new LimeAssertionFailedException($this, $expected->dumpExcerpt($key, $value));
       }
 
       try
       {
         $remaining[$key]->assertEquals($value);
       }
-      catch (LimeTesterException $e)
+      catch (LimeAssertionFailedException $e)
       {
-        throw new LimeTesterException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
+        throw new LimeAssertionFailedException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
       }
 
       unset($remaining[$key]);
@@ -54,7 +54,7 @@ class LimeTesterArray extends LimeTester
 
     foreach ($remaining as $key => $value)
     {
-      throw new LimeTesterException($this->dumpExcerpt($key, $value), $expected);
+      throw new LimeAssertionFailedException($this->dumpExcerpt($key, $value), $expected);
     }
   }
 
@@ -76,9 +76,9 @@ class LimeTesterArray extends LimeTester
       {
         $this->value[$key]->assertNotEquals($value);
       }
-      catch (LimeTesterException $e)
+      catch (LimeAssertionFailedException $e)
       {
-        throw new LimeTesterException($this, $expected);
+        throw new LimeAssertionFailedException($this, $expected);
       }
     }
   }
@@ -87,7 +87,7 @@ class LimeTesterArray extends LimeTester
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
 
     reset($this->value);
@@ -96,21 +96,21 @@ class LimeTesterArray extends LimeTester
     {
       if (current($this->value) === false)
       {
-        throw new LimeTesterException($this, $expected->dumpExcerpt($key, $value));
+        throw new LimeAssertionFailedException($this, $expected->dumpExcerpt($key, $value));
       }
 
       if ($key != key($this->value))
       {
-        throw new LimeTesterException($this->dumpExcerpt(key($this->value), current($this->value)), $expected->dumpExcerpt($key, $value));
+        throw new LimeAssertionFailedException($this->dumpExcerpt(key($this->value), current($this->value)), $expected->dumpExcerpt($key, $value));
       }
 
       try
       {
         current($this->value)->assertSame($value);
       }
-      catch (LimeTesterException $e)
+      catch (LimeAssertionFailedException $e)
       {
-        throw new LimeTesterException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
+        throw new LimeAssertionFailedException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
       }
 
       next($this->value);
@@ -118,7 +118,7 @@ class LimeTesterArray extends LimeTester
 
     if (current($this->value) !== false)
     {
-      throw new LimeTesterException($this->dumpExcerpt(key($this->value), current($this->value)), $expected);
+      throw new LimeAssertionFailedException($this->dumpExcerpt(key($this->value), current($this->value)), $expected);
     }
   }
 
@@ -142,9 +142,9 @@ class LimeTesterArray extends LimeTester
       {
         current($this->value)->assertNotSame($value);
       }
-      catch (LimeTesterException $e)
+      catch (LimeAssertionFailedException $e)
       {
-        throw new LimeTesterException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
+        throw new LimeAssertionFailedException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
       }
 
       next($this->value);
@@ -160,12 +160,12 @@ class LimeTesterArray extends LimeTester
         $value->assertEquals($expected);
         return;
       }
-      catch (LimeTesterException $e)
+      catch (LimeAssertionFailedException $e)
       {
       }
     }
 
-    throw new LimeTesterException($this->dumpAll(), $expected);
+    throw new LimeAssertionFailedException($this->dumpAll(), $expected);
   }
 
   public function assertNotContains(LimeTesterInterface $expected)
@@ -178,14 +178,14 @@ class LimeTesterArray extends LimeTester
       {
         $value->assertEquals($expected);
       }
-      catch (LimeTesterException $e)
+      catch (LimeAssertionFailedException $e)
       {
         $equal = false;
       }
 
       if ($equal)
       {
-        throw new LimeTesterException($this->dumpAll(), $expected);
+        throw new LimeAssertionFailedException($this->dumpAll(), $expected);
       }
     }
   }

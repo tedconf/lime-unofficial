@@ -46,7 +46,7 @@ class LimeTesterScalar extends LimeTester
   {
     if (!$this->equals($expected))
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -54,7 +54,7 @@ class LimeTesterScalar extends LimeTester
   {
     if ($this->value !== $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -62,7 +62,7 @@ class LimeTesterScalar extends LimeTester
   {
     if ($this->equals($expected))
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -70,7 +70,7 @@ class LimeTesterScalar extends LimeTester
   {
     if ($this->value === $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -78,7 +78,7 @@ class LimeTesterScalar extends LimeTester
   {
     if ($this->value <= $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -86,7 +86,7 @@ class LimeTesterScalar extends LimeTester
   {
     if ($this->value < $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -94,7 +94,7 @@ class LimeTesterScalar extends LimeTester
   {
     if ($this->value > $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -102,7 +102,7 @@ class LimeTesterScalar extends LimeTester
   {
     if ($this->value >= $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 }

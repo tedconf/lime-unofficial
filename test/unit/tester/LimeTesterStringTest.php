@@ -28,7 +28,7 @@ $t = new LimeTest(3);
   $actual = new LimeTesterString('a');
   $expected = new LimeTesterString('/\d/');
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertLike($expected);
 
 
@@ -47,7 +47,7 @@ $t = new LimeTest(3);
   $actual = new LimeTesterString('1');
   $expected = new LimeTesterString('/\d/');
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertUnlike($expected);
 
 

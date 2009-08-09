@@ -63,7 +63,7 @@ class LimeTesterObject extends LimeTesterArray
   {
     if ($this->object !== $expected->object)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
 
     parent::assertSame($expected);
@@ -73,7 +73,7 @@ class LimeTesterObject extends LimeTesterArray
   {
     if ($this->object === $expected->object)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 }

@@ -111,61 +111,61 @@ abstract class LimeTester implements LimeTesterInterface
 
   public function assertEquals(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertNotEquals(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertSame(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertNotSame(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertLike(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertUnlike(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertGreaterThan(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertGreaterThanOrEqual(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertLessThan(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertLessThanOrEqual(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertContains(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertNotContains(LimeTesterInterface $expected)
   {
-    throw new LimeTesterException($this, $expected);
+    throw new LimeAssertionFailedException($this, $expected);
   }
 }

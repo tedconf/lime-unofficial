@@ -38,7 +38,7 @@ class LimeTesterDouble extends LimeTesterInteger
   {
     if (abs($this->value - $expected->value) >= self::EPSILON)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -46,7 +46,7 @@ class LimeTesterDouble extends LimeTesterInteger
   {
     if (abs($this->value - $expected->value) < self::EPSILON)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -56,7 +56,7 @@ class LimeTesterDouble extends LimeTesterInteger
 
     if (gettype($this->value) != gettype($expected->value))
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -66,7 +66,7 @@ class LimeTesterDouble extends LimeTesterInteger
     {
       $this->assertEquals($expected);
     }
-    catch (LimeTesterException $e)
+    catch (LimeAssertionFailedException $e)
     {
       if (gettype($this->value) == gettype($expected->value))
       {

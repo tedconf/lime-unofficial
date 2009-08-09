@@ -77,7 +77,7 @@ class LimeMockInvocation
 
       return $equal;
     }
-    catch (LimeTesterException $e)
+    catch (LimeAssertionFailedException $e)
     {
       return false;
     }

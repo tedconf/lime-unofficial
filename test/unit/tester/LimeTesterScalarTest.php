@@ -22,7 +22,7 @@ $t = new LimeTest(4);
   $actual = new LimeTesterScalar('a');
   $expected = new LimeTesterScalar('b');
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertEquals($expected);
 
 
@@ -33,7 +33,7 @@ $t = new LimeTest(4);
   $actual = new LimeTesterScalar(0);
   $expected = new LimeTesterScalar('Foobar');
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertEquals($expected);
 
 
@@ -52,7 +52,7 @@ $t = new LimeTest(4);
   $actual = new LimeTesterScalar('0');
   $expected = new LimeTesterScalar(0);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertSame($expected);
 
 
@@ -62,7 +62,7 @@ $t = new LimeTest(4);
   $actual = new LimeTesterScalar(1);
   $expected = new LimeTesterScalar(1);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertNotEquals($expected);
 
 

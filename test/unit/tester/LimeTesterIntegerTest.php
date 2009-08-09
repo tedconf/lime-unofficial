@@ -22,7 +22,7 @@ $t = new LimeTest(6);
   $actual = new LimeTesterInteger(1);
   $expected = new LimeTesterInteger(1);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertGreaterThan($expected);
 
 
@@ -32,7 +32,7 @@ $t = new LimeTest(6);
   $actual = new LimeTesterInteger(1);
   $expected = new LimeTesterInteger(2);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertGreaterThan($expected);
 
 
@@ -42,7 +42,7 @@ $t = new LimeTest(6);
   $actual = new LimeTesterInteger(1);
   $expected = new LimeTesterInteger(2);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertGreaterThanOrEqual($expected);
 
 
@@ -52,7 +52,7 @@ $t = new LimeTest(6);
   $actual = new LimeTesterInteger(2);
   $expected = new LimeTesterInteger(1);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertLessThanOrEqual($expected);
 
 
@@ -62,7 +62,7 @@ $t = new LimeTest(6);
   $actual = new LimeTesterInteger(1);
   $expected = new LimeTesterInteger(1);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertLessThan($expected);
 
 
@@ -72,5 +72,5 @@ $t = new LimeTest(6);
   $actual = new LimeTesterInteger(2);
   $expected = new LimeTesterInteger(1);
   // test
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertLessThan($expected);

@@ -44,7 +44,7 @@ $t = new LimeTest(2);
 
   $actual = new LimeTesterResource($handle1);
   $expected = new LimeTesterResource($handle2);
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertEquals($expected);
 
 
@@ -59,7 +59,7 @@ $t = new LimeTest(2);
 
   $actual = new LimeTesterResource($handle1);
   $expected = new LimeTesterResource($handle1);
-  $t->expect('LimeTesterException');
+  $t->expect('LimeAssertionFailedException');
   $actual->assertNotEquals($expected);
 
 

@@ -18,7 +18,7 @@ class LimeTesterResource extends LimeTester
   {
     if ($this->value != $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
@@ -26,7 +26,7 @@ class LimeTesterResource extends LimeTester
   {
     if ($this->value == $expected->value)
     {
-      throw new LimeTesterException($this, $expected);
+      throw new LimeAssertionFailedException($this, $expected);
     }
   }
 
