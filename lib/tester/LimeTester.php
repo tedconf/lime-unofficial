@@ -12,16 +12,7 @@
 abstract class LimeTester implements LimeTesterInterface
 {
   protected static
-    $testers = array(
-      'null'      => 'LimeTesterScalar',
-      'integer'   => 'LimeTesterInteger',
-      'boolean'   => 'LimeTesterScalar',
-      'string'    => 'LimeTesterString',
-      'double'    => 'LimeTesterDouble',
-      'array'     => 'LimeTesterArray',
-      'object'    => 'LimeTesterObject',
-      'resource'  => 'LimeTesterResource',
-    );
+    $factory = null;
 
   protected
     $value = null,
@@ -29,79 +20,22 @@ abstract class LimeTester implements LimeTesterInterface
 
   public static function create($value)
   {
-    $type = null;
-
-    if (is_null($value))
-    {
-      $type = 'null';
-    }
-    else if (is_object($value) && array_key_exists(get_class($value), self::$testers))
-    {
-      $type = get_class($value);
-    }
-    else if (is_object($value))
-    {
-      $class = new ReflectionClass($value);
-
-      foreach ($class->getInterfaces() as $interface)
-      {
-        if (array_key_exists($interface->getName(), self::$testers))
-        {
-          $type = $interface->getName();
-          break;
-        }
-      }
-
-      $parentClass = $class;
-
-      while ($parentClass = $parentClass->getParentClass())
-      {
-        if (array_key_exists($parentClass->getName(), self::$testers))
-        {
-          $type = $parentClass->getName();
-          break;
-        }
-      }
-
-      if (!empty($type))
-      {
-        // cache the tester
-        self::$testers[$class->getName()] = self::$testers[$type];
-      }
-    }
-
-    if (empty($type))
-    {
-      if (array_key_exists(gettype($value), self::$testers))
-      {
-        $type = gettype($value);
-      }
-      else
-      {
-        throw new InvalidArgumentException(sprintf('No tester is registered for type "%s"', gettype($value)));
-      }
-    }
-
-    $class = self::$testers[$type];
-
-    return new $class($value);
+    return self::getFactory()->create($value);
   }
 
   public static function register($type, $tester)
   {
-    if (!class_exists($tester))
+    return self::getFactory()->register($type, $tester);
+  }
+
+  private static function getFactory()
+  {
+    if (is_null(self::$factory))
     {
-      throw new InvalidArgumentException(sprintf('The class "%s" does not exist', $tester));
+      self::$factory = new LimeTesterFactory();
     }
 
-    $class = new ReflectionClass($tester);
-
-    if (!$class->implementsInterface('LimeTesterInterface'))
-    {
-      throw new InvalidArgumentException('Testers must implement "LimeTesterInterface"');
-    }
-
-    self::$testers[$type] = $tester;
+    return self::$factory;
   }
 
   public function __construct($value)
