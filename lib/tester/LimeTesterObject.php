@@ -35,16 +35,9 @@ class LimeTesterObject extends LimeTesterArray
       // protected $property => "\0*\0property"
       // public    $property => "property"
 
-      if ($key{0} == "\0")
+      if (preg_match('/^\0.+\0(.+)$/', $key, $matches))
       {
-        if ($key{1} == '*')
-        {
-          $key = substr($key, 3);
-        }
-        else
-        {
-          $key = substr($key, strlen(get_class($object)) + 2);
-        }
+        $key = $matches[1];
       }
 
       $array[$key] = $value;
