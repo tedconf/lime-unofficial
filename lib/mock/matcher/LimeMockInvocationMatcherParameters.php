@@ -38,6 +38,6 @@ class LimeMockInvocationMatcherParameters
 
   public function getMessage()
   {
-    return 'The method '.$this->invocation.' was called';
+    return $this->invocation.' was called';
   }
 }

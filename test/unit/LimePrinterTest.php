@@ -98,14 +98,14 @@ $t = new LimeTest(6);
 // @Test: strings in unformatted text are automatically formatted
 
   // fixtures
-  $colorizer->colorize('Test string', LimePrinter::STRING)->returns('<BLUE>Test string</BLUE>');
+  $colorizer->colorize('"Test string"', LimePrinter::STRING)->returns('<BLUE>"Test string"</BLUE>');
   $colorizer->replay();
   // test
   ob_start();
   $printer->printText('My text with a "Test string"');
   $result = ob_get_clean();
   // assertions
-  $t->is($result, 'My text with a <BLUE>Test string</BLUE>', 'The result was colorized and printed');
+  $t->is($result, 'My text with a <BLUE>"Test string"</BLUE>', 'The result was colorized and printed');
 
 /*
 // @Test: functions in unformatted text are automatically formatted

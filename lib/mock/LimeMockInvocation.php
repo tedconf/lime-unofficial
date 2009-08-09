@@ -110,6 +110,33 @@ class LimeMockInvocation
    */
   public function __toString()
   {
-    return sprintf('%s::%s(%s)', $this->class, $this->method, implode(', ', (array)$this->parameters));
+    $parameters = $this->parameters;
+
+    if (is_array($parameters))
+    {
+      foreach ($parameters as $key => $value)
+      {
+        if (is_string($value))
+        {
+          $value = str_replace(array("\n", "\t", "\r"), array('\n', '\t', '\r'), $value);
+          $value = strlen($value) > 30 ? substr($value, 0, 30).'...' : $value;
+          $parameters[$key] = '"'.$value.'"';
+        }
+        else if (is_object($value))
+        {
+          $parameters[$key] = get_class($value);
+        }
+        else if (is_array($value))
+        {
+          $parameters[$key] = 'array';
+        }
+        else
+        {
+          $parameters[$key] = var_export($value, true);
+        }
+      }
+    }
+
+    return sprintf('%s(%s)', $this->method, implode(', ', (array)$parameters));
   }
 }

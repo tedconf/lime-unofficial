@@ -107,7 +107,7 @@ class LimePrinter
     {
       if ($text{0} == '"')
       {
-        return $this->colorizer->colorize(trim($text, '"'), self::STRING);
+        return $this->colorizer->colorize($text, self::STRING);
       }
       else
       {
