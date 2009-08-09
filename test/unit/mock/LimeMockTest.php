@@ -505,7 +505,7 @@ $t = new LimeTest(80);
   // @Test: - Case 1: Correct parameters
 
   // test
-  $m->testMethod()->anyParameters();
+  $m->any('testMethod');
   $m->replay();
   $m->testMethod();
   $m->verify();
@@ -516,7 +516,7 @@ $t = new LimeTest(80);
   // @Test: - Case 1: "Wrong" parameters
 
   // test
-  $m->testMethod()->anyParameters();
+  $m->any('testMethod');
   $m->replay();
   $m->testMethod(1, 2, 3);
   $m->verify();

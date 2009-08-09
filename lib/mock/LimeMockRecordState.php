@@ -21,7 +21,7 @@ class LimeMockRecordState
     $this->output = $output;
   }
 
-  public function invoke($class, $method, array $parameters)
+  public function invoke($class, $method, $parameters = LimeMockInvocation::ANY_PARAMETERS)
   {
     $invocation = new LimeMockInvocation($class, $method, $parameters);
     $invocation = new LimeMockExpectedInvocation($invocation, $this->output);

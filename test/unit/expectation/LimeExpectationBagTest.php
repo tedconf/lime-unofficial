@@ -31,8 +31,8 @@ $t = new LimeTest(6);
 // @Test: Expected values can be added in any order
 
   // fixtures
-  $output->invoke('pass')->once()->anyParameters();
-  $output->invoke('fail')->never();
+  $output->any('pass')->once();
+  $output->any('fail')->never();
   $output->replay();
   // test
   $b->addExpected(1);
@@ -66,8 +66,8 @@ $t = new LimeTest(6);
 // @Test: setFailOnVerify() suppresses exceptions
 
   // fixtures
-  $output->invoke('pass')->never();
-  $output->invoke('fail')->once()->anyParameters();
+  $output->any('pass')->never();
+  $output->any('fail')->once();
   $output->replay();
   // test
   $b->setFailOnVerify();

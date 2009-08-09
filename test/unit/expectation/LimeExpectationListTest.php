@@ -49,8 +49,8 @@ $t = new LimeTest(4);
 // @Test: setFailOnVerify() suppresses exceptions
 
   // fixtures
-  $output->invoke('pass')->never();
-  $output->invoke('fail')->once()->anyParameters();
+  $output->any('pass')->never();
+  $output->any('fail')->once();
   $output->replay();
   // test
   $l->setFailOnVerify();

@@ -140,13 +140,6 @@ class LimeMockExpectedInvocation
     return $this;
   }
 
-  public function anyParameters()
-  {
-    $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherAnyParameters($this->invocation);
-
-    return $this;
-  }
-
   public function returns($value)
   {
     $this->returnValue = $value;

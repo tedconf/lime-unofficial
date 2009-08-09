@@ -141,8 +141,8 @@ $t = new LimeTest(79);
   $printer->printText("1\r", LimePrinter::NOT_OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->invoke('printText')->anyParameters();
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printText');
+  $printer->any('printLine');
   $printer->replay();
   // test
   $output->start('/test/script');
@@ -159,8 +159,8 @@ $t = new LimeTest(79);
   $printer->printText("1\r", LimePrinter::OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("warning", LimePrinter::WARNING);
-  $printer->invoke('printText')->anyParameters();
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printText');
+  $printer->any('printLine');
   $printer->replay();
   // test
   $output->start('/test/script');
@@ -178,8 +178,8 @@ $t = new LimeTest(79);
   $printer->printText("1\r", LimePrinter::OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->invoke('printText')->anyParameters();
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printText');
+  $printer->any('printLine');
   $printer->replay();
   // test
   $output->start('/test/script');
@@ -197,8 +197,8 @@ $t = new LimeTest(79);
   $printer->printText("1\r", LimePrinter::OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->invoke('printText')->anyParameters();
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printText');
+  $printer->any('printLine');
   $printer->printText(str_pad('/test/script2', 73, '.'));
   $printer->printText("1\r", LimePrinter::OK);
   $printer->replay();
@@ -233,17 +233,17 @@ $t = new LimeTest(79);
 // @Test: When start() is called again and anything failed, detailed statistics are printed
 
   // fixtures
-  $printer->invoke('printText')->anyParameters();
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printText');
+  $printer->any('printLine');
   $printer->printText('    ');
   $printer->printText('Passed: 1');
-  $printer->invoke('printText')->anyParameters()->once();
+  $printer->any('printText')->once();
   $printer->printText('Failed: 2', LimePrinter::NOT_OK);
-  $printer->invoke('printText')->anyParameters()->once();
+  $printer->any('printText')->once();
   $printer->printText('Warnings: 1', LimePrinter::WARNING);
-  $printer->invoke('printText')->anyParameters()->once();
+  $printer->any('printText')->once();
   $printer->printLine('Errors: 2', LimePrinter::NOT_OK);
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printLine');
   $printer->replay();
   // test
   $output->start('/test/script');
@@ -262,8 +262,8 @@ $t = new LimeTest(79);
 
   // fixtures
   $printer = LimeMock::create('LimePrinter', $t); // non-strict
-  $printer->invoke('printText')->anyParameters();
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printText');
+  $printer->any('printLine');
   $printer->printBox(' Failed 2/5 test scripts, 60.00% okay. 1/5 subtests failed, 80.00% okay.', LimePrinter::NOT_OK);
   $printer->replay();
   $output = new LimeOutputConsoleSummary($printer);
@@ -289,8 +289,8 @@ $t = new LimeTest(79);
 
   // fixtures
   $printer = LimeMock::create('LimePrinter', $t); // non-strict
-  $printer->invoke('printText')->anyParameters();
-  $printer->invoke('printLine')->anyParameters();
+  $printer->any('printText');
+  $printer->any('printLine');
   $printer->printBox(' All tests successful.', LimePrinter::HAPPY);
   $printer->printBox(' Files=2, Tests=3, Time=00:01', LimePrinter::HAPPY);
   $printer->replay();

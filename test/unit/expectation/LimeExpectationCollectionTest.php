@@ -50,8 +50,8 @@ $t = new LimeTest(21);
 // @Test: No value expected, no value retrieved
 
   // fixtures
-  $output->invoke('pass')->once()->anyParameters();
-  $output->invoke('fail')->never();
+  $output->any('pass')->once();
+  $output->any('fail')->never();
   $output->replay();
   // test
   $l->verify();
@@ -62,8 +62,8 @@ $t = new LimeTest(21);
 // @Test: One value expected, no value retrieved
 
   // fixtures
-  $output->invoke('pass')->never();
-  $output->invoke('fail')->once()->anyParameters();
+  $output->any('pass')->never();
+  $output->any('fail')->once();
   $output->replay();
   // test
   $l->addExpected(1);
@@ -75,8 +75,8 @@ $t = new LimeTest(21);
 // @Test: One value expected, one different value retrieved
 
   // fixtures
-  $output->invoke('pass')->never();
-  $output->invoke('fail')->once()->anyParameters();
+  $output->any('pass')->never();
+  $output->any('fail')->once();
   $output->replay();
   // test
   $l->addExpected(1);
@@ -89,8 +89,8 @@ $t = new LimeTest(21);
 // @Test: No expectations are set, added values are ignored
 
   // fixtures
-  $output->invoke('pass')->once()->anyParameters();
-  $output->invoke('fail')->never();
+  $output->any('pass')->once();
+  $output->any('fail')->never();
   $output->replay();
   // test
   $l->addActual(1);
@@ -121,8 +121,8 @@ $t = new LimeTest(21);
 // @Test: The expected value was added
 
   // fixtures
-  $output->invoke('pass')->once()->anyParameters();
-  $output->invoke('fail')->never();
+  $output->any('pass')->once();
+  $output->any('fail')->never();
   $output->replay();
   // test
   $l->addExpected(1);
@@ -135,8 +135,8 @@ $t = new LimeTest(21);
 // @Test: The list can contain a mix of different types
 
   // fixtures
-  $output->invoke('pass')->once()->anyParameters();
-  $output->invoke('fail')->never();
+  $output->any('pass')->once();
+  $output->any('fail')->never();
   $output->replay();
   // test
   $l->addExpected(1);
@@ -153,8 +153,8 @@ $t = new LimeTest(21);
 // @Test: By default, values are compared with weak typing
 
   // fixtures
-  $output->invoke('pass')->once()->anyParameters();
-  $output->invoke('fail')->never();
+  $output->any('pass')->once();
+  $output->any('fail')->never();
   $output->replay();
   // test
   $l->addExpected(1);
@@ -167,8 +167,8 @@ $t = new LimeTest(21);
 // @Test: If you call setStrict(), values are compared with strict typing - different types
 
   // fixtures
-  $output->invoke('pass')->never();
-  $output->invoke('fail')->once()->anyParameters();
+  $output->any('pass')->never();
+  $output->any('fail')->once();
   $output->replay();
   // test
   $l->setStrict();
@@ -182,8 +182,8 @@ $t = new LimeTest(21);
 // @Test: If you call setStrict(), values are compared with strict typing - same types
 
   // fixtures
-  $output->invoke('pass')->once()->anyParameters();
-  $output->invoke('fail')->never();
+  $output->any('pass')->once();
+  $output->any('fail')->never();
   $output->replay();
   // test
   $l->setStrict();

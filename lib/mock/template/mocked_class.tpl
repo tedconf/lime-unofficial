@@ -29,7 +29,7 @@
   
   <?php if ($generate_methods): ?>
   public function replay() { return $this->__lime_replay(); }
-  public function invoke($method, array $parameters = array()) { return $this->__call($method, $parameters); }
+  public function any($method, array $parameters = array()) { return $this->state->invoke($this->class, $method); }
   public function reset() { return $this->state->reset(); }
   public function verify() { return $this->state->verify(); }
   public function setStrict() { return $this->state->setStrict(); }

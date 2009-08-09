@@ -22,9 +22,12 @@
  */
 class LimeMockInvocation
 {
+  const
+    ANY_PARAMETERS  = '...';
+
   protected
-    $method     = null,
-    $parameters = array();
+    $method         = null,
+    $parameters     = array();
 
   /**
    * Constructor.
@@ -32,7 +35,7 @@ class LimeMockInvocation
    * @param string $method
    * @param array $parameters
    */
-  public function __construct($class, $method, array $parameters = array())
+  public function __construct($class, $method, $parameters = array())
   {
     $this->class = $class;
     $this->method = $method;
@@ -53,7 +56,11 @@ class LimeMockInvocation
   {
     $equal = $this->method == $invocation->method && $this->class == $invocation->class;
 
-    if ($strict)
+    if ($this->parameters == self::ANY_PARAMETERS)
+    {
+      return $equal;
+    }
+    else if ($strict)
     {
       return $equal && $this->parameters === $invocation->parameters;
     }
@@ -90,6 +97,6 @@ class LimeMockInvocation
    */
   public function __toString()
   {
-    return sprintf('%s::%s(%s)', $this->class, $this->method, implode(', ', $this->parameters));
+    return sprintf('%s::%s(%s)', $this->class, $this->method, implode(', ', (array)$this->parameters));
   }
 }
