@@ -108,11 +108,12 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->printer->printLargeBox($message, LimePrinter::WARNING);
   }
 
-  public function error($message, $file, $line)
+  public function error(Exception $exception)
   {
     $this->errors++;
 
-    $message .= sprintf("\n(in %s on line %s)", $file, $line);
+    $message = sprintf("%s: %s\n(in %s on line %s)", get_class($exception),
+        $exception->getMessage(), $exception->getFile(), $exception->getLine());
 
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
   }

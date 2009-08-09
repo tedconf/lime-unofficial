@@ -60,7 +60,7 @@ class LimeOutputArray implements LimeOutputInterface
   {
   }
 
-  public function error($message, $file, $line)
+  public function error(Exception $exception)
   {
   }
 

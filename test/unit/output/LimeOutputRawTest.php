@@ -90,10 +90,10 @@ $t = new LimeTest(11);
 
   // test
   ob_start();
-  $output->error('An error', '/test/file', 11);
+  $output->error($error = new LimeError('An error', '/test/file', 11));
   $result = ob_get_clean();
   // assertions
-  $t->is($result, serialize(array('error', array('An error', '/test/file', 11)))."\n", 'The method call is serialized');
+  $t->is($result, serialize(array('error', array($error)))."\n", 'The method call is serialized');
 
 
 // @Test: info() prints the method call as serialized array

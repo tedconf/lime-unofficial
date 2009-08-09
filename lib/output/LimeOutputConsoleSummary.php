@@ -124,7 +124,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $this->warnings++;
   }
 
-  public function error($message, $file, $line)
+  public function error(Exception $exception)
   {
     $this->errors++;
   }

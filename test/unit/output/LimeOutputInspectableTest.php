@@ -52,9 +52,9 @@ $t = new LimeTest(14);
 
 // @Test: getErrors() returns the number of calls to error()
 
-  $output->error('An error', '/test/script', 11);
+  $output->error(new LimeError('An error', '/test/script', 11));
   $output->pass('A passed test', '/test/script', 11);
-  $output->error('An error', '/test/script', 11);
+  $output->error(new LimeError('An error', '/test/script', 11));
   $t->is($output->getErrors(), 2, 'The returned number is correct');
 
 
@@ -75,7 +75,7 @@ $t = new LimeTest(14);
   $mock->fail('A failed test', '/test/script', 11, 'The error');
   $mock->skip('A skipped test', '/test/script', 11);
   $mock->warning('A warning', '/test/script', 11);
-  $mock->error('An error', '/test/script', 11);
+  $mock->error(new LimeError('An error', '/test/script', 11));
   $mock->comment('A comment');
   $mock->info('An info');
   $mock->flush();
@@ -87,7 +87,7 @@ $t = new LimeTest(14);
   $output->fail('A failed test', '/test/script', 11, 'The error');
   $output->skip('A skipped test', '/test/script', 11);
   $output->warning('A warning', '/test/script', 11);
-  $output->error('An error', '/test/script', 11);
+  $output->error(new LimeError('An error', '/test/script', 11));
   $output->comment('A comment');
   $output->info('An info');
   $output->flush();

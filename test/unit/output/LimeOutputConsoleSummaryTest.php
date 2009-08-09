@@ -94,7 +94,7 @@ $t = new LimeTest(79);
   // test
   $output->start('/test/script');
   $output->pass('A passed test', '/test/script', 11);
-  $output->error('An error', '/test/script', 22);
+  $output->error(new LimeError('An error', '/test/script', 22));
   $output->pass('A passed test', '/test/script', 33);
   // assertions
   $printer->verify();
@@ -111,7 +111,7 @@ $t = new LimeTest(79);
   // test
   $output->start('/test/script');
   $output->pass('A passed test', '/test/script', 11);
-  $output->error('An error', '/test/script', 22);
+  $output->error(new LimeError('An error', '/test/script', 22));
   $output->warning('A warning', '/test/script', 33);
   $output->pass('A passed test', '/test/script', 44);
   // assertions
@@ -184,7 +184,7 @@ $t = new LimeTest(79);
   // test
   $output->start('/test/script');
   $output->pass('A passed test', '/test/script', 11);
-  $output->error('An error', '/test/script', 22);
+  $output->error(new LimeError('An error', '/test/script', 22));
   $output->start('/test/script2');
   // assertions
   $printer->verify();
@@ -205,7 +205,7 @@ $t = new LimeTest(79);
   // test
   $output->start('/test/script');
   $output->pass('A passed test', '/test/script', 11);
-  $output->error('An error', '/test/script', 22);
+  $output->error(new LimeError('An error', '/test/script', 22));
   $output->start('/test/script2');
   $output->pass('A passed test', '/test/script2', 11);
   // assertions
@@ -251,8 +251,8 @@ $t = new LimeTest(79);
   $output->fail('A failed test', '/test/script', 11);
   $output->fail('A failed test', '/test/script', 11);
   $output->warning('A warning', '/test/script', 11);
-  $output->error('An error', '/test/script', 11);
-  $output->error('An error', '/test/script', 11);
+  $output->error(new LimeError('An error', '/test/script', 11));
+  $output->error(new LimeError('An error', '/test/script', 11));
   $output->start('/test/script2');
   // assertions
   $printer->verify();
@@ -277,7 +277,7 @@ $t = new LimeTest(79);
   $output->fail('A failed test', '/test/script3', 11);
   $output->start('/test/script4');
   $output->pass('A passed test', '/test/script', 11);
-  $output->error('An error', '/test/script', 11);
+  $output->error(new LimeError('An error', '/test/script', 11));
   $output->start('/test/script5');
   $output->pass('A passed test', '/test/script', 11);
   $output->flush();

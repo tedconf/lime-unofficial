@@ -92,7 +92,7 @@ class LimeOutputPipe
         }
         else
         {
-          $this->output->error($matches[1].$matches[2], $matches[3], $matches[4]);
+          $this->output->error(new LimeError($matches[1].$matches[2], $matches[3], $matches[4]));
         }
 
         // consume Xdebug call stack

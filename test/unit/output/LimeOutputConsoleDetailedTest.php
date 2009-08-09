@@ -157,10 +157,10 @@ $t = new LimeTest(41);
 // @Test: error() prints an warning
 
   // fixtures
-  $printer->printLargeBox("A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
+  $printer->printLargeBox("LimeError: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->replay();
   // test
-  $output->error('A very important error', '/test/file', 11);
+  $output->error(new LimeError('A very important error', '/test/file', 11));
   // assertions
   $printer->verify();
 
@@ -319,7 +319,7 @@ $t = new LimeTest(41);
   // fixtures
   $output->plan(1);
   $output->pass('First test', '/test/file', 11);
-  $output->error('Some error', '/test/file', 11);
+  $output->error(new LimeError('Some error', '/test/file', 11));
   $printer->reset();
   $printer->printBox(' Looks like some errors occurred.', LimePrinter::ERROR);
   $printer->replay();

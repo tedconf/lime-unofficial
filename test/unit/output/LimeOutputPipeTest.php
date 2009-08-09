@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(12);
+$t = new LimeTest(13);
 
 
 // @Before
@@ -38,6 +38,22 @@ $t = new LimeTest(12);
   file_put_contents($file, <<<EOF
 <?php
 echo serialize(array("plan", array(1, "/test/file")))."\n";
+EOF
+  );
+  // test
+  $connector->connect($file);
+  // assertions
+  $output->verify();
+
+
+// @Test: The call to error() is passed
+
+  // fixtures
+  $output->error(new Exception("An exception"));
+  $output->replay();
+  file_put_contents($file, <<<EOF
+<?php
+echo serialize(array("error", array(new Exception("An exception"))))."\n";
 EOF
   );
   // test
@@ -164,7 +180,7 @@ EOF
   // @Test: Case 1 - Invalid identifier
 
   // fixtures
-  $output->error("Parse error: syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1);
+  $output->error(new LimeError("Parse error: syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1));
   $output->replay();
   file_put_contents($file, '<?php $1invalidname;');
   // test
@@ -177,7 +193,7 @@ EOF
 
   // fixtures
   $output->warning("Warning: require(foobar.php): failed to open stream: No such file or directory", $file, 1);
-  $output->error("Fatal error: require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1);
+  $output->error(new LimeError("Fatal error: require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1));
   $output->replay();
   file_put_contents($file, '<?php require "foobar.php";');
   // test

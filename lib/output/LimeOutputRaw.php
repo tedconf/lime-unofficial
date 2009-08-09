@@ -54,9 +54,9 @@ class LimeOutputRaw implements LimeOutputInterface
     $this->printCall('warning', array($message, $file, $line));
   }
 
-  public function error($message, $file, $line)
+  public function error(Exception $exception)
   {
-    $this->printCall('error', array($message, $file, $line));
+    $this->printCall('error', array($exception));
   }
 
   public function info($message)

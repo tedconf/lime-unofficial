@@ -49,9 +49,9 @@ class LimeOutputXml implements LimeOutputInterface
     return $this->output->warning($message, $file, $line);
   }
 
-  public function error($message, $file, $line)
+  public function error(Exception $exception)
   {
-    return $this->output->error($message, $file, $line);
+    return $this->output->error($exception);
   }
 
   public function comment($message)

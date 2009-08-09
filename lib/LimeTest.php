@@ -586,11 +586,6 @@ class LimeTest
     $this->output->info($message);
   }
 
-  public function error($message)
-  {
-    $this->output->error($message);
-  }
-
   public function expect($class, $code = null)
   {
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
@@ -632,9 +627,7 @@ class LimeTest
     }
     else
     {
-      $message = get_class($exception).': '.$exception->getMessage();
-
-      $this->output->error($message, $exception->getFile(), $exception->getLine());
+      $this->output->error($exception);
     }
 
     return true;
