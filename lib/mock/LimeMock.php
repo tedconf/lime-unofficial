@@ -200,9 +200,9 @@ class LimeMock
     $class = new ReflectionClass($classOrInterface);
     foreach ($class->getMethods() as $method)
     {
-      if (!in_array($method->getName(), self::$illegalMethods))
+      /* @var $method ReflectionMethod */
+      if (!in_array($method->getName(), self::$illegalMethods) && !$method->isFinal())
       {
-        /* @var $method ReflectionMethod */
         $modifiers = Reflection::getModifierNames($method->getModifiers());
         $modifiers = array_diff($modifiers, array('abstract'));
         $modifiers = implode(' ', $modifiers);

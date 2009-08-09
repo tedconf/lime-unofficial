@@ -52,10 +52,20 @@ class TestClassWithMethodsFromMock
   public function __lime_getState() {}
 }
 
+class TestClassWithFinalMethods
+{
+  public static $calls = 0;
+
+  public final function testMethod()
+  {
+    ++self::$calls;
+  }
+}
+
 class TestException extends Exception {}
 
 
-$t = new LimeTest(79);
+$t = new LimeTest(80);
 
 
 // @Before
@@ -132,6 +142,17 @@ $t = new LimeTest(79);
   // assertions
   $t->is(TestClass::$calls, 0, 'The method has not been called');
 
+
+// @Test: Final methods cannot be mocked
+
+  // fixtures
+  TestClassWithFinalMethods::$calls = 0;
+  $m = LimeMock::create('TestClassWithFinalMethods');
+  $m->replay();
+  // test
+  $m->testMethod();
+  // assertions
+  $t->is(TestClassWithFinalMethods::$calls, 1, 'The method has been called');
 
 
 // @Test: Return values can be stubbed
