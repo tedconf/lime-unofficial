@@ -88,7 +88,7 @@ class LimePrinter
     {
       if (is_null($style))
       {
-        return preg_replace_callback('/("[^"]+"'/*|(->|::)?\w+\([^\)]*\)*/.')/', array($this, 'autoColorize'), $text);
+        return preg_replace_callback('/("[^"]*"'/*|(->|::)?\w+\([^\)]*\)*/.')/', array($this, 'autoColorize'), $text);
       }
       else
       {
