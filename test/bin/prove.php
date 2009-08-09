@@ -13,7 +13,7 @@ require_once(dirname(__FILE__).'/../../lib/LimeAutoloader.php');
 
 LimeAutoloader::register();
 
-$baseDir = realpath(dirname(__FILE__).'/..');
+$baseDir = realpath(dirname(__FILE__).'/../..');
 
 $s = new LimeTestSuite(array(
   'force_colors' => isset($argv) && in_array('--color', $argv),
@@ -21,7 +21,7 @@ $s = new LimeTestSuite(array(
   'base_dir'     => $baseDir,
 ));
 
-$s->registerGlob($baseDir.'/unit/*Test.php');
-$s->registerGlob($baseDir.'/unit/*/*Test.php');
+$s->registerGlob($baseDir.'/test/unit/*Test.php');
+$s->registerGlob($baseDir.'/test/unit/*/*Test.php');
 
 exit($s->run() ? 0 : 1);
