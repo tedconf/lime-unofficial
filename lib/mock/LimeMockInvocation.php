@@ -56,17 +56,30 @@ class LimeMockInvocation
   {
     $equal = $this->method == $invocation->method && $this->class == $invocation->class;
 
+    $exp1 = LimeTester::create($this->parameters);
+    $exp2 = LimeTester::create($invocation->parameters);
+
     if ($this->parameters == self::ANY_PARAMETERS)
     {
       return $equal;
     }
-    else if ($strict)
+
+    try
     {
-      return $equal && $this->parameters === $invocation->parameters;
+      if ($strict)
+      {
+        $exp1->assertSame($exp2);
+      }
+      else
+      {
+        $exp1->assertEquals($exp2);
+      }
+
+      return $equal;
     }
-    else
+    catch (LimeTesterException $e)
     {
-      return $equal && $this->parameters == $invocation->parameters;
+      return false;
     }
   }
 
