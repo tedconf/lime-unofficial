@@ -309,7 +309,7 @@ $t = new LimeTest(79);
 // @Test: If the base dir is set, the test files are truncated
 
   // fixtures
-  $output = new LimeOutputConsoleSummary($printer, '/test');
+  $output = new LimeOutputConsoleSummary($printer, array('base_dir' => '/test'));
   $printer->reset();
   $printer->printText(str_pad('/script', 73, '.'));
   $printer->printText("1\r", LimePrinter::OK);

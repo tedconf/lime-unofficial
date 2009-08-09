@@ -13,7 +13,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 {
   protected
     $printer = null,
-    $baseDir = null,
+    $options = array(),
     $startTime = 0,
     $file = null,
     $actualFiles = 0,
@@ -26,11 +26,13 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $errors = 0,
     $warnings = 0;
 
-  public function __construct(LimePrinter $printer, $baseDir = null)
+  public function __construct(LimePrinter $printer, array $options = array())
   {
     $this->printer = $printer;
-    $this->baseDir = $baseDir;
     $this->startTime = time();
+    $this->options = array_merge(array(
+      'base_dir'  => null,
+    ), $options);
   }
 
   public function start($file)
@@ -181,14 +183,13 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
   protected function getTruncatedFile()
   {
-    if (!is_null($this->baseDir))
+    if (!is_null($this->options))
     {
-      return str_replace($this->baseDir, '', $this->file);
+      return str_replace($this->options['base_dir'], '', $this->file);
     }
     else
     {
       return $this->file;
     }
-
   }
 }
