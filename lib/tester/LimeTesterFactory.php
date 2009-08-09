@@ -21,6 +21,7 @@ class LimeTesterFactory
       'array'     => 'LimeTesterArray',
       'object'    => 'LimeTesterObject',
       'resource'  => 'LimeTesterResource',
+      'Exception' => 'LimeTesterException',
     );
 
   public function create($value)
