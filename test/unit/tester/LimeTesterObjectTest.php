@@ -23,9 +23,33 @@ class TestClass
   }
 }
 
+class TestBook
+{
+  // the order of properties is crucial!
+  public $author = null;
+  private $title = '';
+
+  public function __construct($title)
+  {
+    $this->title = $title;
+  }
+}
+
+class TestAuthor
+{
+  // the order of properties is crucial!
+  public $books = array();
+  private $name = '';
+
+  public function __construct($name)
+  {
+    $this->name = $name;
+  }
+}
+
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(5);
+$t = new LimeTest(6);
 
 
 // @Test: assertEquals() throws an exception if the other tester is no LimeTesterObject
@@ -54,6 +78,37 @@ $t = new LimeTest(5);
   $actual = new LimeTesterObject(new TestClass());
   $expected = new LimeTesterObject(new TestClass());
   // test
+  $actual->assertEquals($expected);
+
+
+// @Test: assertEquals() is able to deal with cyclic dependencies
+
+  // fixtures
+  $book1 = new TestBook('Thud');
+  $book1->author = new TestAuthor('Terry Pratchett');
+  $book1->author->books[] = $book1;
+  $book2 = new TestBook('Thud');
+  $book2->author = new TestAuthor('Terry Pratchett');
+  $book2->author->books[] = $book2;
+  $actual = new LimeTesterObject($book1);
+  $expected = new LimeTesterObject($book2);
+  // test
+  $actual->assertEquals($expected);
+
+
+// @Test: assertEquals() throws an exception if cyclic dependencies contain differences
+
+  // fixtures
+  $book1 = new TestBook('Thud');
+  $book1->author = new TestAuthor('Terry Pratchett');
+  $book1->author->books[] = $book1;
+  $book2 = new TestBook('Thud');
+  $book2->author = new TestAuthor('Terry Pratch');
+  $book2->author->books[] = $book2;
+  $actual = new LimeTesterObject($book1);
+  $expected = new LimeTesterObject($book2);
+  // test
+  $t->expect('LimeAssertionFailedException');
   $actual->assertEquals($expected);
 
 
@@ -93,6 +148,21 @@ $t = new LimeTest(5);
   $expected = new LimeTesterObject(new TestClass());
   // test
   $t->expect('LimeAssertionFailedException');
+  $actual->assertNotEquals($expected);
+
+
+// @Test: assertNotEquals() is able to deal with cyclic dependencies
+
+  // fixtures
+  $book1 = new TestBook('Thud');
+  $book1->author = new TestAuthor('Terry Pratchett');
+  $book1->author->books[] = $book1;
+  $book2 = new TestBook('Thud');
+  $book2->author = new TestAuthor('Terry Pratch');
+  $book2->author->books[] = $book2;
+  $actual = new LimeTesterObject($book1);
+  $expected = new LimeTesterObject($book2);
+  // test
   $actual->assertNotEquals($expected);
 
 

@@ -9,20 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeTesterArray extends LimeTester
+class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
 {
   protected
     $type         = 'array';
-
-  public function __construct(array $array)
-  {
-    foreach ($array as $key => $value)
-    {
-      $array[$key] = LimeTester::create($value);
-    }
-
-    parent::__construct($array);
-  }
 
   public function assertEquals(LimeTesterInterface $expected)
   {
@@ -33,16 +23,16 @@ class LimeTesterArray extends LimeTester
 
     $remaining = $this->value;
 
-    foreach ($expected->value as $key => $value)
+    foreach ($expected as $key => $value)
     {
-      if (!array_key_exists($key, $remaining))
+      if (!isset($this[$key]))
       {
         throw new LimeAssertionFailedException($this, $expected->dumpExcerpt($key, $value));
       }
 
       try
       {
-        $remaining[$key]->assertEquals($value);
+        $this[$key]->assertEquals($value);
       }
       catch (LimeAssertionFailedException $e)
       {
@@ -65,22 +55,24 @@ class LimeTesterArray extends LimeTester
       return;
     }
 
-    foreach ($expected->value as $key => $value)
+    foreach ($expected as $key => $value)
     {
-      if (!array_key_exists($key, $this->value))
+      if (!isset($this[$key]))
       {
         return;
       }
 
       try
       {
-        $this->value[$key]->assertNotEquals($value);
+        $this[$key]->assertNotEquals($value);
+        return;
       }
       catch (LimeAssertionFailedException $e)
       {
-        throw new LimeAssertionFailedException($this, $expected);
       }
     }
+
+    throw new LimeAssertionFailedException($this, $expected);
   }
 
   public function assertSame(LimeTesterInterface $expected)
@@ -90,35 +82,31 @@ class LimeTesterArray extends LimeTester
       throw new LimeAssertionFailedException($this, $expected);
     }
 
-    reset($this->value);
-
-    foreach ($expected->value as $key => $value)
+    for ($expected->rewind(), $this->rewind(); $expected->valid(); $expected->next(), $this->next())
     {
-      if (current($this->value) === false)
+      if (!$this->valid())
       {
-        throw new LimeAssertionFailedException($this, $expected->dumpExcerpt($key, $value));
+        throw new LimeAssertionFailedException($this, $expected->dumpExcerpt($expected->key(), $expected->current()));
       }
 
-      if ($key != key($this->value))
+      if ($this->key() != $expected->key())
       {
-        throw new LimeAssertionFailedException($this->dumpExcerpt(key($this->value), current($this->value)), $expected->dumpExcerpt($key, $value));
+        throw new LimeAssertionFailedException($this->dumpExcerpt(key($this->value), current($this->value)), $expected->dumpExcerpt($expected->key(), $expected->current()));
       }
 
       try
       {
-        current($this->value)->assertSame($value);
+        $this->current()->assertSame($expected->current());
       }
       catch (LimeAssertionFailedException $e)
       {
-        throw new LimeAssertionFailedException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
+        throw new LimeAssertionFailedException($this->dumpExcerpt($this->key(), $e->getActual()), $expected->dumpExcerpt($expected->key(), $e->getExpected()));
       }
-
-      next($this->value);
     }
 
-    if (current($this->value) !== false)
+    if ($this->valid())
     {
-      throw new LimeAssertionFailedException($this->dumpExcerpt(key($this->value), current($this->value)), $expected);
+      throw new LimeAssertionFailedException($this->dumpExcerpt($this->key(), $this->current()), $expected);
     }
   }
 
@@ -129,31 +117,27 @@ class LimeTesterArray extends LimeTester
       return;
     }
 
-    reset($this->value);
-
-    foreach ($expected->value as $key => $value)
+    for ($expected->rewind(), $this->rewind(); $expected->valid(); $expected->next(), $this->next())
     {
-      if (current($this->value) === false || $key != key($this->value))
+      if (!$this->valid() || $this->key() !== $expected->key())
       {
         return;
       }
 
       try
       {
-        current($this->value)->assertNotSame($value);
+        $this->current()->assertNotSame($expected->current());
       }
       catch (LimeAssertionFailedException $e)
       {
-        throw new LimeAssertionFailedException($this->dumpExcerpt($key, $e->getActual()), $expected->dumpExcerpt($key, $e->getExpected()));
+        throw new LimeAssertionFailedException($this->dumpExcerpt($this->key(), $e->getActual()), $expected->dumpExcerpt($expected->key(), $e->getExpected()));
       }
-
-      next($this->value);
     }
   }
 
   public function assertContains(LimeTesterInterface $expected)
   {
-    foreach ($this->value as $key => $value)
+    foreach ($this as $key => $value)
     {
       try
       {
@@ -170,7 +154,7 @@ class LimeTesterArray extends LimeTester
 
   public function assertNotContains(LimeTesterInterface $expected)
   {
-    foreach ($this->value as $key => $value)
+    foreach ($this as $key => $value)
     {
       $equal = true;
 
@@ -259,5 +243,50 @@ class LimeTesterArray extends LimeTester
     }
 
     return trim(implode("\n", $lines));
+  }
+
+  public function offsetGet($key)
+  {
+    return LimeTester::create($this->value[$key]);
+  }
+
+  public function offsetExists($key)
+  {
+    return array_key_exists($key, $this->value);
+  }
+
+  public function offsetSet($key, $value)
+  {
+    throw new BadMethodCallException('This method is not supported');
+  }
+
+  public function offsetUnset($key)
+  {
+    throw new BadMethodCallException('This method is not supported');
+  }
+
+  public function current()
+  {
+    return $this[$this->key()];
+  }
+
+  public function key()
+  {
+    return key($this->value);
+  }
+
+  public function next()
+  {
+    next($this->value);
+  }
+
+  public function valid()
+  {
+    return $this->key() !== null;
+  }
+
+  public function rewind()
+  {
+    reset($this->value);
   }
 }

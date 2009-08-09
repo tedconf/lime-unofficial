@@ -11,6 +11,10 @@
 
 class LimeTesterObject extends LimeTesterArray
 {
+  private static
+    $equal    = array(),
+    $unequal  = array();
+
   private
     $object = null;
 
@@ -57,6 +61,32 @@ class LimeTesterObject extends LimeTesterArray
   protected function getType()
   {
     return 'object('.$this->type.')';
+  }
+
+  public function assertEquals(LimeTesterInterface $expected)
+  {
+    // don't compare twice to allow for cyclic dependencies
+    if (in_array(array($this->value, $expected->value), self::$equal, true) || in_array(array($expected->value, $this->value), self::$equal, true))
+    {
+      return;
+    }
+
+    self::$equal[] = array($this->value, $expected->value);
+
+    parent::assertEquals($expected);
+  }
+
+  public function assertNotEquals(LimeTesterInterface $expected)
+  {
+    // don't compare twice to allow for cyclic dependencies
+    if (in_array(array($this->value, $expected->value), self::$unequal, true) || in_array(array($expected->value, $this->value), self::$unequal, true))
+    {
+      return;
+    }
+
+    self::$unequal[] = array($this->value, $expected->value);
+
+    parent::assertNotEquals($expected);
   }
 
   public function assertSame(LimeTesterInterface $expected)

@@ -113,6 +113,15 @@ $t = new LimeTest(16);
   $actual->assertNotEquals($expected);
 
 
+// @Test: assertNotEquals() throws no exception if the arrays differ
+
+  // fixtures
+  $actual = new LimeTesterArray(array(0 => 1, 1 => 2));
+  $expected = new LimeTesterArray(array(0 => 1, 1 => 3));
+  // test
+  $actual->assertNotEquals($expected);
+
+
 // @Test: assertSame() throws an exception if the other tester is no LimeTesterArray
 
   // fixtures
