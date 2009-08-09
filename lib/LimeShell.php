@@ -78,6 +78,36 @@ class LimeShell
   }
 
   /**
+   * Parses the given CLI arguments and returns an array of options.
+   *
+   * @param  array $arguments
+   * @return array
+   */
+  public static function parseArguments(array $arguments)
+  {
+    $options = array();
+
+    foreach ($GLOBALS['argv'] as $parameter)
+    {
+      if (preg_match('/^--([a-zA-Z\-]+)=(.+)$/', $parameter, $matches))
+      {
+        if (in_array($matches[2], array('true', 'false')))
+        {
+          $matches[2] = eval($matches[2]);
+        }
+
+        $options[$matches[1]] = $matches[2];
+      }
+      else if (preg_match('/^--([a-zA-Z\-]+)$/', $parameter, $matches))
+      {
+        $options[$matches[1]] = true;
+      }
+    }
+
+    return $options;
+  }
+
+  /**
    * Constructor.
    *
    * @param $executable
@@ -134,9 +164,19 @@ class LimeShell
 
   protected function buildCommand($file, array $arguments = array())
   {
-    foreach ($arguments as &$argument)
+    foreach ($arguments as $argument => $value)
     {
-      $argument = escapeshellarg($argument);
+      $arguments[$argument] = '--'.escapeshellarg($argument);
+
+      if ($value !== true)
+      {
+        if (!is_string($value))
+        {
+          $value = var_export($value, true);
+        }
+
+        $arguments[$argument] .= '='.escapeshellarg($value);
+      }
     }
 
     // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing

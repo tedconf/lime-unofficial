@@ -18,43 +18,32 @@ class LimeTestSuite extends LimeRegistration
 
   public function __construct(array $options = array())
   {
-    $this->options = array_merge(array(
+    $this->options = array(
       'base_dir'     => null,
       'executable'   => null,
+      'output'       => 'summary',
       'force_colors' => false,
-      'output'       => null,
       'verbose'      => false,
-    ), $options);
+      'serialize'    => false,
+    );
+
+    foreach (LimeShell::parseArguments($GLOBALS['argv']) as $argument => $value)
+    {
+      $this->options[str_replace('-', '_', $argument)] = $value;
+    }
+
+    $this->options = array_merge($this->options, $options);
 
     $this->options['base_dir'] = realpath($this->options['base_dir']);
 
-    $output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
-
-    $this->output = new LimeOutputInspectable($output);
-  }
-
-  protected function getDefaultOutput($forceColors = false)
-  {
-    if (in_array('--raw', $GLOBALS['argv']))
+    if (is_string($this->options['output']))
     {
-      return new LimeOutputRaw();
-    }
-    else if (in_array('--xml', $GLOBALS['argv']))
-    {
-      return new LimeOutputXml();
-    }
-    else if (in_array('--array', $GLOBALS['argv']))
-    {
-      $serialize = in_array('--serialize', $GLOBALS['argv']);
+      $factory = new LimeOutputFactory($this->options);
 
-      return new LimeOutputArray($serialize);
+      $this->options['output'] = $factory->create($this->options['output']);
     }
-    else
-    {
-      $colorizer = LimeColorizer::isSupported() || $forceColors ? new LimeColorizer() : null;
 
-      return new LimeOutputConsoleSummary(new LimePrinter($colorizer), $this->options['base_dir']);
-    }
+    $this->output = new LimeOutputInspectable($this->options['output']);
   }
 
   public function run()

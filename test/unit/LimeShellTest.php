@@ -68,12 +68,12 @@ exit(1);
 EOF
 );
   // test
-  list($returnValue, $output) = $shell->execute($file, array('test', '--arg'));
+  list($returnValue, $output) = $shell->execute($file, array('test' => true, 'arg' => 'value'));
   // assertions
   $t->is($returnValue, 1, 'The return value is correct');
   $t->is($output, "array (
-  1 => 'test',
-  2 => '--arg',
+  1 => '--test',
+  2 => '--arg=value',
 )", 'The output is correct');
 
 

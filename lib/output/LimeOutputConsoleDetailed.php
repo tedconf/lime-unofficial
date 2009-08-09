@@ -12,28 +12,31 @@
 class LimeOutputConsoleDetailed implements LimeOutputInterface
 {
   protected
-    $baseDir = null,
-    $expected = null,
-    $passed = 0,
-    $actual = 0,
-    $warnings = 0,
-    $errors = 0,
-    $printer = null;
+    $options    = array(),
+    $expected   = null,
+    $passed     = 0,
+    $actual     = 0,
+    $warnings   = 0,
+    $errors     = 0,
+    $printer    = null;
 
-  public function __construct(LimePrinter $printer, $baseDir = null)
+  public function __construct(LimePrinter $printer, array $options = array())
   {
     $this->printer = $printer;
-    $this->baseDir = $baseDir;
+    $this->options = array_merge(array(
+      'verbose'   => false,
+      'base_dir'  => null,
+    ), $options);
+  }
+
+  private function stripBaseDir($path)
+  {
+    return is_null($this->options['base_dir']) ? $path : str_replace($this->options['base_dir'], '', $path);
   }
 
   public function start($file)
   {
-    if (!is_null($this->baseDir))
-    {
-      $file = str_replace($this->baseDir, '', $file);
-    }
-
-    $this->printer->printLine($file, LimePrinter::INFO);
+    $this->printer->printLine($this->stripBaseDir($file), LimePrinter::INFO);
   }
 
   public function plan($amount)
@@ -72,7 +75,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
       $this->printer->printLine(' - '.$message);
     }
 
-    $this->printer->printLine(sprintf('#     Failed test (%s at line %s)', $file, $line), LimePrinter::COMMENT);
+    $this->printer->printLine(sprintf('#     Failed test (%s at line %s)', $this->stripBaseDir($file), $line), LimePrinter::COMMENT);
 
     if (!is_null($error))
     {
@@ -103,7 +106,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
   {
     $this->warnings++;
 
-    $message .= sprintf("\n(in %s on line %s)", $file, $line);
+    $message .= sprintf("\n(in %s on line %s)", $this->stripBaseDir($file), $line);
 
     $this->printer->printLargeBox($message, LimePrinter::WARNING);
   }
@@ -113,7 +116,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $this->errors++;
 
     $message = sprintf("%s: %s\n(in %s on line %s)", get_class($exception),
-        $exception->getMessage(), $exception->getFile(), $exception->getLine());
+        $exception->getMessage(), $this->stripBaseDir($exception->getFile()), $exception->getLine());
 
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
   }

@@ -29,18 +29,36 @@ class LimeTest
 
   public function __construct($plan = null, array $options = array())
   {
-    $this->options = array_merge(array(
+    $this->options = array(
       'base_dir'     => null,
+      'output'       => 'detail',
       'force_colors' => false,
-      'output'       => null,
       'verbose'      => false,
-    ), $options);
+      'serialize'    => false,
+    );
+
+    foreach (LimeShell::parseArguments($GLOBALS['argv']) as $argument => $value)
+    {
+      $this->options[str_replace('-', '_', $argument)] = $value;
+    }
+
+    $this->options = array_merge($this->options, $options);
 
     $this->options['base_dir'] = realpath($this->options['base_dir']);
 
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
-    $this->output = $this->options['output'] ? $this->options['output'] : $this->getDefaultOutput($this->options['force_colors']);
+    if (is_string($this->options['output']))
+    {
+      $factory = new LimeOutputFactory($this->options);
+
+      $this->output = $factory->create($this->options['output']);
+    }
+    else
+    {
+      $this->output = $this->options['output'];
+    }
+
     $this->output->start($file);
 
     if (!is_null($plan))
@@ -58,34 +76,6 @@ class LimeTest
 
     restore_error_handler();
     restore_exception_handler();
-  }
-
-  protected function getDefaultOutput($forceColors = false)
-  {
-    if (in_array('--raw', $GLOBALS['argv']))
-    {
-      return new LimeOutputRaw();
-    }
-    else if (in_array('--xml', $GLOBALS['argv']))
-    {
-      return new LimeOutputXml();
-    }
-    else if (in_array('--array', $GLOBALS['argv']))
-    {
-      $serialize = in_array('--serialize', $GLOBALS['argv']);
-
-      return new LimeOutputArray($serialize);
-    }
-    else if (in_array('--coverage', $GLOBALS['argv']))
-    {
-      return new LimeOutputCoverage();
-    }
-    else
-    {
-      $colorizer = LimeColorizer::isSupported() || $forceColors ? new LimeColorizer() : null;
-
-      return new LimeOutputConsoleDetailed(new LimePrinter($colorizer), $this->options['base_dir']);
-    }
   }
 
   public function getOutput()

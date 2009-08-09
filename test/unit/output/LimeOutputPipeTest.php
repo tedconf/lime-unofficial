@@ -62,14 +62,14 @@ EOF
   $output->verify();
 
 
-// @Test: The file is called with the argument --raw
+// @Test: The file is called with the argument --output=raw
 
   // fixtures
   $output->plan(1, '/test/file');
   $output->replay();
   file_put_contents($file, <<<EOF
 <?php
-if (in_array('--raw', \$GLOBALS['argv']))
+if (in_array('--output=raw', \$GLOBALS['argv']))
 {
   echo serialize(array("plan", array(1, "/test/file")))."\n";
 }

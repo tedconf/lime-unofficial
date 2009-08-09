@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(41);
+$t = new LimeTest(45);
 
 // @Before
 
@@ -40,7 +40,7 @@ $t = new LimeTest(41);
 // @Test: The constructor accepts a base directory which is stripped from the file name
 
   // fixtures
-  $output = new LimeOutputConsoleDetailed($printer, '/test');
+  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
   $printer->printLine('/file', LimePrinter::INFO);
   $printer->replay();
   // test
@@ -117,6 +117,19 @@ $t = new LimeTest(41);
   $printer->verify();
 
 
+// @Test: fail() truncates the file path
+
+  // fixtures
+  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
+  $printer->printLine('not ok 1', LimePrinter::NOT_OK);
+  $printer->printLine('#     Failed test (/file at line 11)', LimePrinter::COMMENT);
+  $printer->replay();
+  // test
+  $output->fail('', '/test/file', 11);
+  // assertions
+  $printer->verify();
+
+
 // @Test: skip() prints and counts skipped tests
 
   // fixtures
@@ -154,6 +167,18 @@ $t = new LimeTest(41);
   $printer->verify();
 
 
+// @Test: warning() truncates the file path
+
+  // fixtures
+  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
+  $printer->printLargeBox("A very important warning\n(in /file on line 11)", LimePrinter::WARNING);
+  $printer->replay();
+  // test
+  $output->warning('A very important warning', '/test/file', 11);
+  // assertions
+  $printer->verify();
+
+
 // @Test: error() prints an warning
 
   // fixtures
@@ -163,6 +188,25 @@ $t = new LimeTest(41);
   $output->error(new LimeError('A very important error', '/test/file', 11));
   // assertions
   $printer->verify();
+
+
+// @Test: error() truncates the file path
+
+  // fixtures
+  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
+  $printer->printLargeBox("LimeError: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
+  $printer->replay();
+  // test
+  $output->error(new LimeError('A very important error', '/test/file', 11));
+  // assertions
+  $printer->verify();
+
+
+// @Test: error() prints the stack trace if the option "verbose" is set
+
+  // fixtures
+//  $output = new LimeOutputConsoleDetailed($printer, array('verbose' => true));
+//  $printer
 
 
 // @Test: info() prints an information

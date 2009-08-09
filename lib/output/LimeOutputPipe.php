@@ -25,10 +25,7 @@ class LimeOutputPipe
 
   public function connect($file, array $arguments = array())
   {
-    if (!in_array('--raw', $arguments))
-    {
-      $arguments[] = '--raw';
-    }
+    $arguments['output'] = 'raw';
 
     $this->buffer = '';
 
