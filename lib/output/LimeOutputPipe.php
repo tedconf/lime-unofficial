@@ -34,7 +34,7 @@ class LimeOutputPipe
 
     if (!empty($this->buffer))
     {
-      throw new RuntimeException(sprintf('Could not unserialize "%s"', $this->buffer));
+      $this->output->warning("Could not parse test output. Make sure you don't echo any additional data.", $file, 1);
     }
   }
 

@@ -166,13 +166,16 @@ EOF
   $output->verify();
 
 
-// @Test: If the output cannot be unserialized, an exception is thrown
+// @Test: If the output cannot be unserialized, an error is reported
 
   // fixtures
   file_put_contents($file, '<?php echo "Some Error occurred";');
+  $output->warning("Could not parse test output. Make sure you don't echo any additional data.", $file, 1);
+  $output->replay();
   // test
-  $t->expect('RuntimeException');
   $connector->connect($file);
+  // assertions
+  $output->verify();
 
 
 // @Test: A PHP error is passed to error() - invalid identifier
