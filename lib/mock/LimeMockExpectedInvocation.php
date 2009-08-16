@@ -22,6 +22,7 @@ class LimeMockExpectedInvocation
     $matchers     = array(),
     $returnValue  = null,
     $exception    = null,
+    $callback     = null,
     $strict       = false;
 
   public function __construct(LimeMockInvocation $invocation, LimeOutputInterface $output = null)
@@ -34,8 +35,13 @@ class LimeMockExpectedInvocation
     $this->atLeastOnce();
   }
 
-  public function invoke()
+  public function invoke(array $parameters)
   {
+    if (!is_null($this->callback))
+    {
+      return call_user_func_array($this->callback, $parameters);
+    }
+
     if (!is_null($this->exception))
     {
       if (is_string($this->exception))
@@ -150,6 +156,18 @@ class LimeMockExpectedInvocation
   public function throws($class)
   {
     $this->exception = $class;
+
+    return $this;
+  }
+
+  public function callback($callback)
+  {
+    if (!is_callable($callback))
+    {
+      throw new InvalidArgumentException('The given argument is no callable');
+    }
+
+    $this->callback = $callback;
 
     return $this;
   }

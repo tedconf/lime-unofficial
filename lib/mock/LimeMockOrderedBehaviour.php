@@ -22,7 +22,7 @@ class LimeMockOrderedBehaviour extends LimeMockBehaviour
 
       if ($expectedInvocation->matches($invocation, $this->strict))
       {
-        return $expectedInvocation->invoke();
+        return $expectedInvocation->invoke($invocation->getParameters());
       }
       else if ($expectedInvocation->isComplete())
       {

@@ -52,6 +52,11 @@ class LimeMockInvocation
     return $this->method;
   }
 
+  public function getParameters()
+  {
+    return $this->parameters;
+  }
+
   public function equals(LimeMockInvocation $invocation, $strict = false)
   {
     $equal = $this->method == $invocation->method && $this->class == $invocation->class;

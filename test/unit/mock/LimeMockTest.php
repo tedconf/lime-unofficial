@@ -64,8 +64,20 @@ class TestClassWithFinalMethods
 
 class TestException extends Exception {}
 
+class TestCallbackClass
+{
+  public static $arguments;
 
-$t = new LimeTest(80);
+  public static function callback()
+  {
+    self::$arguments = func_get_args();
+
+    return 'elvis lives';
+  }
+}
+
+
+$t = new LimeTest(84);
 
 
 // @Before
@@ -658,3 +670,31 @@ $t = new LimeTest(80);
   $t->expect('LimeMockException');
   // test
   $m->testMethod();
+
+
+// @Test: Mock methods can call other callbacks
+
+  // fixtures
+  TestCallbackClass::$arguments = null;
+  $m = LimeMock::create('TestClass');
+  // test
+  $m->testMethod(1, 'foobar')->callback(array('TestCallbackClass', 'callback'));
+  $m->replay();
+  $value = $m->testMethod(1, 'foobar');
+  // assertions
+  $t->is(TestCallbackClass::$arguments, array(1, 'foobar'), 'The arguments have been passed to the callback');
+  $t->is($value, 'elvis lives', 'The return value of the callback has been passed through');
+
+
+// @Test: Parameters are passed to the callback correctly, if any parameters are expected
+
+  // fixtures
+  TestCallbackClass::$arguments = null;
+  $m = LimeMock::create('TestClass');
+  // test
+  $m->any('testMethod')->callback(array('TestCallbackClass', 'callback'));
+  $m->replay();
+  $value = $m->testMethod(1, 'foobar');
+  // assertions
+  $t->is(TestCallbackClass::$arguments, array(1, 'foobar'), 'The arguments have been passed to the callback');
+  $t->is($value, 'elvis lives', 'The return value of the callback has been passed through');
