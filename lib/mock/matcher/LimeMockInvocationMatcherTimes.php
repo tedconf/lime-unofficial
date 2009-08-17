@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeMockInvocationMatcherTimes
+class LimeMockInvocationMatcherTimes implements LimeMockInvocationMatcherInterface
 {
   private
     $expected = 0,
@@ -20,21 +20,35 @@ class LimeMockInvocationMatcherTimes
     $this->expected = $times;
   }
 
-  public function matches(LimeMockInvocation $invocation, $strict = false)
+  public function invoke(LimeMockInvocation $invocation)
   {
     if ($this->actual < $this->expected)
     {
       $this->actual++;
-
-      return true;
     }
+    else
+    {
+      if ($this->expected == 0)
+      {
+        throw new LimeMockInvocationMatcherException('should not be called');
+      }
+      else
+      {
+        $times = $this->getMessage();
 
-    return false;
+        throw new LimeMockInvocationMatcherException(sprintf('should only be called %s', $times));
+      }
+    }
   }
 
-  public function isComplete()
+  public function isInvokable()
   {
-    return $this->actual == $this->expected;
+    return $this->actual < $this->expected;
+  }
+
+  public function isSatisfied()
+  {
+    return $this->actual >= $this->expected;
   }
 
   public function getMessage()

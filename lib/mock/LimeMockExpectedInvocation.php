@@ -12,8 +12,8 @@
 class LimeMockExpectedInvocation
 {
   const
-    PARAMETER_MATCHER = 0,
-    COUNT_MATCHER     = 1;
+    COUNT_MATCHER     = 0,
+    PARAMETER_MATCHER = 1;
 
   protected
     $invocation   = null,
@@ -23,23 +23,55 @@ class LimeMockExpectedInvocation
     $returnValue  = null,
     $exception    = null,
     $callback     = null,
-    $strict       = false;
+    $strict       = false,
+    $verified     = false;
 
   public function __construct(LimeMockInvocation $invocation, LimeOutputInterface $output = null)
   {
     $this->invocation = $invocation;
     $this->output = $output;
 
-    $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherParameters($invocation);
-
     $this->atLeastOnce();
   }
 
-  public function invoke(array $parameters)
+  public function __toString()
   {
+    $string = $this->invocation.' was called';
+
+    foreach ($this->matchers as $matcher)
+    {
+      $string .= ' '.$matcher->getMessage();
+    }
+
+    return $string;
+  }
+
+  public function invoke(LimeMockInvocation $invocation)
+  {
+    try
+    {
+      foreach ($this->matchers as $matcher)
+      {
+        $matcher->invoke($invocation);
+      }
+    }
+    catch (LimeMockInvocationMatcherException $e)
+    {
+      throw new LimeMockInvocationException($this->invocation, $e->getMessage());
+    }
+
+    if (!$this->verified && $this->isSatisfied() && !is_null($this->output))
+    {
+      list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
+
+      $this->output->pass((string)$this, $file, $line);
+
+      $this->verified = true;
+    }
+
     if (!is_null($this->callback))
     {
-      return call_user_func_array($this->callback, $parameters);
+      return call_user_func_array($this->callback, $invocation->getParameters());
     }
 
     if (!is_null($this->exception))
@@ -57,61 +89,56 @@ class LimeMockExpectedInvocation
     return $this->returnValue;
   }
 
-  public function matches(LimeMockInvocation $invocation, $strict = false)
+  public function matches(LimeMockInvocation $invocation)
   {
-    $matched = false;
-
-    if ($this->invocation->getMethod() == $invocation->getMethod())
-    {
-      $matched = true;
-
-      foreach ($this->matchers as $matcher)
-      {
-        $matched = $matched && $matcher->matches($invocation, $strict || $this->strict);
-      }
-    }
-
-    return $matched;
+    return $this->invocation->equals($invocation);
   }
 
-  public function isComplete()
+  public function isInvokable()
   {
-    $complete = true;
+    $result = true;
 
     foreach ($this->matchers as $matcher)
     {
-      $complete = $complete && $matcher->isComplete();
+      $result = $result && $matcher->isInvokable();
     }
 
-    return $complete;
+    return $result;
+  }
+
+  public function isSatisfied()
+  {
+    $result = true;
+
+    foreach ($this->matchers as $matcher)
+    {
+      $result = $result && $matcher->isSatisfied();
+    }
+
+    return $result;
   }
 
   public function verify()
   {
-    if (is_null($this->output))
+    if (!$this->verified)
     {
-      throw new BadMethodCallException('You must pass an instance of LimeTest to LimeMock::create() for verifying');
-    }
+      if (is_null($this->output))
+      {
+        throw new BadMethodCallException('You must pass an instance of LimeTest to LimeMock::create() for verifying');
+      }
 
-    $messages = array();
-    $valid = true;
+      list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
 
-    foreach ($this->matchers as $matcher)
-    {
-      $messages[] = $matcher->getMessage();
-      $valid = $valid && $matcher->isComplete();
-    }
+      if ($this->isSatisfied())
+      {
+        $this->output->pass((string)$this, $file, $line);
+      }
+      else
+      {
+        $this->output->fail((string)$this, $file, $line);
+      }
 
-    list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
-    $message = implode(' ', $messages);
-
-    if ($valid)
-    {
-      $this->output->pass($message, $file, $line);
-    }
-    else
-    {
-      $this->output->fail($message, $file, $line);
+      $this->verified = true;
     }
   }
 
@@ -174,7 +201,7 @@ class LimeMockExpectedInvocation
 
   public function strict()
   {
-    $this->strict = true;
+    $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherStrict($this->invocation);
 
     return $this;
   }

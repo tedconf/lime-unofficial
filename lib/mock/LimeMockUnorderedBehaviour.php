@@ -15,9 +15,9 @@ class LimeMockUnorderedBehaviour extends LimeMockBehaviour
   {
     foreach ($this->invocations as $expectedInvocation)
     {
-      if ($expectedInvocation->matches($invocation, $this->strict))
+      if ($expectedInvocation->matches($invocation))
       {
-        return $expectedInvocation->invoke($invocation->getParameters());
+        return $expectedInvocation->invoke($invocation);
       }
     }
 

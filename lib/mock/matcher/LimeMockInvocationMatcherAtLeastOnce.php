@@ -9,19 +9,24 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeMockInvocationMatcherAtLeastOnce
+class LimeMockInvocationMatcherAtLeastOnce implements LimeMockInvocationMatcherInterface
 {
   private
     $actual   = 0;
 
-  public function matches(LimeMockInvocation $invocation, $strict = false)
+  public function invoke(LimeMockInvocation $invocation)
   {
     $this->actual++;
 
     return true;
   }
 
-  public function isComplete()
+  public function isInvokable()
+  {
+    return true;
+  }
+
+  public function isSatisfied()
   {
     return $this->actual >= 1;
   }

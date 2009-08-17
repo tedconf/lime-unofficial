@@ -206,7 +206,7 @@ $t->diag('The exception handlers are called when a test throws an exception');
 $t->diag('If no exception handler returns true, the exception is thrown again');
 
   // fixtures
-  $mock = LimeMock::createStrict('Mock', $t);
+  $mock = LimeMock::createStrict('Mock');
   $r = new LimeTestRunner();
   $r->addTest(array($mock, 'testThrowsException'));
   $r->addExceptionHandler(array($mock, 'handleErrorFailed'));

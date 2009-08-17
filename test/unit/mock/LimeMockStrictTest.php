@@ -15,7 +15,7 @@ require_once dirname(__FILE__).'/../../MockLimeOutput.php';
 LimeAnnotationSupport::enable();
 
 
-$t = new LimeTest(12);
+$t = new LimeTest(14);
 
 
 // @Before
@@ -38,6 +38,20 @@ $t = new LimeTest(12);
   $m->replay();
   $m->testMethod1();
   $m->testMethod2('Foobar');
+  $m->verify();
+  // assertions
+  $t->is($output->passes, 2, 'Two tests passed');
+  $t->is($output->fails, 0, 'No test failed');
+
+
+// @Test: ->verify() passes if a method is expected both with any and with concrete parameters
+
+  // test
+  $m->any('testMethod')->once();
+  $m->testMethod(1, 'foobar');
+  $m->replay();
+  $m->testMethod('ramble on');
+  $m->testMethod(1, 'foobar');
   $m->verify();
   // assertions
   $t->is($output->passes, 2, 'Two tests passed');

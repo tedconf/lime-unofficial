@@ -21,13 +21,18 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
   public function expect(LimeMockExpectedInvocation $invocation)
   {
     $this->invocations[] = $invocation;
+
+    if ($this->strict)
+    {
+      $invocation->strict();
+    }
   }
 
   public function invoke(LimeMockInvocation $invocation)
   {
     if (!$this->verified && !$this->failOnVerify && ($this->expectNothing || count($this->invocations) > 0))
     {
-      throw new LimeMockException($invocation, array(), array());
+      throw new LimeMockInvocationException($invocation, 'was not expected to be called');
     }
   }
 
@@ -54,6 +59,11 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
   public function setStrict()
   {
     $this->strict = true;
+
+    foreach ($this->invocations as $invocation)
+    {
+      $invocation->strict();
+    }
   }
 
   public function reset()

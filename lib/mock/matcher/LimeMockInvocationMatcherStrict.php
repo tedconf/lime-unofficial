@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeMockInvocationMatcherParameters
+class LimeMockInvocationMatcherStrict implements LimeMockInvocationMatcherInterface
 {
   protected
     $invocation = null;
@@ -19,25 +19,26 @@ class LimeMockInvocationMatcherParameters
     $this->invocation = $invocation;
   }
 
-  public function matches(LimeMockInvocation $invocation, $strict = false)
+  public function invoke(LimeMockInvocation $invocation)
   {
-    if ($this->invocation->equals($invocation, $strict))
+    if (!$this->invocation->equals($invocation, true))
     {
-      return true;
-    }
-    else
-    {
-      return false;
+      throw new LimeMockInvocationMatcherException('should be called with the same parameter types');
     }
   }
 
-  public function isComplete()
+  public function isInvokable()
+  {
+    return true;
+  }
+
+  public function isSatisfied()
   {
     return true;
   }
 
   public function getMessage()
   {
-    return $this->invocation.' was called';
+    return '';
   }
 }

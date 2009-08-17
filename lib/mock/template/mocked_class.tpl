@@ -18,10 +18,10 @@
     {
       return $this->state->invoke($this->class, $method, $parameters);
     }
-    catch (LimeMockException $e)
+    catch (LimeMockInvocationException $e)
     {
       // hide the internal trace to not distract when debugging test errors
-      throw new LimeMockException($e->getInvocation(), $e->getExpectedInvocations(), $e->getPastInvocations());
+      throw new LimeMockException($e->getMessage());
     }
   }
   

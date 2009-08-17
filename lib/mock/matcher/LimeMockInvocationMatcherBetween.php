@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeMockInvocationMatcherBetween
+class LimeMockInvocationMatcherBetween implements LimeMockInvocationMatcherInterface
 {
   private
     $start  = 0,
@@ -30,21 +30,24 @@ class LimeMockInvocationMatcherBetween
     }
   }
 
-  public function matches(LimeMockInvocation $invocation, $strict = false)
+  public function invoke(LimeMockInvocation $invocation)
   {
     if ($this->actual < $this->end)
     {
       $this->actual++;
-
-      return true;
     }
     else
     {
-      return false;
+      throw new LimeMockInvocationMatcherException(sprintf('should only be called %s', $this->getMessage()));
     }
   }
 
-  public function isComplete()
+  public function isInvokable()
+  {
+    return $this->actual < $this->end;
+  }
+
+  public function isSatisfied()
   {
     return $this->actual >= $this->start && $this->actual <= $this->end;
   }
