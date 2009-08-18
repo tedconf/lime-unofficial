@@ -29,9 +29,9 @@ class LimeOutputFactory
         return new LimeOutputArray($this->options['serialize']);
       case 'summary':
         return new LimeOutputConsoleSummary($printer, $this->options);
-      case 'detail':
+      case 'tap':
       default:
-        return new LimeOutputConsoleDetailed($printer, $this->options);
+        return new LimeOutputTap($printer, $this->options);
     }
   }
 }

@@ -31,7 +31,7 @@ class LimeTest
   {
     $this->options = array(
       'base_dir'     => null,
-      'output'       => 'detail',
+      'output'       => 'tap',
       'force_colors' => false,
       'verbose'      => false,
       'serialize'    => false,

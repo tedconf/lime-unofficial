@@ -103,7 +103,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
       if ($this->getErrors() || $this->getWarnings() || $this->getFailed() || $incomplete)
       {
-        $messages = LimeOutputConsoleDetailed::getMessages($this->getActual(),
+        $messages = LimeOutputTap::getMessages($this->getActual(),
             $this->getExpected(), $this->getPassed(), $this->getErrors(), $this->getWarnings());
 
         foreach ($messages as $message)

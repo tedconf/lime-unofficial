@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputConsoleDetailed implements LimeOutputInterface
+class LimeOutputTap implements LimeOutputInterface
 {
   protected
     $options    = array(),
@@ -18,6 +18,7 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     $actual     = 0,
     $warnings   = 0,
     $errors     = 0,
+    $file       = null,
     $printer    = null;
 
   public function __construct(LimePrinter $printer, array $options = array())
@@ -41,7 +42,12 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
 
   public function focus($file)
   {
-    $this->printer->printLine('# '.$this->stripBaseDir($file), LimePrinter::INFO);
+    if ($this->file !== $file)
+    {
+      $this->printer->printLine('# '.$this->stripBaseDir($file), LimePrinter::INFO);
+
+      $this->file = $file;
+    }
   }
 
   public function close()
@@ -51,7 +57,6 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
   public function plan($amount)
   {
     $this->expected += $amount;
-    $this->printer->printLine('1..'.$amount);
   }
 
   public function pass($message, $file, $line)
@@ -257,8 +262,10 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
   {
     if (is_null($this->expected))
     {
-      $this->plan($this->actual, null);
+      $this->plan($this->actual);
     }
+
+    $this->printer->printLine('1..'.$this->expected);
 
     $messages = self::getMessages($this->actual, $this->expected, $this->passed, $this->errors, $this->warnings);
 

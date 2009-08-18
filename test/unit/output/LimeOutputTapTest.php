@@ -13,12 +13,12 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(64);
+$t = new LimeTest(74);
 
 // @Before
 
   $printer = LimeMock::createStrict('LimePrinter', $t);
-  $output = new LimeOutputConsoleDetailed($printer);
+  $output = new LimeOutputTap($printer);
 
 
 // @After
@@ -37,25 +37,25 @@ $t = new LimeTest(64);
   $printer->verify();
 
 
-// @Test: The constructor accepts a base directory which is stripped from the file name
+// @Test: focus() prints the filename only once
 
-  // fixtures
-  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
-  $printer->printLine('# /file', LimePrinter::INFO);
+  $printer->printLine('# /test/file', LimePrinter::INFO)->once();
   $printer->replay();
   // test
+  $output->focus('/test/file');
   $output->focus('/test/file');
   // assertions
   $printer->verify();
 
 
-// @Test: plan() prints the test file and the amount of planned tests
+// @Test: The constructor accepts a base directory which is stripped from the file name
 
   // fixtures
-  $printer->printLine('1..2');
+  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
+  $printer->printLine('# /file', LimePrinter::INFO);
   $printer->replay();
   // test
-  $output->plan(2, '/test/file');
+  $output->focus('/test/file');
   // assertions
   $printer->verify();
 
@@ -120,7 +120,7 @@ $t = new LimeTest(64);
 // @Test: fail() truncates the file path
 
   // fixtures
-  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
+  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
   $printer->printLine('not ok 1', LimePrinter::NOT_OK);
   $printer->printLine('#     Failed test (/file at line 11)', LimePrinter::COMMENT);
   $printer->replay();
@@ -204,7 +204,7 @@ $t = new LimeTest(64);
 // @Test: warning() truncates the file path
 
   // fixtures
-  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
+  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
   $printer->printLargeBox("A very important warning\n(in /file on line 11)", LimePrinter::WARNING);
   $printer->replay();
   // test
@@ -230,7 +230,7 @@ $t = new LimeTest(64);
 // @Test: error() truncates the file path
 
   // fixtures
-  $output = new LimeOutputConsoleDetailed($printer, array('base_dir' => '/test'));
+  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
   $printer->printLargeBox("LimeError: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
   $printer->printLine('Exception trace:', LimePrinter::COMMENT);
   $printer->any('printText')->atLeastOnce();
@@ -264,7 +264,7 @@ $t = new LimeTest(64);
   $printer->verify();
 
 
-// @Test: flush() prints a summary
+// @Test: flush() prints the plan and a summary
 
   // @Test: Case 1 - Too many tests
 
@@ -273,6 +273,7 @@ $t = new LimeTest(64);
   $output->pass('First test', '/test/file', 11);
   $output->pass('Second test', '/test/file', 22);
   $printer->reset();
+  $printer->printLine('1..1');
   $printer->printBox(' Looks like you planned 1 tests but ran 1 extra.', LimePrinter::ERROR);
   $printer->replay();
   // test
@@ -287,6 +288,7 @@ $t = new LimeTest(64);
   $output->pass('First test', '/test/file', 11);
   $output->fail('Second test', '/test/file', 22);
   $printer->reset();
+  $printer->printLine('1..1');
   $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
   $printer->printBox(' Looks like you planned 1 tests but ran 1 extra.', LimePrinter::ERROR);
   $printer->replay();
@@ -301,6 +303,7 @@ $t = new LimeTest(64);
   $output->plan(2, '/test/file');
   $output->pass('First test', '/test/file', 11);
   $printer->reset();
+  $printer->printLine('1..2');
   $printer->printBox(' Looks like you planned 2 tests but only ran 1.', LimePrinter::ERROR);
   $printer->replay();
   // test
@@ -314,6 +317,7 @@ $t = new LimeTest(64);
   $output->plan(1);
   $output->pass('First test', '/test/file', 11);
   $printer->reset();
+  $printer->printLine('1..1');
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test
@@ -329,6 +333,7 @@ $t = new LimeTest(64);
   $output->fail('Second test', '/test/file', 22);
   $output->pass('Third test', '/test/file', 33);
   $printer->reset();
+  $printer->printLine('1..3');
   $printer->printBox(' Looks like you failed 1 tests of 3.', LimePrinter::ERROR);
   $printer->replay();
   // test
@@ -343,6 +348,7 @@ $t = new LimeTest(64);
   $output->pass('First test', '/test/file', 11);
   $output->fail('Second test', '/test/file', 22);
   $printer->reset();
+  $printer->printLine('1..3');
   $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
   $printer->printBox(' Looks like you planned 3 tests but only ran 2.', LimePrinter::ERROR);
   $printer->replay();
@@ -370,6 +376,7 @@ $t = new LimeTest(64);
   $output->plan(1);
   $output->skip('First test', '/test/file', 11);
   $printer->reset();
+  $printer->printLine('1..1');
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test
@@ -384,6 +391,7 @@ $t = new LimeTest(64);
   $output->pass('First test', '/test/file', 11);
   $output->warning('Some warning', '/test/file', 11);
   $printer->reset();
+  $printer->printLine('1..1');
   $printer->printBox(' Looks like you\'re nearly there.', LimePrinter::WARNING);
   $printer->replay();
   // test
@@ -398,6 +406,7 @@ $t = new LimeTest(64);
   $output->pass('First test', '/test/file', 11);
   $output->error(new LimeError('Some error', '/test/file', 11));
   $printer->reset();
+  $printer->printLine('1..1');
   $printer->printBox(' Looks like some errors occurred.', LimePrinter::ERROR);
   $printer->replay();
   // test
@@ -413,6 +422,7 @@ $t = new LimeTest(64);
   $output->plan(1);
   $output->pass('Second test', '/test/file', 11);
   $printer->reset();
+  $printer->printLine('1..2');
   $printer->printBox(' Looks like everything went fine.', LimePrinter::HAPPY);
   $printer->replay();
   // test

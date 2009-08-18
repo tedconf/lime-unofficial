@@ -42,7 +42,7 @@ class LimePrinter
       $colorizer->setStyle(self::ERROR, array('bg' => 'red', 'fg' => 'white', 'bold' => true));
       $colorizer->setStyle(self::HAPPY, array('fg' => 'white', 'bg' => 'green', 'bold' => true));
       $colorizer->setStyle(self::STRING, array('fg' => 'cyan'));
-      $colorizer->setStyle(self::NUMBER, array('fg' => 'cyan'));
+      $colorizer->setStyle(self::NUMBER, array());
       $colorizer->setStyle(self::BOOLEAN, array('fg' => 'cyan'));
       $colorizer->setStyle(self::INFO, array('fg' => 'cyan', 'bold' => true));
       $colorizer->setStyle(self::TRACE, array('fg' => 'green', 'bold' => true));

@@ -72,11 +72,11 @@ $t->diag('Code annotated with @Before is executed once before every test');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Before
 Test 1
 Before
 Test 2
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -90,11 +90,11 @@ $t->diag('Code annotated with @After is executed once after every test');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Test 1
 After
 Test 2
 After
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -108,10 +108,10 @@ $t->diag('Code annotated with @BeforeAll is executed once before the test suite'
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Before All
 Test 1
 Test 2
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -125,10 +125,10 @@ $t->diag('Code annotated with @AfterAll is executed once after the test suite');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Test 1
 Test 2
 After All
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -142,10 +142,10 @@ $t->diag('Code before the first annotations is executed normally');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Before annotation
 Before
 Test
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -159,9 +159,9 @@ $t->diag('Classes can be defined before the annotations');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Try is not matched
 If is not matched
+1..0
  Looks like everything went fine.
 EOF
 ;
@@ -176,8 +176,8 @@ $t->diag('Functions can be defined before the annotations');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Test
+1..0
  Looks like everything went fine.
 EOF
 ;
@@ -200,10 +200,10 @@ $t->diag('Variables from the @Before scope are available in all other scopes');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Before
 BeforeTest
 BeforeTestAfter
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -217,11 +217,11 @@ $t->diag('Variables from the global scope are available in all other scopes');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Global
 GlobalBefore
 GlobalBeforeTest
 GlobalBeforeTestAfter
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -234,9 +234,9 @@ $t->diag('Variables from other annotations are NOT available in all other scopes
   // assertion
   $expected = <<<EOF
 $root/@$file
+Is not set
+Is not set
 1..0
-Is not set
-Is not set
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -250,10 +250,10 @@ $t->diag('Tests annotated with @Test may have comments');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Test 1
 # This test is commented with "double" and 'single' quotes
 Test 2
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -267,7 +267,6 @@ $t->diag('Exceptions can be expected');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 $root/@$file
-1..4
 Test 1
 not ok 1 - A "RuntimeException" was thrown
 #     Failed test (%ANY%)
@@ -282,6 +281,7 @@ not ok 3 - A "RuntimeException" with code "1" was thrown
 #       expected: RuntimeException (1)
 Test 4
 ok 4 - A "RuntimeException" with code "1" was thrown
+1..4
  Looks like you failed 2 tests of 4.
 EOF
 , '/')).'/';
@@ -296,7 +296,6 @@ $t->diag('Exception objects can be expected');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 $root/@$file
-1..3
 Test 1
 ok 1 - A "RuntimeException" with code "0" was thrown
 Test 2
@@ -306,6 +305,7 @@ not ok 2 - A "RuntimeException" with code "1" was thrown
 #       expected: RuntimeException (1)
 Test 3
 ok 3 - A "RuntimeException" with code "1" was thrown
+1..3
  Looks like you failed 1 tests of 3.
 EOF
 , '/')).'/';
@@ -320,7 +320,6 @@ $t->diag('Old expected exceptions are ignored');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 $root/@$file
-1..2
 Test 1
 ok 1 - A "RuntimeException" was thrown
 Test 2
@@ -328,6 +327,7 @@ not ok 2 - A "LogicException" was thrown
 #     Failed test (%ANY%)
 #            got: none
 #       expected: LogicException
+1..2
  Looks like you failed 1 tests of 2.
 EOF
 , '/')).'/';
@@ -342,9 +342,9 @@ $t->diag('Annotations can be commented out with /*...*/');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Test 1
 Test 3
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -409,8 +409,8 @@ $t->diag('The last line in an annotated file can be a comment (bugfix)');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Test
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');
@@ -424,11 +424,11 @@ $t->diag('The annotation support can be enabled in included bootstrap files');
   // assertion
   $expected = <<<EOF
 $root/@$file
-1..0
 Before
 Test 1
 Before
 Test 2
+1..0
  Looks like everything went fine.
 EOF;
   $t->is($result, 0, 'The file returned exit status 0 (success)');

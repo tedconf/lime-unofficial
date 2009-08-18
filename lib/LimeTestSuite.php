@@ -50,7 +50,7 @@ class LimeTestSuite extends LimeRegistration
 
     if ($this->options['processes'] > 1 && !$output->supportsThreading())
     {
-      throw new LogicException(sprintf('The output "%s" does not support threading', $type));
+      throw new LogicException(sprintf('The output "%s" does not support multi-processing', $type));
     }
 
     $this->output = new LimeOutputInspectable($output);
