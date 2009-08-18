@@ -175,9 +175,9 @@ $t = new LimeTest(39);
   $printer->any('printText');
   $printer->any('printLine');
   $printer->printBox(' All tests successful.', LimePrinter::HAPPY);
-  $printer->printBox(' Files=2, Tests=3, Time=00:01', LimePrinter::HAPPY);
+  $printer->printBox(' Files=2, Tests=3, Time=00:01, Processes=3', LimePrinter::HAPPY);
   $printer->replay();
-  $output = new LimeOutputConsoleSummary($printer);
+  $output = new LimeOutputConsoleSummary($printer, array('processes' => 3));
   // test
   $output->focus('/test/script1');
   $output->pass('A passed test', '/test/script1', 11);

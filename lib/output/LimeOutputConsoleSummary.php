@@ -33,6 +33,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $this->startTime = time();
     $this->options = array_merge(array(
       'base_dir'  => null,
+      'processes' => 1,
     ), $options);
   }
 
@@ -207,8 +208,8 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     else
     {
       $time = max(1, time() - $this->startTime);
-      $stats = sprintf(' Files=%d, Tests=%d, Time=%02d:%02d',
-          $this->actualFiles, $this->actualTests, round($time/60), $time%60);
+      $stats = sprintf(' Files=%d, Tests=%d, Time=%02d:%02d, Processes=%d',
+          $this->actualFiles, $this->actualTests, round($time/60), $time%60, $this->options['processes']);
 
       $this->printer->printBox(' All tests successful.', LimePrinter::HAPPY);
       $this->printer->printBox($stats, LimePrinter::HAPPY);
