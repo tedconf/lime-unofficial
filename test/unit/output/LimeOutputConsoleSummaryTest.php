@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(37);
+$t = new LimeTest(39);
 
 
 // @Before
@@ -201,6 +201,21 @@ $t = new LimeTest(37);
   $printer->replay();
   // test
   $output->focus('/test/script');
+  $output->pass('A passed test', '/test/script', 11);
+  $output->close();
+  // assertions
+  $printer->verify();
+
+
+// @Test: Too long file names are truncated
+
+  // fixtures
+  $printer->reset();
+  $printer->printText(str_repeat('x', 59).'/test/script..');
+  $printer->printLine("ok", LimePrinter::OK);
+  $printer->replay();
+  // test
+  $output->focus(str_repeat('x', 80).'/test/script');
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
   // assertions

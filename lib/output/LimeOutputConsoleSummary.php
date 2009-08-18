@@ -64,7 +64,14 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
       $this->actualTests += $this->getActual();
       $this->failedTests += $this->getFailed();
 
-      $this->printer->printText(str_pad($this->getTruncatedFile(), 73, '.'));
+      $path = $this->getTruncatedFile();
+
+      if (strlen($path) > 71)
+      {
+        $path = substr($path, -71);
+      }
+
+      $this->printer->printText(str_pad($path, 73, '.'));
 
       $incomplete = ($this->getExpected() > 0 && $this->getActual() != $this->getExpected());
 
