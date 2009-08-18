@@ -20,10 +20,11 @@ class LimePrinter
     ERROR = 5,
     HAPPY = 6,
     STRING = 7,
-    METHOD = 8,
-    INFO = 9,
-    TRACE = 10,
-    TODO = 11;
+    NUMBER = 8,
+    BOOLEAN = 9,
+    INFO = 10,
+    TRACE = 11,
+    TODO = 12;
 
   protected
     $colorizer = null;
@@ -41,7 +42,8 @@ class LimePrinter
       $colorizer->setStyle(self::ERROR, array('bg' => 'red', 'fg' => 'white', 'bold' => true));
       $colorizer->setStyle(self::HAPPY, array('fg' => 'white', 'bg' => 'green', 'bold' => true));
       $colorizer->setStyle(self::STRING, array('fg' => 'cyan'));
-      $colorizer->setStyle(self::METHOD, array('fg' => 'cyan'));
+      $colorizer->setStyle(self::NUMBER, array('fg' => 'cyan'));
+      $colorizer->setStyle(self::BOOLEAN, array('fg' => 'cyan'));
       $colorizer->setStyle(self::INFO, array('fg' => 'cyan', 'bold' => true));
       $colorizer->setStyle(self::TRACE, array('fg' => 'green', 'bold' => true));
     }
@@ -88,7 +90,7 @@ class LimePrinter
     {
       if (is_null($style))
       {
-        return preg_replace_callback('/("[^"]*"'/*|(->|::)?\w+\([^\)]*\)*/.')/', array($this, 'autoColorize'), $text);
+        return preg_replace_callback('/("[^"]*"|(?<!\w)\d+(\.\d+)?(?!\w)|true|false'/*|(->|::)?\w+\([^\)]*\)*/.')/', array($this, 'autoColorize'), $text);
       }
       else
       {
@@ -111,9 +113,13 @@ class LimePrinter
       {
         return $this->colorizer->colorize($text, self::STRING);
       }
+      else if (in_array(strtolower($text), array('true', 'false')))
+      {
+        return $this->colorizer->colorize($text, self::BOOLEAN);
+      }
       else
       {
-        return $this->colorizer->colorize($text, self::METHOD);
+        return $this->colorizer->colorize($text, self::NUMBER);
       }
     }
   }
