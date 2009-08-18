@@ -24,9 +24,19 @@ class LimeOutputRaw implements LimeOutputInterface
     print serialize(array($method, $arguments))."\n";
   }
 
-  public function start($file)
+  public function supportsThreading()
   {
-    $this->printCall('start', array($file));
+    return true;
+  }
+
+  public function focus($file)
+  {
+    $this->printCall('focus', array($file));
+  }
+
+  public function close()
+  {
+    $this->printCall('close', array());
   }
 
   public function plan($amount)

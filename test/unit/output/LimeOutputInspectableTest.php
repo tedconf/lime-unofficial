@@ -78,7 +78,7 @@ $t = new LimeTest(15);
 
   // fixtures
   $mock = LimeMock::create('LimeOutputInterface', $t);
-  $mock->start('/test/file');
+  $mock->focus('/test/file');
   $mock->pass('A passed test', '/test/script', 11);
   $mock->fail('A failed test', '/test/script', 11, 'The error');
   $mock->skip('A skipped test', '/test/script', 11);
@@ -90,7 +90,7 @@ $t = new LimeTest(15);
   $mock->replay();
   $output = new LimeOutputInspectable($mock);
   // test
-  $output->start('/test/file');
+  $output->focus('/test/file');
   $output->pass('A passed test', '/test/script', 11);
   $output->fail('A failed test', '/test/script', 11, 'The error');
   $output->skip('A skipped test', '/test/script', 11);

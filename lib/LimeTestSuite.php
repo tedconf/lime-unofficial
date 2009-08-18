@@ -18,21 +18,20 @@ class LimeTestSuite extends LimeRegistration
 
   public function __construct(array $options = array())
   {
-    $this->options = array(
+    $this->options = array_merge(array(
       'base_dir'     => null,
       'executable'   => null,
       'output'       => 'summary',
       'force_colors' => false,
       'verbose'      => false,
       'serialize'    => false,
-    );
+      'processes'    => 1,
+    ), $options);
 
     foreach (LimeShell::parseArguments($GLOBALS['argv']) as $argument => $value)
     {
       $this->options[str_replace('-', '_', $argument)] = $value;
     }
-
-    $this->options = array_merge($this->options, $options);
 
     $this->options['base_dir'] = realpath($this->options['base_dir']);
 
@@ -40,10 +39,21 @@ class LimeTestSuite extends LimeRegistration
     {
       $factory = new LimeOutputFactory($this->options);
 
-      $this->options['output'] = $factory->create($this->options['output']);
+      $type = $this->options['output'];
+      $output = $factory->create($type);
+    }
+    else
+    {
+      $output = $this->options['output'];
+      $type = get_class($output);
     }
 
-    $this->output = new LimeOutputInspectable($this->options['output']);
+    if ($this->options['processes'] > 1 && !$output->supportsThreading())
+    {
+      throw new LogicException(sprintf('The output "%s" does not support threading', $type));
+    }
+
+    $this->output = new LimeOutputInspectable($output);
   }
 
   public function run()
@@ -55,15 +65,42 @@ class LimeTestSuite extends LimeRegistration
 
     // sort the files to be able to predict the order
     sort($this->files);
+    reset($this->files);
 
-    $connector = new LimeOutputPipe($this->output, array('start', 'flush'));
+    $connectors = array();
 
-    foreach ($this->files as $file)
+    for ($i = 0; $i < $this->options['processes']; ++$i)
     {
-      // start the file explicitly in case the file contains syntax errors
-      $this->output->start($file);
-      $connector->connect($file);
+      $connectors[] = new LimeOutputPipe($this->output, array('focus', 'flush'));
     }
+
+    do
+    {
+      $done = true;
+
+      foreach ($connectors as $connector)
+      {
+        if ($connector->done() && !is_null(key($this->files)))
+        {
+          // start the file explicitly in case the file contains syntax errors
+          $this->output->focus(current($this->files));
+          $connector->connect(current($this->files));
+
+          next($this->files);
+        }
+        else if (!$connector->done())
+        {
+          $this->output->focus($connector->getConnectedFile());
+        }
+
+        if (!$connector->done())
+        {
+          $connector->proceed();
+          $done = false;
+        }
+      }
+    }
+    while (!$done);
 
     $this->output->flush();
 

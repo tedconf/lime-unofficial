@@ -21,9 +21,18 @@ class LimeOutputArray implements LimeOutputInterface
     $this->serialize = $serialize;
   }
 
-  public function start($file)
+  public function supportsThreading()
+  {
+    return true;
+  }
+
+  public function focus($file)
   {
     $this->currentResults =& $this->getResults($file);
+  }
+
+  public function close()
+  {
   }
 
   public function plan($amount)

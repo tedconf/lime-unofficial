@@ -146,15 +146,9 @@ class LimeShell
     return array($return, $output);
   }
 
-  public function executeCallback($callback, $file, array $arguments = array())
+  public function spawn($file, array $arguments = array())
   {
-    $handle = popen($this->buildCommand($file, $arguments), 'r');
-
-    while (!feof($handle))
-    {
-      $line = fread($handle, 2048);
-      call_user_func($callback, $line);
-    }
+    return popen($this->buildCommand($file, $arguments), 'r');
   }
 
   protected function buildCommand($file, array $arguments = array())

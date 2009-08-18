@@ -42,6 +42,7 @@ EOF
   );
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -58,6 +59,7 @@ EOF
   );
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -77,6 +79,7 @@ EOF
   );
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -93,6 +96,7 @@ EOF
   );
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -110,6 +114,7 @@ EOF
   );
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -128,6 +133,7 @@ EOF
   );
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -147,6 +153,7 @@ EOF
   );
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -162,6 +169,7 @@ EOF
   file_put_contents($file, addcslashes('<?php echo serialize(array("comment", array("A \\\\n\\\\r comment \\n with line \\r breaks")))."\n";', '\\'));
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -174,6 +182,7 @@ EOF
   $output->replay();
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -188,6 +197,7 @@ EOF
   file_put_contents($file, '<?php $1invalidname;');
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();
 
@@ -201,5 +211,6 @@ EOF
   file_put_contents($file, '<?php require "foobar.php";');
   // test
   $connector->connect($file);
+  while (!$connector->done()) $connector->proceed();
   // assertions
   $output->verify();

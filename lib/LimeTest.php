@@ -59,7 +59,7 @@ class LimeTest
       $this->output = $this->options['output'];
     }
 
-    $this->output->start($file);
+    $this->output->focus($file);
 
     if (!is_null($plan))
     {
@@ -72,6 +72,7 @@ class LimeTest
 
   public function __destruct()
   {
+    $this->output->close();
     $this->output->flush();
 
     restore_error_handler();

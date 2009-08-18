@@ -11,7 +11,12 @@
 
 class LimeOutputCoverage implements LimeOutputInterface
 {
-  public function start($file)
+  public function supportsThreading()
+  {
+    return false;
+  }
+
+  public function focus($file)
   {
     xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
   }
@@ -20,6 +25,8 @@ class LimeOutputCoverage implements LimeOutputInterface
   {
     echo serialize(xdebug_get_code_coverage());
   }
+
+  public function close() {}
 
   public function plan($amount) {}
 

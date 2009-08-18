@@ -11,7 +11,14 @@
 
 class LimeOutputNone implements LimeOutputInterface
 {
-  public function start($file) {}
+  public function supportsThreading()
+  {
+    return true;
+  }
+
+  public function focus($file) {}
+
+  public function close() {}
 
   public function plan($amount) {}
 

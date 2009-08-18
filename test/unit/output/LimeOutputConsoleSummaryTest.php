@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(79);
+$t = new LimeTest(37);
 
 
 // @Before
@@ -28,209 +28,87 @@ $t = new LimeTest(79);
   $output = null;
 
 
-// @Test: The number of tests is updated on every input
+// @Test: When close() is called, the test summary is printed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("2\r", LimePrinter::OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("3\r", LimePrinter::OK);
-  $printer->replay();
-  // test
-  $output->start('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->pass('A passed test', '/test/script', 22);
-  $output->pass('A passed test', '/test/script', 33);
-  // assertions
-  $printer->verify();
-
-
-// @Test: Once any test has failed, the style of the number is LimePrinter::NOT_OK
-
-  // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("2\r", LimePrinter::NOT_OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("3\r", LimePrinter::NOT_OK);
-  $printer->replay();
-  // test
-  $output->start('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->fail('A failed test', '/test/script', 22);
-  $output->pass('A passed test', '/test/script', 33);
-  // assertions
-  $printer->verify();
-
-
-// @Test: Once a warning has appeared, the style of the number is LimePrinter::WARNING
-
-  // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("2\r", LimePrinter::WARNING);
-  $printer->replay();
-  // test
-  $output->start('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->warning('A warning', '/test/script', 22);
-  $output->pass('A passed test', '/test/script', 33);
-  // assertions
-  $printer->verify();
-
-
-// @Test: Once an error has appeared, the style of the number is LimePrinter::NOT_OK
-
-  // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("2\r", LimePrinter::NOT_OK);
-  $printer->replay();
-  // test
-  $output->start('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->error(new LimeError('An error', '/test/script', 22));
-  $output->pass('A passed test', '/test/script', 33);
-  // assertions
-  $printer->verify();
-
-
-// @Test: If both a warning and an error appeared, the style is LimePrinter::NOT_OK
-
-  // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("2\r", LimePrinter::NOT_OK);
-  $printer->replay();
-  // test
-  $output->start('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->error(new LimeError('An error', '/test/script', 22));
-  $output->warning('A warning', '/test/script', 33);
-  $output->pass('A passed test', '/test/script', 44);
-  // assertions
-  $printer->verify();
-
-
-// @Test: When start() is called again, a new line for the new test is started
-
-  // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("ok", LimePrinter::OK);
   $printer->replay();
   // test
-  $output->start('/test/script');
+  $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
-  $output->start('/test/script2');
+  $output->close();
   // assertions
   $printer->verify();
 
 
-// @Test: When start() is called again and tests failed, the status is "not ok"
+// @Test: When close() is called and tests failed, the status is "not ok"
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::NOT_OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
   $printer->any('printText');
   $printer->any('printLine');
   $printer->replay();
   // test
-  $output->start('/test/script');
+  $output->focus('/test/script');
   $output->fail('A failed test', '/test/script', 11);
-  $output->start('/test/script2');
+  $output->close();
   // assertions
   $printer->verify();
 
 
-// @Test: When start() is called again and warnings appeared in the test, the status is warning
+// @Test: When close() is called and warnings appeared in the test, the status is warning
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("warning", LimePrinter::WARNING);
   $printer->any('printText');
   $printer->any('printLine');
   $printer->replay();
   // test
-  $output->start('/test/script');
+  $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
   $output->warning('A warning', '/test/script', 33);
-  $output->start('/test/script2');
+  $output->close();
   // assertions
   $printer->verify();
 
 
-// @Test: When start() is called again and errors appeared in the test, the status is "not ok"
+// @Test: When close() is called and errors appeared in the test, the status is "not ok"
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
   $printer->any('printText');
   $printer->any('printLine');
   $printer->replay();
   // test
-  $output->start('/test/script');
+  $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
   $output->error(new LimeError('An error', '/test/script', 22));
-  $output->start('/test/script2');
+  $output->close();
   // assertions
   $printer->verify();
 
 
-// @Test: When start() is called again, the styles are reset
+// @Test: When close() is called and the plan did not match, a message is printed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->any('printText');
-  $printer->any('printLine');
-  $printer->printText(str_pad('/test/script2', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
-  $printer->replay();
-  // test
-  $output->start('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->error(new LimeError('An error', '/test/script', 22));
-  $output->start('/test/script2');
-  $output->pass('A passed test', '/test/script2', 11);
-  // assertions
-  $printer->verify();
-
-
-// @Test: When start() is called again and the plan did not match, a message is printed
-
-  // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
   $printer->printText(str_pad('/test/script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
   $printer->printLine('    Looks like you planned 2 tests but only ran 1.');
   $printer->replay();
   // test
-  $output->start('/test/script');
+  $output->focus('/test/script');
   $output->plan(2);
   $output->pass('A passed test', '/test/script', 11);
-  $output->start('/test/script2');
+  $output->close();
   // assertions
   $printer->verify();
 
 
-// @Test: When start() is called again and anything failed, detailed statistics are printed
+// @Test: When close() is called and anything failed, detailed statistics are printed
 
   // fixtures
   $printer->any('printText');
@@ -246,14 +124,14 @@ $t = new LimeTest(79);
   $printer->any('printLine');
   $printer->replay();
   // test
-  $output->start('/test/script');
+  $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
   $output->fail('A failed test', '/test/script', 11);
   $output->fail('A failed test', '/test/script', 11);
   $output->warning('A warning', '/test/script', 11);
   $output->error(new LimeError('An error', '/test/script', 11));
   $output->error(new LimeError('An error', '/test/script', 11));
-  $output->start('/test/script2');
+  $output->close();
   // assertions
   $printer->verify();
 
@@ -268,18 +146,23 @@ $t = new LimeTest(79);
   $printer->replay();
   $output = new LimeOutputConsoleSummary($printer);
   // test
-  $output->start('/test/script1');
+  $output->focus('/test/script1');
   $output->pass('A passed test', '/test/script', 11);
-  $output->start('/test/script2');
+  $output->close();
+  $output->focus('/test/script2');
   $output->pass('A passed test', '/test/script2', 11);
   $output->warning('A warning', '/test/script2', 11);
-  $output->start('/test/script3');
+  $output->close();
+  $output->focus('/test/script3');
   $output->fail('A failed test', '/test/script3', 11);
-  $output->start('/test/script4');
+  $output->close();
+  $output->focus('/test/script4');
   $output->pass('A passed test', '/test/script', 11);
   $output->error(new LimeError('An error', '/test/script', 11));
-  $output->start('/test/script5');
+  $output->close();
+  $output->focus('/test/script5');
   $output->pass('A passed test', '/test/script', 11);
+  $output->close();
   $output->flush();
   // assertions
   $printer->verify();
@@ -296,11 +179,13 @@ $t = new LimeTest(79);
   $printer->replay();
   $output = new LimeOutputConsoleSummary($printer);
   // test
-  $output->start('/test/script1');
+  $output->focus('/test/script1');
   $output->pass('A passed test', '/test/script1', 11);
-  $output->start('/test/script2');
+  $output->close();
+  $output->focus('/test/script2');
   $output->pass('A passed test', '/test/script2', 11);
   $output->pass('A passed test', '/test/script2', 11);
+  $output->close();
   $output->flush();
   // assertions
   $printer->verify();
@@ -312,10 +197,11 @@ $t = new LimeTest(79);
   $output = new LimeOutputConsoleSummary($printer, array('base_dir' => '/test'));
   $printer->reset();
   $printer->printText(str_pad('/script', 73, '.'));
-  $printer->printText("1\r", LimePrinter::OK);
+  $printer->printLine("ok", LimePrinter::OK);
   $printer->replay();
   // test
-  $output->start('/test/script');
+  $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
+  $output->close();
   // assertions
   $printer->verify();

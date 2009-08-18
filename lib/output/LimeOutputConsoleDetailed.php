@@ -29,14 +29,23 @@ class LimeOutputConsoleDetailed implements LimeOutputInterface
     ), $options);
   }
 
+  public function supportsThreading()
+  {
+    return false;
+  }
+
   private function stripBaseDir($path)
   {
     return is_null($this->options['base_dir']) ? $path : str_replace($this->options['base_dir'], '', $path);
   }
 
-  public function start($file)
+  public function focus($file)
   {
     $this->printer->printLine('# '.$this->stripBaseDir($file), LimePrinter::INFO);
+  }
+
+  public function close()
+  {
   }
 
   public function plan($amount)

@@ -27,12 +27,12 @@ $t = new LimeTest(64);
   $output = null;
 
 
-// @Test: start() prints the filename
+// @Test: focus() prints the filename
 
   $printer->printLine('# /test/file', LimePrinter::INFO);
   $printer->replay();
   // test
-  $output->start('/test/file');
+  $output->focus('/test/file');
   // assertions
   $printer->verify();
 
@@ -44,7 +44,7 @@ $t = new LimeTest(64);
   $printer->printLine('# /file', LimePrinter::INFO);
   $printer->replay();
   // test
-  $output->start('/test/file');
+  $output->focus('/test/file');
   // assertions
   $printer->verify();
 

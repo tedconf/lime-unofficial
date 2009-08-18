@@ -25,6 +25,11 @@ class LimeOutputInspectable implements LimeOutputInterface
     $this->output = is_null($output) ? new LimeOutputNone() : $output;
   }
 
+  public function supportsThreading()
+  {
+    return $this->output->supportsThreading();
+  }
+
   public function getPassed()
   {
     return $this->passed;
@@ -55,9 +60,14 @@ class LimeOutputInspectable implements LimeOutputInterface
     return $this->warnings;
   }
 
-  public function start($file)
+  public function focus($file)
   {
-    $this->output->start($file);
+    $this->output->focus($file);
+  }
+
+  public function close()
+  {
+    $this->output->close();
   }
 
   public function plan($amount)

@@ -11,7 +11,11 @@
 
 interface LimeOutputInterface
 {
-  public function start($file);
+  public function supportsThreading();
+
+  public function focus($file);
+
+  public function close();
 
   public function plan($amount);
 

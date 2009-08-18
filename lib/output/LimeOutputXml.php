@@ -19,9 +19,19 @@ class LimeOutputXml implements LimeOutputInterface
     $this->output = new LimeOutputArray();
   }
 
-  public function start($file)
+  public function supportsThreading()
   {
-    return $this->output->start($file);
+    return $this->output->supportsThreading();
+  }
+
+  public function focus($file)
+  {
+    return $this->output->focus($file);
+  }
+
+  public function close($file)
+  {
+    return $this->output->close($file);
   }
 
   public function plan($amount)

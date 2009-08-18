@@ -15,30 +15,55 @@ class LimeOutputPipe
     $suppressedMethods = array(),
     $error = false,
     $buffer = '',
-    $output = null;
+    $output = null,
+    $shell = null,
+    $file = null,
+    $handle = null,
+    $done = true;
 
   public function __construct(LimeOutputInterface $output, array $suppressedMethods = array())
   {
     $this->output = $output;
     $this->suppressedMethods = $suppressedMethods;
+    $this->shell = new LimeShell();
+  }
+
+  public function getConnectedFile()
+  {
+    return $this->file;
   }
 
   public function connect($file, array $arguments = array())
   {
     $arguments['output'] = 'raw';
 
+    $this->file = $file;
     $this->buffer = '';
+    $this->done = false;
+    $this->handle = $this->shell->spawn($file, $arguments);
+  }
 
-    $shell = new LimeShell();
-    $shell->executeCallback(array($this, 'unserializeLines'), $file, $arguments);
+  public function proceed()
+  {
+    $this->unserializeLines(fread($this->handle, 2048));
 
-    if (!empty($this->buffer))
+    if (feof($this->handle))
     {
-      $this->output->warning("Could not parse test output. Make sure you don't echo any additional data.", $file, 1);
+      if (!empty($this->buffer))
+      {
+        $this->output->warning("Could not parse test output. Make sure you don't echo any additional data.", $this->file, 1);
+      }
+
+      $this->done = true;
     }
   }
 
-  public function unserializeLines($lines)
+  public function done()
+  {
+    return $this->done;
+  }
+
+  protected function unserializeLines($lines)
   {
     $this->buffer .= $lines;
 

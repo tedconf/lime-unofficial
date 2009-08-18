@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(9);
+$t = new LimeTest(6);
 
 
 // @Before
@@ -77,23 +77,3 @@ EOF
 )", 'The output is correct');
 
 
-// @Test: PHP scripts can be executed with a callback being called on each output
-
-  // fixtures
-  $mock = LimeMock::create('Dummy', $t);
-  $mock->callback("Hello World!");
-  $mock->callback("Foo\nBar");
-  $mock->callback('');
-  $mock->replay();
-  file_put_contents($file, <<<EOF
-<?php
-echo "Hello World!";
-sleep(1);
-echo "Foo\nBar";
-exit(1);
-EOF
-);
-  // test
-  list($returnValue, $output) = $shell->executeCallback(array($mock, 'callback'), $file);
-  // assertions
-  $mock->verify();

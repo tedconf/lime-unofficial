@@ -12,19 +12,20 @@
 class LimeOutputConsoleSummary implements LimeOutputInterface
 {
   protected
-    $printer = null,
-    $options = array(),
-    $startTime = 0,
-    $file = null,
-    $actualFiles = 0,
-    $failedFiles = 0,
-    $actualTests = 0,
-    $failedTests = 0,
-    $expected = 0,
-    $passed = 0,
-    $failed = 0,
-    $errors = 0,
-    $warnings = 0;
+    $printer        = null,
+    $options        = array(),
+    $startTime      = 0,
+    $file           = null,
+    $actualFiles    = 0,
+    $failedFiles    = 0,
+    $actualTests    = 0,
+    $failedTests    = 0,
+    $expected       = array(),
+    $passed         = array(),
+    $failed         = array(),
+    $errors         = array(),
+    $warnings       = array(),
+    $line           = array();
 
   public function __construct(LimePrinter $printer, array $options = array())
   {
@@ -35,61 +36,68 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     ), $options);
   }
 
-  public function start($file)
+  public function supportsThreading()
   {
-    $this->close();
-
-    $this->file = $file;
-    $this->expected = 0;
-    $this->passed = 0;
-    $this->failed = 0;
-    $this->errors = 0;
-    $this->warnings = 0;
+    return true;
   }
 
-  protected function close()
+  public function focus($file)
+  {
+    $this->file = $file;
+
+    if (!array_key_exists($file, $this->line))
+    {
+      $this->line[$file] = count($this->line);
+      $this->expected[$file] = 0;
+      $this->passed[$file] = 0;
+      $this->failed[$file] = 0;
+      $this->errors[$file] = 0;
+      $this->warnings[$file] = 0;
+    }
+  }
+
+  public function close()
   {
     if (!is_null($this->file))
     {
       $this->actualFiles++;
-      $this->actualTests += $this->passed + $this->failed;
-      $this->failedTests += $this->failed;
-
-      $actual = $this->passed+$this->failed;
-      $incomplete = ($this->expected > 0 && $actual != $this->expected);
+      $this->actualTests += $this->getActual();
+      $this->failedTests += $this->getFailed();
 
       $this->printer->printText(str_pad($this->getTruncatedFile(), 73, '.'));
 
-      if ($this->errors || $this->failed || $incomplete)
+      $incomplete = ($this->getExpected() > 0 && $this->getActual() != $this->getExpected());
+
+      if ($this->getErrors() || $this->getFailed() || $incomplete)
       {
         $this->failedFiles++;
-        $this->printer->printLine('not ok', LimePrinter::NOT_OK);
+        $this->printer->printLine("not ok", LimePrinter::NOT_OK);
       }
-      else if ($this->warnings)
+      else if ($this->getWarnings())
       {
-        $this->printer->printLine('warning', LimePrinter::WARNING);
+        $this->printer->printLine("warning", LimePrinter::WARNING);
       }
       else
       {
-        $this->printer->printLine('ok', LimePrinter::OK);
+        $this->printer->printLine("ok", LimePrinter::OK);
       }
 
-      if ($this->errors || $this->warnings || $this->failed)
+      if ($this->getErrors() || $this->getWarnings() || $this->getFailed())
       {
         $this->printer->printText('    ');
-        $this->printer->printText('Passed: '.$this->passed);
-        $this->printer->printText(str_repeat(' ', 6 - strlen($this->passed)));
-        $this->printer->printText('Failed: '.$this->failed, $this->failed > 0 ? LimePrinter::NOT_OK : null);
-        $this->printer->printText(str_repeat(' ', 6 - strlen($this->failed)));
-        $this->printer->printText('Warnings: '.$this->warnings, $this->warnings > 0 ? LimePrinter::WARNING : null);
-        $this->printer->printText(str_repeat(' ', 6 - strlen($this->warnings)));
-        $this->printer->printLine('Errors: '.$this->errors, $this->errors > 0 ? LimePrinter::NOT_OK : null);
+        $this->printer->printText('Passed: '.$this->getPassed());
+        $this->printer->printText(str_repeat(' ', 6 - strlen($this->getPassed())));
+        $this->printer->printText('Failed: '.$this->getFailed(), $this->getFailed() > 0 ? LimePrinter::NOT_OK : null);
+        $this->printer->printText(str_repeat(' ', 6 - strlen($this->getFailed())));
+        $this->printer->printText('Warnings: '.$this->getWarnings(), $this->getWarnings() > 0 ? LimePrinter::WARNING : null);
+        $this->printer->printText(str_repeat(' ', 6 - strlen($this->getWarnings())));
+        $this->printer->printLine('Errors: '.$this->getErrors(), $this->getErrors() > 0 ? LimePrinter::NOT_OK : null);
       }
 
-      if ($this->errors || $this->warnings || $this->failed || $incomplete)
+      if ($this->getErrors() || $this->getWarnings() || $this->getFailed() || $incomplete)
       {
-        $messages = LimeOutputConsoleDetailed::getMessages($actual,
-            $this->expected, $this->passed, $this->errors, $this->warnings);
+        $messages = LimeOutputConsoleDetailed::getMessages($this->getActual(),
+            $this->getExpected(), $this->getPassed(), $this->getErrors(), $this->getWarnings());
 
         foreach ($messages as $message)
         {
@@ -100,23 +108,65 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     }
   }
 
+  protected function getExpected()
+  {
+    return $this->expected[$this->file];
+  }
+
+  protected function getActual()
+  {
+    return $this->getPassed() + $this->getFailed();
+  }
+
+  protected function getPassed()
+  {
+    return $this->passed[$this->file];
+  }
+
+  protected function getFailed()
+  {
+    return $this->failed[$this->file];
+  }
+
+  protected function getErrors()
+  {
+    return $this->errors[$this->file];
+  }
+
+  protected function getWarnings()
+  {
+    return $this->warnings[$this->file];
+  }
+
+  protected function setCursor()
+  {
+    for ($i = count($this->line); $i > $this->line[$this->file]; --$i)
+    {
+      $this->printer->previousLine();
+    }
+  }
+
+  protected function resetCursor()
+  {
+    for ($i = $this->line[$this->file]; $i < count($this->line); ++$i)
+    {
+      $this->printer->nextLine();
+    }
+  }
+
   public function plan($amount)
   {
-    $this->expected = $amount;
+    $this->expected[$this->file] = $amount;
   }
 
   public function pass($message, $file, $line)
   {
-    $this->passed++;
-
-    $this->update();
+    $this->passed[$this->file]++;
   }
 
   public function fail($message, $file, $line, $error = null)
   {
-    $this->failed++;
-
-    $this->update();
+    $this->failed[$this->file]++;
   }
 
   public function skip($message, $file, $line) {}
@@ -127,20 +177,18 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
   public function warning($message, $file, $line)
   {
-    $this->warnings++;
+    $this->warnings[$this->file]++;
   }
 
   public function error(Exception $exception)
   {
-    $this->errors++;
+    $this->errors[$this->file]++;
   }
 
   public function comment($message) {}
 
   public function flush()
   {
-    $this->close();
-
     if ($this->failedFiles > 0)
     {
       $stats = sprintf(' Failed %d/%d test scripts, %.2f%% okay. %d/%d subtests failed, %.2f%% okay.',
@@ -158,27 +206,6 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
       $this->printer->printBox(' All tests successful.', LimePrinter::HAPPY);
       $this->printer->printBox($stats, LimePrinter::HAPPY);
     }
-  }
-
-  protected function update()
-  {
-    if ($this->errors || $this->failed)
-    {
-      $style = LimePrinter::NOT_OK;
-    }
-    else if ($this->warnings)
-    {
-      $style = LimePrinter::WARNING;
-    }
-    else
-    {
-      $style = LimePrinter::OK;
-    }
-
-    $tests = $this->passed + $this->failed;
-
-    $this->printer->printText(str_pad($this->getTruncatedFile(), 73, '.'));
-    $this->printer->printText($tests."\r", $style);
   }
 
   protected function getTruncatedFile()
