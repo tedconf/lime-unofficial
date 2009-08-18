@@ -29,9 +29,9 @@ class LimeOutputXml implements LimeOutputInterface
     return $this->output->focus($file);
   }
 
-  public function close($file)
+  public function close()
   {
-    return $this->output->close($file);
+    return $this->output->close();
   }
 
   public function plan($amount)
