@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(39);
+$t = new LimeTest(76);
 
 
 // @Before
@@ -123,6 +123,61 @@ $t = new LimeTest(39);
   $printer->printLine('Errors: 2', LimePrinter::NOT_OK);
   $printer->any('printLine');
   $printer->replay();
+  // test
+  $output->focus('/test/script');
+  $output->pass('A passed test', '/test/script', 11);
+  $output->fail('A failed test', '/test/script', 11);
+  $output->fail('A failed test', '/test/script', 11);
+  $output->warning('A warning', '/test/script', 11);
+  $output->error(new LimeError('An error', '/test/script', 11));
+  $output->error(new LimeError('An error', '/test/script', 11));
+  $output->close();
+  // assertions
+  $printer->verify();
+
+
+// @Test: When close() is called and the option "verbose" is set, all failure and error messages are listed
+
+  // fixtures
+  $printer->any('printText');
+  $printer->any('printLine');
+  $printer->any('printText');
+  $printer->any('printLine')->times(3);
+  $printer->printLine('  Failed Tests:', LimePrinter::COMMENT);
+  $printer->printLine('    not ok 2 - A failed test');
+  $printer->printText('      (in ');
+  $printer->printText('/test/script', LimePrinter::TRACE);
+  $printer->printText(' on line ');
+  $printer->printText('11', LimePrinter::TRACE);
+  $printer->printLine(')');
+  $printer->printLine('    not ok 3 - A failed test');
+  $printer->printText('      (in ');
+  $printer->printText('/test/script', LimePrinter::TRACE);
+  $printer->printText(' on line ');
+  $printer->printText('11', LimePrinter::TRACE);
+  $printer->printLine(')');
+  $printer->printLine('  Warnings:', LimePrinter::COMMENT);
+  $printer->printLine('    A warning');
+  $printer->printText('      (in ');
+  $printer->printText('/test/script', LimePrinter::TRACE);
+  $printer->printText(' on line ');
+  $printer->printText('11', LimePrinter::TRACE);
+  $printer->printLine(')');
+  $printer->printLine('  Errors:', LimePrinter::COMMENT);
+  $printer->printLine('    An error');
+  $printer->printText('      (in ');
+  $printer->printText('/test/script', LimePrinter::TRACE);
+  $printer->printText(' on line ');
+  $printer->printText('11', LimePrinter::TRACE);
+  $printer->printLine(')');
+  $printer->printLine('    An error');
+  $printer->printText('      (in ');
+  $printer->printText('/test/script', LimePrinter::TRACE);
+  $printer->printText(' on line ');
+  $printer->printText('11', LimePrinter::TRACE);
+  $printer->printLine(')');
+  $printer->replay();
+  $output = new LimeOutputConsoleSummary($printer, array('verbose' => true));
   // test
   $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);

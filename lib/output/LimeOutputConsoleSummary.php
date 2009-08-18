@@ -21,6 +21,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $actualTests    = 0,
     $failedTests    = 0,
     $expected       = array(),
+    $actual         = array(),
     $passed         = array(),
     $failed         = array(),
     $errors         = array(),
@@ -34,6 +35,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $this->options = array_merge(array(
       'base_dir'  => null,
       'processes' => 1,
+      'verbose'   => false,
     ), $options);
   }
 
@@ -50,10 +52,11 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     {
       $this->line[$file] = count($this->line);
       $this->expected[$file] = 0;
+      $this->actual[$file] = 0;
       $this->passed[$file] = 0;
-      $this->failed[$file] = 0;
-      $this->errors[$file] = 0;
-      $this->warnings[$file] = 0;
+      $this->failed[$file] = array();
+      $this->errors[$file] = array();
+      $this->warnings[$file] = array();
     }
   }
 
@@ -65,7 +68,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
       $this->actualTests += $this->getActual();
       $this->failedTests += $this->getFailed();
 
-      $path = $this->getTruncatedFile();
+      $path = $this->truncate($this->file);
 
       if (strlen($path) > 71)
       {
@@ -102,6 +105,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
         $this->printer->printLine('Errors: '.$this->getErrors(), $this->getErrors() > 0 ? LimePrinter::NOT_OK : null);
       }
 
+
       if ($this->getErrors() || $this->getWarnings() || $this->getFailed() || $incomplete)
       {
         $messages = LimeOutputTap::getMessages($this->getActual(),
@@ -111,6 +115,54 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
         {
           list ($message, $style) = $message;
           $this->printer->printLine('    '.$message);
+        }
+      }
+
+      if ($this->options['verbose'])
+      {
+        if ($this->getFailed())
+        {
+          $this->printer->printLine('  Failed Tests:', LimePrinter::COMMENT);
+
+          foreach ($this->failed[$this->file] as $number => $failed)
+          {
+            $this->printer->printLine('    not ok '.$number.' - '.$failed[0]);
+            $this->printer->printText('      (in ');
+            $this->printer->printText($this->truncate($failed[1]), LimePrinter::TRACE);
+            $this->printer->printText(' on line ');
+            $this->printer->printText($failed[2], LimePrinter::TRACE);
+            $this->printer->printLine(')');
+          }
+        }
+
+        if ($this->getWarnings())
+        {
+          $this->printer->printLine('  Warnings:', LimePrinter::COMMENT);
+
+          foreach ($this->warnings[$this->file] as $warning)
+          {
+            $this->printer->printLine('    '.$warning[0]);
+            $this->printer->printText('      (in ');
+            $this->printer->printText($this->truncate($warning[1]), LimePrinter::TRACE);
+            $this->printer->printText(' on line ');
+            $this->printer->printText($warning[2], LimePrinter::TRACE);
+            $this->printer->printLine(')');
+          }
+        }
+
+        if ($this->getErrors())
+        {
+          $this->printer->printLine('  Errors:', LimePrinter::COMMENT);
+
+          foreach ($this->errors[$this->file] as $error)
+          {
+            $this->printer->printLine('    '.$error->getMessage());
+            $this->printer->printText('      (in ');
+            $this->printer->printText($this->truncate($error->getFile()), LimePrinter::TRACE);
+            $this->printer->printText(' on line ');
+            $this->printer->printText($error->getLine(), LimePrinter::TRACE);
+            $this->printer->printLine(')');
+          }
         }
       }
     }
@@ -123,7 +175,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
   protected function getActual()
   {
-    return $this->getPassed() + $this->getFailed();
+    return $this->actual[$this->file];
   }
 
   protected function getPassed()
@@ -133,33 +185,17 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
   protected function getFailed()
   {
-    return $this->failed[$this->file];
+    return count($this->failed[$this->file]);
   }
 
   protected function getErrors()
   {
-    return $this->errors[$this->file];
+    return count($this->errors[$this->file]);
   }
 
   protected function getWarnings()
   {
-    return $this->warnings[$this->file];
-  }
-
-  protected function setCursor()
-  {
-    for ($i = count($this->line); $i > $this->line[$this->file]; --$i)
-    {
-      $this->printer->previousLine();
-    }
-  }
-
-  protected function resetCursor()
-  {
-    for ($i = $this->line[$this->file]; $i < count($this->line); ++$i)
-    {
-      $this->printer->nextLine();
-    }
+    return count($this->warnings[$this->file]);
   }
 
   public function plan($amount)
@@ -170,27 +206,27 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
   public function pass($message, $file, $line)
   {
     $this->passed[$this->file]++;
+    $this->actual[$this->file]++;
   }
 
   public function fail($message, $file, $line, $error = null)
   {
-    $this->failed[$this->file]++;
+    $this->actual[$this->file]++;
+    $this->failed[$this->file][$this->actual[$this->file]] = array($message, $file, $line);
   }
 
   public function skip($message, $file, $line) {}
 
-  public function todo($message, $file, $line)
-  {
-  }
+  public function todo($message, $file, $line) {}
 
   public function warning($message, $file, $line)
   {
-    $this->warnings[$this->file]++;
+    $this->warnings[$this->file][] = array($message, $file, $line);
   }
 
   public function error(Exception $exception)
   {
-    $this->errors[$this->file]++;
+    $this->errors[$this->file][] = $exception;
   }
 
   public function comment($message) {}
@@ -216,15 +252,15 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     }
   }
 
-  protected function getTruncatedFile()
+  protected function truncate($file)
   {
-    if (!is_null($this->options))
+    if (!is_null($this->options['base_dir']))
     {
-      return str_replace($this->options['base_dir'], '', $this->file);
+      return str_replace($this->options['base_dir'], '', $file);
     }
     else
     {
-      return $this->file;
+      return $file;
     }
   }
 }
