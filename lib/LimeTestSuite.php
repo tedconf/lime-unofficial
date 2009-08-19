@@ -71,7 +71,7 @@ class LimeTestSuite extends LimeRegistration
 
     for ($i = 0; $i < $this->options['processes']; ++$i)
     {
-      $connectors[] = new LimeOutputPipe($this->output, array('focus', 'flush'));
+      $connectors[] = new LimeTestAnalyzer($this->output, array('focus', 'close', 'flush'));
     }
 
     do
@@ -82,21 +82,25 @@ class LimeTestSuite extends LimeRegistration
       {
         if ($connector->done() && !is_null(key($this->files)))
         {
-          // start the file explicitly in case the file contains syntax errors
+          // start and close the file explicitly in case the file contains syntax errors
           $this->output->focus(current($this->files));
           $connector->connect(current($this->files));
 
           next($this->files);
         }
-        else if (!$connector->done())
-        {
-          $this->output->focus($connector->getConnectedFile());
-        }
 
         if (!$connector->done())
         {
+          $this->output->focus($connector->getConnectedFile());
+
           $connector->proceed();
           $done = false;
+
+          if ($connector->done())
+          {
+            // start and close the file explicitly in case the file contains syntax errors
+            $this->output->close();
+          }
         }
       }
     }

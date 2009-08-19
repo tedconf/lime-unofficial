@@ -1,0 +1,143 @@
+<?php
+
+/*
+ * This file is part of the symfony framework.
+ *
+ * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+require_once dirname(__FILE__).'/../../bootstrap/unit.php';
+
+LimeAnnotationSupport::enable();
+
+$t = new LimeTest(11);
+
+$shell = new LimeShell();
+
+
+// @Before
+
+  $file = tempnam(sys_get_temp_dir(), 'lime');
+  $output = LimeMock::create('LimeOutputInterface', $t);
+  $parser = new LimeParserRaw($output);
+
+
+// @After
+
+  $file = null;
+  $output = null;
+  $parser = null;
+
+
+// @Test: The call to plan() is passed
+
+  // fixtures
+  $output->plan(1, '/test/file');
+  $output->replay();
+  // test
+  $parser->parse(serialize(array("plan", array(1, "/test/file")))."\n");
+  // assertions
+  $output->verify();
+
+
+// @Test: The call to error() is passed
+
+  // fixtures
+  $output->error(new Exception("An exception"));
+  $output->replay();
+  // test
+  $parser->parse(serialize(array("error", array(new Exception("An exception"))))."\n");
+  // assertions
+  $output->verify();
+
+
+// @Test: The call to pass() is passed
+
+  // fixtures
+  $output->pass('A passed test', '/test/file', 11);
+  $output->replay();
+  // test
+  $parser->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
+  // assertions
+  $output->verify();
+
+
+// @Test: Method calls can be suppressed by passing the first constructor parameter
+
+  // fixtures
+  $output->invoke('pass')->never();
+  $output->replay();
+  $parser = new LimeParserRaw($output, array('pass'));
+  // test
+  $parser->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
+  // assertions
+  $output->verify();
+
+
+// @Test: Two arrays are converted to two method calls
+
+  // fixtures
+  $output->pass('A passed test', '/test/file', 11);
+  $output->pass('Another passed test', '/test/file', 11);
+  $output->replay();
+  // test
+  $parser->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n".serialize(array("pass", array("Another passed test", "/test/file", 11)))."\n");
+  // assertions
+  $output->verify();
+
+
+// @Test: A split serialized array can be read correctly
+
+  // fixtures
+  $output->pass('A passed test', '/test/file', 11);
+  $output->replay();
+  // test
+  $serialized = serialize(array("pass", array("A passed test", "/test/file", 11)))."\n";
+  $strings =  str_split($serialized, strlen($serialized)/2 + 1);
+  $parser->parse($strings[0]);
+  $parser->parse($strings[1]);
+  // assertions
+  $output->verify();
+
+
+// @Test: Escaped arguments are unescaped
+
+  // fixtures
+  $output->comment("A \\n\\r comment \n with line \r breaks");
+  $output->replay();
+  // test
+  $parser->parse(addcslashes(serialize(array("comment", array("A \\\\n\\\\r comment \\n with line \\r breaks"))), '//')."\n");
+  // assertions
+  $output->verify();
+
+
+// @Test: A PHP error is passed to error() - invalid identifier
+
+  // @Test: Case 1 - Invalid identifier
+
+  // fixtures
+  $output->error(new LimeError("Parse error: syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1));
+  $output->replay();
+  file_put_contents($file, '<?php $1invalidname;');
+  $result = $shell->execute($file);
+  // test
+  $parser->parse($result[1]);
+  // assertions
+  $output->verify();
+
+
+  // @Test: Case 2 - Failed require
+
+  // fixtures
+  $output->warning("Warning: require(foobar.php): failed to open stream: No such file or directory", $file, 1);
+  $output->error(new LimeError("Fatal error: require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1));
+  $output->replay();
+  file_put_contents($file, '<?php require "foobar.php";');
+  $result = $shell->execute($file);
+  // test
+  $parser->parse($result[1]);
+  // assertions
+  $output->verify();
