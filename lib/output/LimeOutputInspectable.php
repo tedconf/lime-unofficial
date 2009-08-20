@@ -12,13 +12,14 @@
 class LimeOutputInspectable implements LimeOutputInterface
 {
   private
-    $output = null,
-    $passed = 0,
-    $failed = 0,
-    $skipped = 0,
-    $todos = 0,
-    $errors = 0,
-    $warnings = 0;
+    $output       = null,
+    $passed       = 0,
+    $failed       = 0,
+    $skipped      = 0,
+    $todos        = 0,
+    $errors       = 0,
+    $warnings     = 0,
+    $failedFiles  = array();
 
   public function __construct(LimeOutputInterface $output = null)
   {
@@ -60,6 +61,11 @@ class LimeOutputInspectable implements LimeOutputInterface
     return $this->warnings;
   }
 
+  public function getFailedFiles()
+  {
+    return $this->failedFiles;
+  }
+
   public function focus($file)
   {
     $this->output->focus($file);
@@ -84,6 +90,7 @@ class LimeOutputInspectable implements LimeOutputInterface
   public function fail($message, $file, $line, $error = null)
   {
     $this->failed++;
+    $this->failedFiles[] = $file;
     $this->output->fail($message, $file, $line, $error);
   }
 
@@ -102,12 +109,14 @@ class LimeOutputInspectable implements LimeOutputInterface
   public function warning($message, $file, $line)
   {
     $this->warnings++;
+    $this->failedFiles[] = $file;
     $this->output->warning($message, $file, $line);
   }
 
   public function error(Exception $exception)
   {
     $this->errors++;
+    $this->failedFiles[] = $exception->getFile();
     $this->output->error($exception);
   }
 

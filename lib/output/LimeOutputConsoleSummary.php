@@ -215,9 +215,15 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $this->failed[$this->file][$this->actual[$this->file]] = array($message, $file, $line);
   }
 
-  public function skip($message, $file, $line) {}
+  public function skip($message, $file, $line)
+  {
+    $this->actual[$this->file]++;
+  }
 
-  public function todo($message, $file, $line) {}
+  public function todo($message, $file, $line)
+  {
+    $this->actual[$this->file]++;
+  }
 
   public function warning($message, $file, $line)
   {

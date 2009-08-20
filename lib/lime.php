@@ -21,7 +21,8 @@ class lime_test extends LimeTest
     // for BC
     if (!is_array($options))
     {
-      $options = array('output' => $options);
+//      $options = array('output' => $options);
+      $options = array();
     }
 
     parent::__construct($plan, $options);
@@ -132,7 +133,7 @@ class lime_harness extends LimeTestSuite
 
   public function get_failed_files()
   {
-    return $this->getFailedFiles();
+    return $this->output->getFailedFiles();
   }
 }
 
