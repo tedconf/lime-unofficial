@@ -21,6 +21,7 @@ class LimeTest
   protected
     $output               = null,
     $options              = array(),
+    $errorReporting       = true,
     $expectedException    = null,
     $expectedCode         = null,
     $actualException      = null,
@@ -68,6 +69,11 @@ class LimeTest
 
     set_error_handler(array($this, 'handleError'));
     set_exception_handler(array($this, 'handleException'));
+  }
+
+  public function setErrorReporting($enabled)
+  {
+    $this->errorReporting = $enabled;
   }
 
   public function __destruct()
@@ -605,17 +611,20 @@ class LimeTest
 
   public function handleError($code, $message, $file, $line, $context)
   {
-    switch ($code)
+    if ($this->errorReporting)
     {
-      case E_WARNING:
-        $message = 'Warning: '.$message;
-        break;
-      case E_NOTICE:
-        $message = 'Notice: '.$message;
-        break;
-    }
+      switch ($code)
+      {
+        case E_WARNING:
+          $message = 'Warning: '.$message;
+          break;
+        case E_NOTICE:
+          $message = 'Notice: '.$message;
+          break;
+      }
 
-    $this->output->warning($message, $file, $line);
+      $this->output->warning($message, $file, $line);
+    }
 
     return true;
   }
