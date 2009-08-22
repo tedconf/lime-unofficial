@@ -63,12 +63,12 @@ EOF
   $output->verify();
 
 
-// @Test: Data sent to the error stream is passed to error() line by line
+// @Test: Data sent to the error stream is passed to warning() line by line
 
   // fixtures
   file_put_contents($file, '<?php file_put_contents("php://stderr", "Error 1\nError 2");');
-  $output->error(new LimeError('Error 1', $file, 1));
-  $output->error(new LimeError('Error 2', $file, 2));
+  $output->warning('Error 1', $file, 0);
+  $output->warning('Error 2', $file, 0);
   $output->replay();
   // test
   $analyzer->connect($file);

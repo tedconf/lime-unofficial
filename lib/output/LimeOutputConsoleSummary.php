@@ -93,55 +93,47 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
         $this->printer->printLine("ok", LimePrinter::OK);
       }
 
-      if ($this->getErrors() || $this->getWarnings() || $this->getFailed())
+      if ($this->getExpected() > 0 && $this->getActual() != $this->getExpected())
       {
-        $this->printer->printText('    ');
-        $this->printer->printText('Passed: '.$this->getPassed());
-        $this->printer->printText(str_repeat(' ', 6 - strlen($this->getPassed())));
-        $this->printer->printText('Failed: '.$this->getFailed(), $this->getFailed() > 0 ? LimePrinter::NOT_OK : null);
-        $this->printer->printText(str_repeat(' ', 6 - strlen($this->getFailed())));
-        $this->printer->printText('Warnings: '.$this->getWarnings(), $this->getWarnings() > 0 ? LimePrinter::WARNING : null);
-        $this->printer->printText(str_repeat(' ', 6 - strlen($this->getWarnings())));
-        $this->printer->printLine('Errors: '.$this->getErrors(), $this->getErrors() > 0 ? LimePrinter::NOT_OK : null);
+        $this->printer->printLine('    Plan Mismatch:', LimePrinter::COMMENT);
+        $this->printer->printLine(sprintf('    Looks like you planned %s tests but only ran %s.', $this->getExpected(), $this->getActual()));
       }
 
-
-      if ($this->getErrors() || $this->getWarnings() || $this->getFailed() || $incomplete)
+      if ($this->getFailed())
       {
-        $messages = LimeOutputTap::getMessages($this->getActual(),
-            $this->getExpected(), $this->getPassed(), $this->getErrors(), $this->getWarnings());
+        $this->printer->printLine('    Failed Tests:', LimePrinter::COMMENT);
 
-        foreach ($messages as $message)
+        $i = 0;
+        foreach ($this->failed[$this->file] as $number => $failed)
         {
-          list ($message, $style) = $message;
-          $this->printer->printLine('    '.$message);
-        }
-      }
-
-      if ($this->options['verbose'])
-      {
-        if ($this->getFailed())
-        {
-          $this->printer->printLine('  Failed Tests:', LimePrinter::COMMENT);
-
-          foreach ($this->failed[$this->file] as $number => $failed)
+          if (!$this->options['verbose'] && $i > 2)
           {
-            $this->printer->printLine('    not ok '.$number.' - '.$failed[0]);
-            $this->printer->printText('      (in ');
-            $this->printer->printText($this->truncate($failed[1]), LimePrinter::TRACE);
-            $this->printer->printText(' on line ');
-            $this->printer->printText($failed[2], LimePrinter::TRACE);
-            $this->printer->printLine(')');
+            $this->printer->printLine(sprintf('    ... and %s more', $this->getFailed()-$i));
+            break;
           }
+
+          ++$i;
+
+          $this->printer->printLine('    not ok '.$number.' - '.$failed[0]);
         }
+      }
 
-        if ($this->getWarnings())
+      if ($this->getWarnings())
+      {
+        $this->printer->printLine('    Warnings:', LimePrinter::COMMENT);
+
+        foreach ($this->warnings[$this->file] as $i => $warning)
         {
-          $this->printer->printLine('  Warnings:', LimePrinter::COMMENT);
-
-          foreach ($this->warnings[$this->file] as $warning)
+          if (!$this->options['verbose'] && $i > 2)
           {
-            $this->printer->printLine('    '.$warning[0]);
+            $this->printer->printLine(sprintf('    ... and %s more', $this->getWarnings()-$i));
+            break;
+          }
+
+          $this->printer->printLine('    '.$warning[0]);
+
+          if ($this->options['verbose'])
+          {
             $this->printer->printText('      (in ');
             $this->printer->printText($this->truncate($warning[1]), LimePrinter::TRACE);
             $this->printer->printText(' on line ');
@@ -149,14 +141,24 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
             $this->printer->printLine(')');
           }
         }
+      }
 
-        if ($this->getErrors())
+      if ($this->getErrors())
+      {
+        $this->printer->printLine('    Errors:', LimePrinter::COMMENT);
+
+        foreach ($this->errors[$this->file] as $i => $error)
         {
-          $this->printer->printLine('  Errors:', LimePrinter::COMMENT);
-
-          foreach ($this->errors[$this->file] as $error)
+          if (!$this->options['verbose'] && $i > 2)
           {
-            $this->printer->printLine('    '.$error->getMessage());
+            $this->printer->printLine(sprintf('    ... and %s more', $this->getErrors()-$i));
+            break;
+          }
+
+          $this->printer->printLine('    '.$error->getMessage());
+
+          if ($this->options['verbose'])
+          {
             $this->printer->printText('      (in ');
             $this->printer->printText($this->truncate($error->getFile()), LimePrinter::TRACE);
             $this->printer->printText(' on line ');
@@ -212,7 +214,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
   public function fail($message, $file, $line, $error = null)
   {
     $this->actual[$this->file]++;
-    $this->failed[$this->file][$this->actual[$this->file]] = array($message, $file, $line);
+    $this->failed[$this->file][$this->actual[$this->file]] = array($message, $file, $line, $error);
   }
 
   public function skip($message, $file, $line)

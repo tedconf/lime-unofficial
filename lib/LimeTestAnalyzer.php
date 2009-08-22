@@ -65,7 +65,7 @@ class LimeTestAnalyzer
 
     while (preg_match('/^(.+)\n/', $this->errors, $matches))
     {
-      $this->output->error(new LimeError($matches[1], $this->file, 0));
+      $this->output->warning($matches[1], $this->file, 0);
       $this->errors = substr($this->errors, strlen($matches[0]));
     }
 
@@ -79,7 +79,7 @@ class LimeTestAnalyzer
       // if the last error was not followed by \n, it is still in the buffer
       if (!empty($this->errors))
       {
-        $this->output->error(new LimeError($this->errors, $this->file, 0));
+        $this->output->warning($this->errors, $this->file, 0);
         $this->errors = '';
       }
 
