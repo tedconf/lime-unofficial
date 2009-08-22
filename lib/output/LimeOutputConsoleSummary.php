@@ -26,6 +26,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $failed         = array(),
     $errors         = array(),
     $warnings       = array(),
+    $todos          = array(),
     $line           = array();
 
   public function __construct(LimePrinter $printer, array $options = array())
@@ -57,6 +58,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
       $this->failed[$file] = array();
       $this->errors[$file] = array();
       $this->warnings[$file] = array();
+      $this->todos[$file] = array();
     }
   }
 
@@ -96,7 +98,14 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
       if ($this->getExpected() > 0 && $this->getActual() != $this->getExpected())
       {
         $this->printer->printLine('    Plan Mismatch:', LimePrinter::COMMENT);
-        $this->printer->printLine(sprintf('    Looks like you planned %s tests but only ran %s.', $this->getExpected(), $this->getActual()));
+        if ($this->getActual() > $this->getExpected())
+        {
+          $this->printer->printLine(sprintf('    Looks like you only planned %s tests but ran %s.', $this->getExpected(), $this->getActual()));
+        }
+        else
+        {
+          $this->printer->printLine(sprintf('    Looks like you planned %s tests but only ran %s.', $this->getExpected(), $this->getActual()));
+        }
       }
 
       if ($this->getFailed())
@@ -167,6 +176,22 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
           }
         }
       }
+
+      if ($this->getTodos())
+      {
+        $this->printer->printLine('    TODOs:', LimePrinter::COMMENT);
+
+        foreach ($this->todos[$this->file] as $i => $todo)
+        {
+          if (!$this->options['verbose'] && $i > 2)
+          {
+            $this->printer->printLine(sprintf('    ... and %s more', $this->getTodos()-$i));
+            break;
+          }
+
+          $this->printer->printLine('    '.$todo);
+        }
+      }
     }
   }
 
@@ -200,6 +225,11 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     return count($this->warnings[$this->file]);
   }
 
+  protected function getTodos()
+  {
+    return count($this->todos[$this->file]);
+  }
+
   public function plan($amount)
   {
     $this->expected[$this->file] = $amount;
@@ -225,6 +255,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
   public function todo($message, $file, $line)
   {
     $this->actual[$this->file]++;
+    $this->todos[$this->file][] = $message;
   }
 
   public function warning($message, $file, $line)

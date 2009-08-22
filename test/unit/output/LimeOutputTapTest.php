@@ -274,7 +274,7 @@ $t = new LimeTest(74);
   $output->pass('Second test', '/test/file', 22);
   $printer->reset();
   $printer->printLine('1..1');
-  $printer->printBox(' Looks like you planned 1 tests but ran 1 extra.', LimePrinter::ERROR);
+  $printer->printBox(' Looks like you only planned 1 tests but ran 2.', LimePrinter::ERROR);
   $printer->replay();
   // test
   $output->flush();
@@ -290,7 +290,7 @@ $t = new LimeTest(74);
   $printer->reset();
   $printer->printLine('1..1');
   $printer->printBox(' Looks like you failed 1 tests of 2.', LimePrinter::ERROR);
-  $printer->printBox(' Looks like you planned 1 tests but ran 1 extra.', LimePrinter::ERROR);
+  $printer->printBox(' Looks like you only planned 1 tests but ran 2.', LimePrinter::ERROR);
   $printer->replay();
   // test
   $output->flush();

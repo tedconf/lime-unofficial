@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(29);
+$t = new LimeTest(37);
 
 
 // @Before
@@ -101,7 +101,27 @@ $t = new LimeTest(29);
   $printer->verify();
 
 
-// @Test: When close() is called and the plan did not match, a message is printed
+// @Test: When close() is called and todos appeared in the test, the status is "ok" but the todos are displayed
+
+  // fixtures
+  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printLine("ok", LimePrinter::OK);
+  $printer->any('printLine')->times(4);
+  $printer->printLine('    ... and 1 more');
+  $printer->replay();
+  // test
+  $output->focus('/test/script');
+  $output->pass('A passed test', '/test/script', 11);
+  $output->todo('A todo', '/test/script', 22);
+  $output->todo('A todo', '/test/script', 22);
+  $output->todo('A todo', '/test/script', 22);
+  $output->todo('A todo', '/test/script', 22);
+  $output->close();
+  // assertions
+  $printer->verify();
+
+
+// @Test: When close() is called and the too few tests were executed, a message is printed
 
   // fixtures
   $printer->printText(str_pad('/test/script', 73, '.'));
@@ -112,6 +132,24 @@ $t = new LimeTest(29);
   // test
   $output->focus('/test/script');
   $output->plan(2);
+  $output->pass('A passed test', '/test/script', 11);
+  $output->close();
+  // assertions
+  $printer->verify();
+
+
+// @Test: When close() is called and the too many tests were executed, a message is printed
+
+  // fixtures
+  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printLine("not ok", LimePrinter::NOT_OK);
+  $printer->any('printLine')->once();
+  $printer->printLine('    Looks like you only planned 1 tests but ran 2.');
+  $printer->replay();
+  // test
+  $output->focus('/test/script');
+  $output->plan(1);
+  $output->pass('A passed test', '/test/script', 11);
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
   // assertions

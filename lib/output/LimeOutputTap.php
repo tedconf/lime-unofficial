@@ -248,7 +248,7 @@ class LimeOutputTap implements LimeOutputInterface
 
     if ($actual > $expected && $expected > 0)
     {
-      $messages[] = array(sprintf('Looks like you planned %s tests but ran %s extra.', $expected, $actual - $expected), LimePrinter::ERROR);
+      $messages[] = array(sprintf('Looks like you only planned %s tests but ran %s.', $expected, $actual), LimePrinter::ERROR);
     }
     else if ($actual < $expected)
     {
