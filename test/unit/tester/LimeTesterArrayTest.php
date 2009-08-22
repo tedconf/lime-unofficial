@@ -13,27 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(16);
-
-
-// @Test: assertEquals() throws an exception if the other tester is no LimeTesterArray
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
-
-
-// @Test: assertEquals() throws an exception if the other tester is a LimeTesterObject
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterObject(new stdClass());
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+$t = new LimeTest(12);
 
 
 // @Test: assertEquals() throws an exception if keys are missing
@@ -85,22 +65,13 @@ $t = new LimeTest(16);
   $actual->assertEquals($expected);
 
 
-// @Test: assertNotEquals() throws no exception if the other tester is no LimeTesterArray
+// @Test: assertEquals() throws no exception if values match
 
   // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterScalar(false);
+  $actual = new LimeTesterArray(array(0 => new LimeError("message", "file", 11)));
+  $expected = new LimeTesterArray(array(0 => new LimeError("message", "file", 11)));
   // test
-  $actual->assertNotEquals($expected);
-
-
-// @Test: assertNotEquals() throws no exception if the other tester is a LimeTesterObject
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterObject(new stdClass());
-  // test
-  $actual->assertNotEquals($expected);
+  $actual->assertEquals($expected);
 
 
 // @Test: assertNotEquals() throws an exception if the arrays are equal
@@ -120,26 +91,6 @@ $t = new LimeTest(16);
   $expected = new LimeTesterArray(array(0 => 1, 1 => 3));
   // test
   $actual->assertNotEquals($expected);
-
-
-// @Test: assertSame() throws an exception if the other tester is no LimeTesterArray
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
-
-
-// @Test: assertSame() throws an exception if the other tester is a LimeTesterObject
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterObject(new stdClass());
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
 
 
 // @Test: assertSame() throws an exception if keys are missing
@@ -189,24 +140,6 @@ $t = new LimeTest(16);
   $expected = new LimeTesterArray(array(0 => 1));
   // test
   $actual->assertSame($expected);
-
-
-// @Test: assertNotSame() throws no exception if the other tester is no LimeTesterArray
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $actual->assertNotSame($expected);
-
-
-// @Test: assertNotSame() throws no exception if the other tester is a LimeTesterObject
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterObject(new stdClass());
-  // test
-  $actual->assertNotSame($expected);
 
 
 // @Test: assertNotSame() throws an exception if the arrays are equal

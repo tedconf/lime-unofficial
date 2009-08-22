@@ -49,17 +49,7 @@ class TestAuthor
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(6);
-
-
-// @Test: assertEquals() throws an exception if the other tester is no LimeTesterObject
-
-  // fixtures
-  $actual = new LimeTesterObject(new TestClass());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+$t = new LimeTest(5);
 
 
 // @Test: assertEquals() throws an exception if values don't match
@@ -130,15 +120,6 @@ $t = new LimeTest(6);
   $expected = new LimeTesterObject($object);
   // test
   $actual->assertSame($expected);
-
-
-// @Test: assertNotEquals() throws no exception if the other tester is no LimeTesterObject
-
-  // fixtures
-  $actual = new LimeTesterObject(new TestClass());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $actual->assertNotEquals($expected);
 
 
 // @Test: assertNotEquals() throws an exception if the objects are equal

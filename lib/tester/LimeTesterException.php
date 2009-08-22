@@ -18,5 +18,6 @@ class LimeTesterException extends LimeTesterObject
     unset($this->value['file']);
     unset($this->value['line']);
     unset($this->value['trace']);
+    unset($this->value['string']); // some internal property of Exception
   }
 }

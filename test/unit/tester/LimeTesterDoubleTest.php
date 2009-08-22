@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(3);
+$t = new LimeTest(2);
 
 
 // @Test: __toString() returns the value as float
@@ -31,16 +31,6 @@ $t = new LimeTest(3);
   $actual->assertEquals($expected);
 
 
-// @Test: assertSame() throws an exception if the types of the values differ
-
-  // fixtures
-  $actual = new LimeTesterDouble(1.0);
-  $expected = new LimeTesterString('1.0');
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
-
-
 // @Test: assertNotEquals() throws an exception if the difference between the doubles is very small
 
   // fixtures
@@ -49,13 +39,4 @@ $t = new LimeTest(3);
   // test
   $t->expect('LimeAssertionFailedException');
   $actual->assertNotEquals($expected);
-
-
-// @Test: assertNotSame() throws no exception if the types of the values differ
-
-  // fixtures
-  $actual = new LimeTesterDouble(1.0);
-  $expected = new LimeTesterString('1.0');
-  // test
-  $actual->assertNotSame($expected);
 

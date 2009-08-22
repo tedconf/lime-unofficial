@@ -31,15 +31,22 @@ class LimeTesterScalar extends LimeTester
     $exp1 = $this->value;
     $exp2 = $other->value;
 
-    // always compare as strings to avoid strange behaviour
-    // otherwise 0 == 'Foobar'
-    if (is_string($exp1) || is_string($exp2))
+    if (is_scalar($exp2) || is_null($exp2))
     {
-      $exp1 = (string)$exp1;
-      $exp2 = (string)$exp2;
-    }
+      // always compare as strings to avoid strange behaviour
+      // otherwise 0 == 'Foobar'
+      if (is_string($exp1) || is_string($exp2))
+      {
+        $exp1 = (string)$exp1;
+        $exp2 = (string)$exp2;
+      }
 
-    return $exp1 == $exp2;
+      return $exp1 == $exp2;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   public function assertEquals(LimeTesterInterface $expected)

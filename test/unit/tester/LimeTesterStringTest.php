@@ -13,6 +13,14 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
+class TestClassWithToString
+{
+  public function __toString()
+  {
+    return 'foobar';
+  }
+}
+
 $t = new LimeTest(3);
 
 

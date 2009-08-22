@@ -16,7 +16,7 @@ class LimeTesterObject extends LimeTesterArray
     $unequal  = array();
 
   private
-    $object = null;
+    $object   = null;
 
   public static function toArray($object)
   {
@@ -61,15 +61,26 @@ class LimeTesterObject extends LimeTesterArray
 
   public function assertEquals(LimeTesterInterface $expected)
   {
-    // don't compare twice to allow for cyclic dependencies
-    if (in_array(array($this->value, $expected->value), self::$equal, true) || in_array(array($expected->value, $this->value), self::$equal, true))
+    // allow comparison with strings if object implements __toString()
+    if ($expected instanceof LimeTesterString && method_exists($this->object, '__toString'))
     {
-      return;
+      if ($expected->value != (string)$this->object)
+      {
+        throw new LimeAssertionFailedException($this, $expected);
+      }
     }
+    else
+    {
+      // don't compare twice to allow for cyclic dependencies
+      if (in_array(array($this->value, $expected->value), self::$equal, true) || in_array(array($expected->value, $this->value), self::$equal, true))
+      {
+        return;
+      }
 
-    self::$equal[] = array($this->value, $expected->value);
+      self::$equal[] = array($this->value, $expected->value);
 
-    parent::assertEquals($expected);
+      parent::assertEquals($expected);
+    }
   }
 
   public function assertNotEquals(LimeTesterInterface $expected)
@@ -87,7 +98,7 @@ class LimeTesterObject extends LimeTesterArray
 
   public function assertSame(LimeTesterInterface $expected)
   {
-    if ($this->object !== $expected->object)
+    if (!$expected instanceof LimeTesterObject || $this->object !== $expected->object)
     {
       throw new LimeAssertionFailedException($this, $expected);
     }
@@ -97,7 +108,7 @@ class LimeTesterObject extends LimeTesterArray
 
   public function assertNotSame(LimeTesterInterface $expected)
   {
-    if ($this->object === $expected->object)
+    if ($expected instanceof LimeTesterObject && $this->object === $expected->object)
     {
       throw new LimeAssertionFailedException($this, $expected);
     }
