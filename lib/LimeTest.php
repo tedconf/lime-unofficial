@@ -574,9 +574,17 @@ class LimeTest
     $this->output->comment($message);
   }
 
+  /**
+   * @deprecated Use comment() instead
+   * @param $message
+   * @return unknown_type
+   */
   public function info($message)
   {
-    $this->output->info($message);
+    if ($this->output instanceof LimeOutputTap)
+    {
+      $this->output->info($message);
+    }
   }
 
   public function expect($class, $code = null)

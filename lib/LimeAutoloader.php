@@ -115,6 +115,10 @@ class LimeAutoloader
       {
         $file .= 'tester/';
       }
+      else if (0 === strpos($class, 'LimeShell'))
+      {
+        $file .= 'shell/';
+      }
 
       $file .= $class.'.php';
 

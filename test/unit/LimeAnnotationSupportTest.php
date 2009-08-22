@@ -43,16 +43,10 @@ function _restore($file)
 
 function _execute($file)
 {
-  static $shell = null;
+  $command = new LimeShellCommand(dirname(__FILE__).'/LimeAnnotationSupport/'.$file);
+  $command->execute();
 
-  if (is_null($shell))
-  {
-    $shell = new LimeShell();
-  }
-
-  $file = dirname(__FILE__).'/LimeAnnotationSupport/'.$file;
-
-  return $shell->execute($file);
+  return $command;
 }
 
 function execute($file)
@@ -68,7 +62,7 @@ function execute($file)
 $t->diag('Code annotated with @Before is executed once before every test');
 
   // test
-  list($result, $actual) = execute($file = 'test_before.php');
+  $command = execute($file = 'test_before.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -79,14 +73,14 @@ Test 2
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Code annotated with @After is executed once after every test');
 
   // test
-  list($result, $actual) = execute($file = 'test_after.php');
+  $command = execute($file = 'test_after.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -97,14 +91,14 @@ After
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Code annotated with @BeforeAll is executed once before the test suite');
 
   // test
-  list($result, $actual) = execute($file = 'test_before_all.php');
+  $command = execute($file = 'test_before_all.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -114,14 +108,14 @@ Test 2
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Code annotated with @AfterAll is executed once after the test suite');
 
   // test
-  list($result, $actual) = execute($file = 'test_after_all.php');
+  $command = execute($file = 'test_after_all.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -131,14 +125,14 @@ After All
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Code before the first annotations is executed normally');
 
   // test
-  list($result, $actual) = execute($file = 'test_code_before_annotations.php');
+  $command = execute($file = 'test_code_before_annotations.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -148,14 +142,14 @@ Test
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Classes can be defined before the annotations');
 
   // test
-  list($result, $actual) = execute($file = 'test_class_before_annotations.php');
+  $command = execute($file = 'test_class_before_annotations.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -165,14 +159,14 @@ If is not matched
  Looks like everything went fine.
 EOF
 ;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Functions can be defined before the annotations');
 
   // test
-  list($result, $actual) = execute($file = 'test_function_before_annotations.php');
+  $command = execute($file = 'test_function_before_annotations.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -181,22 +175,22 @@ Test
  Looks like everything went fine.
 EOF
 ;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Unknown annotations result in exceptions');
 
   // test
-  list($result, $actual) = execute($file = 'test_ignore_unknown.php');
+  $command = execute($file = 'test_ignore_unknown.php');
   // assertion
-  $t->is($result, 255, 'The file returned exit status 255 (dubious)');
+  $t->is($command->getStatus(), 255, 'The file returned exit status 255 (dubious)');
 
 
 $t->diag('Variables from the @Before scope are available in all other scopes');
 
   // test
-  list($result, $actual) = execute($file = 'test_scope_before.php');
+  $command = execute($file = 'test_scope_before.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -206,14 +200,14 @@ BeforeTestAfter
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Variables from the global scope are available in all other scopes');
 
   // test
-  list($result, $actual) = execute($file = 'test_scope_global.php');
+  $command = execute($file = 'test_scope_global.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -224,13 +218,13 @@ GlobalBeforeTestAfter
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
 
 
 $t->diag('Variables from other annotations are NOT available in all other scopes');
 
   // test
-  list($result, $actual) = execute($file = 'test_scope_private.php');
+  $command = execute($file = 'test_scope_private.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -239,14 +233,14 @@ Is not set
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Tests annotated with @Test may have comments');
 
   // test
-  list($result, $actual) = execute($file = 'test_comments.php');
+  $command = execute($file = 'test_comments.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -256,14 +250,14 @@ Test 2
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Exceptions can be expected');
 
   // test
-  list($result, $actual) = execute($file = 'test_expect.php');
+  $command = execute($file = 'test_expect.php');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 $root/@$file
@@ -285,14 +279,14 @@ ok 4 - A "RuntimeException" with code "1" was thrown
  Looks like you failed 2 tests of 4.
 EOF
 , '/')).'/';
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected, 'like');
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected, 'like');
 
 
 $t->diag('Exception objects can be expected');
 
   // test
-  list($result, $actual) = execute($file = 'test_expect_object.php');
+  $command = execute($file = 'test_expect_object.php');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 $root/@$file
@@ -309,14 +303,14 @@ ok 3 - A "RuntimeException" with code "1" was thrown
  Looks like you failed 1 tests of 3.
 EOF
 , '/')).'/';
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected, 'like');
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected, 'like');
 
 
 $t->diag('Old expected exceptions are ignored');
 
   // test
-  list($result, $actual) = execute($file = 'test_expect_ignore_old.php');
+  $command = execute($file = 'test_expect_ignore_old.php');
   // assertion
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 $root/@$file
@@ -331,14 +325,14 @@ not ok 2 - A "LogicException" was thrown
  Looks like you failed 1 tests of 2.
 EOF
 , '/')).'/';
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected, 'like');
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected, 'like');
 
 
 $t->diag('Annotations can be commented out with /*...*/');
 
   // test
-  list($result, $actual) = execute($file = 'test_multiline_comments.php');
+  $command = execute($file = 'test_multiline_comments.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -347,8 +341,8 @@ Test 3
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('Test files remain unchanged when fatal errors occur');
@@ -359,8 +353,8 @@ $t->diag('Test files remain unchanged when fatal errors occur');
   // test
   _execute($file = 'test_fatal_error.php');
   // assertions
-  $actual = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_error.php');
-  $t->is($actual, $expected, 'The file content remained unchanged');
+  $content = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_error.php');
+  $t->is($content, $expected, 'The file content remained unchanged');
   // teardown
   _restore('test_fatal_error.php');
 
@@ -373,8 +367,8 @@ $t->diag('Test files remain unchanged when fatal errors in combination with requ
   // test
   _execute($file = 'test_fatal_require.php');
   // assertions
-  $actual = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_require.php');
-  $t->is($actual, $expected, 'The file content remained unchanged');
+  $content = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_require.php');
+  $t->is($content, $expected, 'The file content remained unchanged');
   // teardown
   _restore('test_fatal_require.php');
 
@@ -387,8 +381,8 @@ $t->diag('Test files remain unchanged when fatal errors in combination with unde
   // test
   _execute($file = 'test_fatal_undefined.php');
   // assertions
-  $actual = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_undefined.php');
-  $t->is($actual, $expected, 'The file content remained unchanged');
+  $content = file_get_contents(dirname(__FILE__).'/LimeAnnotationSupport/test_fatal_undefined.php');
+  $t->is($content, $expected, 'The file content remained unchanged');
   // teardown
   _restore('test_fatal_undefined.php');
 
@@ -396,16 +390,16 @@ $t->diag('Test files remain unchanged when fatal errors in combination with unde
 $t->diag('Line numbers in error messages remain the same as in the original files');
 
   // test
-  list($result, $actual) = execute($file = 'test_line_number.php');
+  $command = execute($file = 'test_line_number.php');
   // assertion
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, '/on line 25(?!\d)/', 'like');
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), '/on line 25(?!\d)/', 'like');
 
 
 $t->diag('The last line in an annotated file can be a comment (bugfix)');
 
   // test
-  list($result, $actual) = execute($file = 'test_last_line_commented.php');
+  $command = execute($file = 'test_last_line_commented.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -413,14 +407,14 @@ Test
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);
 
 
 $t->diag('The annotation support can be enabled in included bootstrap files');
 
   // test
-  list($result, $actual) = execute($file = 'test_include.php');
+  $command = execute($file = 'test_include.php');
   // assertion
   $expected = <<<EOF
 $root/@$file
@@ -431,5 +425,5 @@ Test 2
 1..0
  Looks like everything went fine.
 EOF;
-  $t->is($result, 0, 'The file returned exit status 0 (success)');
-  $t->isOutput($actual, $expected);
+  $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+  $t->isOutput($command->getOutput(), $expected);

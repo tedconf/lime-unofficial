@@ -15,8 +15,6 @@ LimeAnnotationSupport::enable();
 
 $t = new LimeTest(11);
 
-$shell = new LimeShell();
-
 
 // @Before
 
@@ -122,9 +120,10 @@ $shell = new LimeShell();
   $output->error(new LimeError("Parse error: syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1));
   $output->replay();
   file_put_contents($file, '<?php $1invalidname;');
-  $result = $shell->execute($file);
+  $command = new LimeShellCommand($file);
+  $command->execute();
   // test
-  $parser->parse($result[1]);
+  $parser->parse($command->getOutput());
   // assertions
   $output->verify();
 
@@ -136,8 +135,9 @@ $shell = new LimeShell();
   $output->error(new LimeError("Fatal error: require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1));
   $output->replay();
   file_put_contents($file, '<?php require "foobar.php";');
-  $result = $shell->execute($file);
+  $command = new LimeShellCommand($file);
+  $command->execute();
   // test
-  $parser->parse($result[1]);
+  $parser->parse($command->getOutput());
   // assertions
   $output->verify();

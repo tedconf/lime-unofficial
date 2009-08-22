@@ -82,23 +82,23 @@ class LimeCoverage extends LimeRegistration
 
   protected function process(array $files)
   {
-    $shell = new LimeShell();
     $this->output = new LimeOutput();
 
     foreach ($files as $file)
     {
-      list($return, $output) = $shell->execute($file, array('--coverage'));
+      $command = new LimeShellCommand($file, array('--coverage'));
+      $command->execute();
 
       // script failed
-      if ($return != LimeShell::SUCCESS)
+      if ($command->getStatus() != LimeShell::SUCCESS)
       {
         $this->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $return), LimeOutput::ERROR);
       }
 
       // script succeeded, coverage not readable
-      if (false === $coverage = @unserialize($output))
+      if (false === $coverage = @unserialize($command->getOutput()))
       {
-        if ($return == LimeShell::SUCCESS)
+        if ($command->getStatus() == LimeShell::SUCCESS)
         {
           throw new Exception(sprintf('Unable to unserialize coverage for file "%s"', $file));
         }

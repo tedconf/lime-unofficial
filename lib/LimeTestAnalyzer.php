@@ -14,9 +14,9 @@ class LimeTestAnalyzer
   protected
     $suppressedMethods  = array(),
     $output             = null,
-    $shell              = null,
+    $errors             = '',
     $file               = null,
-    $handle             = null,
+    $process            = null,
     $done               = true,
     $parser             = null;
 
@@ -24,7 +24,6 @@ class LimeTestAnalyzer
   {
     $this->suppressedMethods = $suppressedMethods;
     $this->output = $output;
-    $this->shell = new LimeShell();
   }
 
   public function getConnectedFile()
@@ -38,13 +37,14 @@ class LimeTestAnalyzer
 
     $this->file = $file;
     $this->done = false;
-    $this->handle = $this->shell->spawn($file, $arguments);
     $this->parser = null;
+    $this->process = new LimeShellProcess($file, $arguments);
+    $this->process->execute();
   }
 
   public function proceed()
   {
-    $data = fread($this->handle, 1024);
+    $data = $this->process->getOutput();
 
     if (is_null($this->parser))
     {
@@ -61,11 +61,26 @@ class LimeTestAnalyzer
 
     $this->parser->parse($data);
 
-    if (feof($this->handle))
+    $this->errors .= $this->process->getErrors();
+
+    while (preg_match('/^(.+)\n/', $this->errors, $matches))
+    {
+      $this->output->error(new LimeError($matches[1], $this->file, 0));
+      $this->errors = substr($this->errors, strlen($matches[0]));
+    }
+
+    if ($this->process->isClosed())
     {
       if (!$this->parser->done())
       {
         $this->output->warning("Could not parse test output. Make sure you don't echo any additional data.", $this->file, 1);
+      }
+
+      // if the last error was not followed by \n, it is still in the buffer
+      if (!empty($this->errors))
+      {
+        $this->output->error(new LimeError($this->errors, $this->file, 0));
+        $this->errors = '';
       }
 
       $this->done = true;
