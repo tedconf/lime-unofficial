@@ -21,8 +21,7 @@ class lime_test extends LimeTest
     // for BC
     if (!is_array($options))
     {
-//      $options = array('output' => $options);
-      $options = array();
+      $options = array(); // drop the old output because it is not compatible with LimeTest
     }
 
     parent::__construct($plan, $options);
@@ -61,6 +60,13 @@ class lime_test extends LimeTest
   public function include_ok($file, $message = '')
   {
     return $this->includeOk($file, $message);
+  }
+
+  public function error($message)
+  {
+    list($file, $line) = LimeTrace::findCaller('lime');
+
+    $this->output->error(new LimeError($message, $file, $line));
   }
 }
 
@@ -110,7 +116,7 @@ class lime_harness extends LimeTestSuite
     // for BC
     if (!is_array($options))
     {
-      $options = array('output' => $options);
+      $options = array(); // drop the old output because it is not compatible with LimeTest
     }
     else if (array_key_exists('php_cli', $options))
     {
