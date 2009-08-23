@@ -1,9 +1,10 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -16,7 +17,7 @@
  * This class is used internally by LimeMockControl to track the method
  * invocations on mock objects.
  *
- * @package    lime
+ * @package    Lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
@@ -32,8 +33,8 @@ class LimeMockInvocation
   /**
    * Constructor.
    *
-   * @param string $method
-   * @param array $parameters
+   * @param string        $method      The method name
+   * @param array|string  $parameters  The method parameters or ANY_PARAMETERS
    */
   public function __construct($class, $method, $parameters = array())
   {
@@ -42,60 +43,77 @@ class LimeMockInvocation
     $this->parameters = $parameters;
   }
 
+  /**
+   * Returns the class name.
+   *
+   * @return string
+   */
   public function getClass()
   {
     return $this->class;
   }
 
+  /**
+   * Returns the method name.
+   *
+   * @return string
+   */
   public function getMethod()
   {
     return $this->method;
   }
 
+  /**
+   * Returns the method parameters.
+   *
+   * @return array|string   The parameter array or ANY_PARAMETERS
+   */
   public function getParameters()
   {
     return $this->parameters;
   }
 
+  /**
+   * Returns whether this object equals the given invocation.
+   *
+   * @param  LimeMockInvocation  $invocation  The compared invocation
+   * @param  boolean             $strict      Whether to use strict parameter
+   *                                          comparison
+   * @return boolean                          TRUE if the objects are equal
+   */
   public function equals(LimeMockInvocation $invocation, $strict = false)
   {
-    $equal = $this->method == $invocation->method && $this->class == $invocation->class;
-
-    $exp1 = LimeTester::create($this->parameters);
-    $exp2 = LimeTester::create($invocation->parameters);
-
-    if ($this->parameters == self::ANY_PARAMETERS)
-    {
-      return $equal;
-    }
-
-    try
-    {
-      if ($strict)
-      {
-        $exp1->assertSame($exp2);
-      }
-      else
-      {
-        $exp1->assertEquals($exp2);
-      }
-
-      return $equal;
-    }
-    catch (LimeAssertionFailedException $e)
+    if ($this->method != $invocation->method || $this->class != $invocation->class)
     {
       return false;
     }
-  }
+    else if ($this->parameters == self::ANY_PARAMETERS)
+    {
+      return true;
+    }
+    else
+    {
+      $exp1 = LimeTester::create($this->parameters);
+      $exp2 = LimeTester::create($invocation->parameters);
 
-  /**
-   * Returns a unique hash code.
-   *
-   * @return string A hash with a length of 32 characters.
-   */
-  public function hashCode()
-  {
-    return md5(serialize($this));
+      try
+      {
+        if ($strict)
+        {
+          $exp1->assertSame($exp2);
+        }
+        else
+        {
+          $exp1->assertEquals($exp2);
+        }
+
+        return true;
+      }
+      catch (LimeAssertionFailedException $e)
+      {
+        return false;
+      }
+    }
   }
 
   /**

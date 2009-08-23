@@ -74,9 +74,6 @@
  *                          called in the same order in which they were recorded.
  *                          Additionally, method parameters will be compared
  *                          with strict typing. Default: FALSE
- *    * nice:               If set to TRUE, the mock will ignore unexpected
- *                          method calls. Mocked methods will be initialized
- *                          with the modifier any(). Default: FALSE
  *    * generate_controls:  If set to FALSE, the mock's control methods
  *                          replay(), verify() etc. will not be generated.
  *                          Setting this option is useful when the mocked
@@ -84,15 +81,14 @@
  *                          to access the control methods statically in this
  *                          class, f.i. LimeMock::replay($mock);
  *                          Default: TRUE
- *    * no_exceptions:      If set to TRUE, throwing of exceptions is
- *                          suppressed when unexpected methods are called.
- *                          The methods will be reported as errors when
- *                          verify() is called. Default: FALSE
+ *    * nice:               See LimeMockBehaviour
+ *    * no_exceptions:      See LimeMockBehaviour
  *
  * @package    Lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
- * @see        LimeMockInvocationMatcherInterface
+ * @see        LimeMockBehaviour
+ * @see        LimeMockInvocationExpectation
  */
 class LimeMock
 {
