@@ -1,25 +1,45 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
 
+/**
+ * Requires a method to be invoked a specific number of times.
+ *
+ * The expected number of method invokations must be passed to the constructor.
+ *
+ * @package    Lime
+ * @author     Bernhard Schussek <bschussek@gmail.com>
+ * @version    SVN: $Id$
+ * @see        LimeMockInvocationMatcherInterface
+ */
 class LimeMockInvocationMatcherTimes implements LimeMockInvocationMatcherInterface
 {
   private
     $expected = 0,
     $actual   = 0;
 
+  /**
+   * Constructor.
+   *
+   * @param integer $times  The expected number of method invokations0
+   */
   public function __construct($times)
   {
     $this->expected = $times;
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see mock/matcher/LimeMockInvocationMatcherInterface#invoke($invocation)
+   */
   public function invoke(LimeMockInvocation $invocation)
   {
     if ($this->actual < $this->expected)
@@ -41,16 +61,28 @@ class LimeMockInvocationMatcherTimes implements LimeMockInvocationMatcherInterfa
     }
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see mock/matcher/LimeMockInvocationMatcherInterface#isInvokable()
+   */
   public function isInvokable()
   {
     return $this->actual < $this->expected;
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see mock/matcher/LimeMockInvocationMatcherInterface#isSatisfied()
+   */
   public function isSatisfied()
   {
     return $this->actual >= $this->expected;
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see mock/matcher/LimeMockInvocationMatcherInterface#getMessage()
+   */
   public function getMessage()
   {
     return $this->expected == 1 ? 'once' : $this->expected.' times';

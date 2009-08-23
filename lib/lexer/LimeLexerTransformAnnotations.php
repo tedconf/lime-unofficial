@@ -1,9 +1,10 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -51,9 +52,10 @@
  * // => First
  * </code>
  *
- * @package    lime
+ * @package    Lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
+ * @see        LimeLexerAnnotationAware
  */
 class LimeLexerTransformAnnotations extends LimeLexerAnnotationAware
 {

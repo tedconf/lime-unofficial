@@ -1,9 +1,10 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -13,9 +14,10 @@
  * Extracts all global variables from a source file.
  *
  * This lexer includes all global variables that are not inside annotations,
- * except variables from the @Before scope, which are included as well.
+ * except variables from the scope of the annotations passed to the constructor,
+ * which are included as well.
  *
- * @package    lime
+ * @package    Lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
@@ -25,6 +27,13 @@ class LimeLexerVariables extends LimeLexerAnnotationAware
     $includedAnnotations = array(),
     $variables = array();
 
+  /**
+   * Constructor.
+   *
+   * @param  array $allowedAnnotations   The list of allowed annotation names
+   * @param  array $includedAnnotations  The list of annotation names whose
+   *                                     variables are considered global
+   */
   public function __construct(array $allowedAnnotations = array(), array $includedAnnotations = array())
   {
     parent::__construct($allowedAnnotations);

@@ -1,16 +1,17 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
 
 /**
- * Abstract base class for PHP code lexers.
+ * Analyzes PHP scripts syntactically.
  *
  * You can extend this class if you want to write your own lexer that parses
  * a PHP file for specific information.
@@ -23,7 +24,10 @@
  * The method getResult() must return the value that should be returned by
  * parse().
  *
- * @package    lime
+ * A lexer is stateless. This means that you can analyze any number of PHP
+ * scripts with the same lexer instance.
+ *
+ * @package    Lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
@@ -40,7 +44,7 @@ abstract class LimeLexer
     $currentLine;
 
   /**
-   * Lexes the given file or PHP code.
+   * Analyzes the given file or PHP code.
    *
    * @param  string $content  A file path or a string with PHP code.
    *

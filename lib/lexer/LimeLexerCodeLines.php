@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of the Lime test framework.
+ *
+ * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 /**
  * Processes a source file for the lines of code and returns the line numbers.
  *
@@ -14,14 +24,19 @@
  *  * { != LOC
  *  * { after class declaration == LOC
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
- *
+ * @package    Lime
+ * @author     Bernhard Schussek <bschussek@gmail.com>
+ * @version    SVN: $Id$
  */
 class LimeLexerCodeLines extends LimeLexer
 {
   private
     $lines = array();
 
+  /**
+   * (non-PHPdoc)
+   * @see lexer/LimeLexer#parse($content)
+   */
   public function parse($content)
   {
     $this->lines = array();
@@ -74,6 +89,10 @@ class LimeLexerCodeLines extends LimeLexer
     $this->lines[$this->getCurrentLine()] = true;
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see lexer/LimeLexer#getResult()
+   */
   protected function getResult()
   {
     return array_keys($this->lines);

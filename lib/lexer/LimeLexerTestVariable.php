@@ -1,9 +1,10 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -13,7 +14,7 @@
  * Extracts the first global variable containing a reference to an instance of
  * LimeTest or any subclass from a source file.
  *
- * @package    lime
+ * @package    Lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
  */
@@ -31,7 +32,16 @@ class LimeLexerTestVariable extends LimeLexer
     $state        = self::NORMAL;
 
   /**
-   * (non-PHPdoc)
+   * This method implements a turing machine for variable assignments.
+   *
+   * Once a variable name is caught, the object is set to state VARIABLE.
+   * When the variable is succeeded by an assignment operator "=", the state
+   * is set to ASSIGNMENT. If the assignment operator is succeeded by the
+   * keyword "new", the state is set to INSTANTIATION. If the assignment
+   * operator is succeeded by a class name that inherits class LimeTest,
+   * processing is stopped and the variable name is returned. Otherwise,
+   * the state is reset and processing continues.
+   *
    * @see LimeLexer#process($text, $id)
    */
   protected function process($text, $id)
