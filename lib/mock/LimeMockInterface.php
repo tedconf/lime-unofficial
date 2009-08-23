@@ -11,5 +11,11 @@
 
 interface LimeMockInterface
 {
-  public function replay();
+  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output = null);
+
+  public function __call($method, $parameters);
+
+  public function __lime_replay();
+
+  public function __lime_getState();
 }

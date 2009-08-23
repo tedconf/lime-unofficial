@@ -143,6 +143,14 @@ class LimeMock
     '__lime_getState',
   );
 
+  protected static $controlMethods = array(
+    'replay',
+    'any',
+    'reset',
+    'verify',
+    'setExpectNothing',
+  );
+
   /**
    * Creates a new mock object for the given class or interface name.
    *
@@ -192,6 +200,11 @@ class LimeMock
     foreach ($class->getMethods() as $method)
     {
       /* @var $method ReflectionMethod */
+      if (in_array($method->getName(), self::$controlMethods) && $generateControls)
+      {
+        throw new LogicException(sprintf('The mocked class "%s" contains the method "%s", which conflicts with the mock\'s control methods. Please set the option "generate_controls" to false.', $classOrInterface, $method->getName()));
+      }
+
       if (!in_array($method->getName(), self::$illegalMethods) && !$method->isFinal())
       {
         $modifiers = Reflection::getModifierNames($method->getModifiers());
@@ -247,10 +260,7 @@ class LimeMock
       $declaration .= ' extends '.$class->getName();
     }
 
-    if ($generateControls)
-    {
-      $interfaces[] = 'LimeMockInterface';
-    }
+    $interfaces[] = 'LimeMockInterface';
 
     if (count($interfaces) > 0)
     {
@@ -288,41 +298,25 @@ class LimeMock
    * Turns the given mock into replay mode.
    * @param  $mock
    */
-  public static function replay($mock)
+  public static function replay(LimeMockInterface $mock)
   {
     return $mock->__lime_replay();
   }
 
-  public static function reset($mock)
+  public static function reset(LimeMockInterface $mock)
   {
     return $mock->__lime_getState()->reset();
   }
 
-  /**
-   * Sets the given mock to compare method parameters with strict typing.
-   * @param  $mock
-   */
-  public static function setStrict($mock)
+  public static function any(LimeMockInterface $mock, $methodName)
   {
-    return $mock->__lime_getState()->setStrict();
-  }
-
-  /**
-   * Configures the mock to throw an exception when an unexpected method call
-   * is made.
-   *
-   * @param  $mock                       The mock object
-   * @throws lime_expectation_exception  When an unexpected method is called
-   */
-  public static function setFailOnVerify($mock)
-  {
-    return $mock->__lime_getState()->setFailOnVerify();
+    return $mock->__call($methodName, LimeMockInvocation::ANY_PARAMETERS);
   }
 
   /**
    * Configures the mock to expect no method call.
    */
-  public static function setExpectNothing()
+  public static function setExpectNothing(LimeMockInterface $mock)
   {
     return $mock->__lime_getState()->setExpectNothing();
   }
@@ -332,7 +326,7 @@ class LimeMock
    *
    * @param $mock  The mock object
    */
-  public static function verify($mock)
+  public static function verify(LimeMockInterface $mock)
   {
     return $mock->__lime_getState()->verify();
   }

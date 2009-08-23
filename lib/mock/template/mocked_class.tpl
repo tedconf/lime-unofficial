@@ -1,9 +1,9 @@
 <?php echo $class_declaration ?>  
 {
   private
-    $class = null,
-    $state = null,
-    $behaviour = null;
+    $class      = null,
+    $state      = null,
+    $behaviour  = null;
   
   public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output = null)
   {
@@ -36,11 +36,11 @@
   }
   
   <?php if ($generate_controls): ?>
-  public function replay() { return $this->__lime_replay(); }
-  public function any($method) { return $this->__call($method, LimeMockInvocation::ANY_PARAMETERS); }
-  public function reset() { return $this->state->reset(); }
-  public function verify() { return $this->state->verify(); }
-  public function setExpectNothing() { return $this->state->setExpectNothing(); }
+  public function replay() { return LimeMock::replay($this); }
+  public function any($methodName) { return LimeMock::any($this, $methodName); }
+  public function reset() { return LimeMock::reset($this); }
+  public function verify() { return LimeMock::verify($this); }
+  public function setExpectNothing() { return LimeMock::setExpectNothing($this); }
   <?php endif ?>
   
   <?php echo $methods ?> 

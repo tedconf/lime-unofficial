@@ -52,6 +52,11 @@ class TestClassWithMethodsFromMock
   public function __lime_getState() {}
 }
 
+class TestClassWithControlMethods
+{
+  public function replay() {}
+}
+
 class TestClassWithFinalMethods
 {
   public static $calls = 0;
@@ -77,7 +82,7 @@ class TestCallbackClass
 }
 
 
-$t = new LimeTest(88);
+$t = new LimeTest(90);
 
 
 // @Before
@@ -120,7 +125,7 @@ $t = new LimeTest(88);
 
 // @Test: Classes with methods from the mock can be mocked
 
-  $m = LimeMocK::create('TestClassWithMethodsFromMock', $output);
+  $m = LimeMock::create('TestClassWithMethodsFromMock', $output);
   // assertions
   $t->ok($m instanceof TestClassWithMethodsFromMock, 'The mock generates and inherits the class');
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
@@ -622,6 +627,20 @@ $t = new LimeTest(88);
   // assertions
   $t->is($output->passes, 1, 'One test passed');
   $t->is($output->fails, 0, 'No test failed');
+
+
+// @Test: If a class with the mock's control methods is mocked, an exception is thrown
+
+  // test
+  $t->expect('LogicException');
+  $m = LimeMock::create('TestClassWithControlMethods', $output);
+
+
+// @Test: If a class with the mock's control methods is mocked and "generate_controls" is set to false, no exception is thrown
+
+  // test
+  $m = LimeMock::create('TestClassWithControlMethods', $output, array('generate_controls' => false));
+  $t->pass('No exception is thrown');
 
 
 // @Test: The control methods like ->replay() can be mocked
