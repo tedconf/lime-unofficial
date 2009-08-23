@@ -600,7 +600,10 @@ class LimeTest
 
   public function stub($class, array $options = array())
   {
-    $options = array_merge(array('nice' =>  true), $options);
+    $options = array_merge(array(
+      'nice'            =>  true,
+      'no_exceptions'   =>  true,
+    ), $options);
 
     return LimeMock::create($class, new LimeOutputNone(), $options);
   }
