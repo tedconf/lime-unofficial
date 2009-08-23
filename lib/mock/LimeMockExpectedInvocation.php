@@ -26,12 +26,10 @@ class LimeMockExpectedInvocation
     $strict       = false,
     $verified     = false;
 
-  public function __construct(LimeMockInvocation $invocation, LimeOutputInterface $output = null)
+  public function __construct(LimeMockInvocation $invocation, LimeOutputInterface $output)
   {
     $this->invocation = $invocation;
     $this->output = $output;
-
-    $this->atLeastOnce();
   }
 
   public function __toString()
@@ -40,7 +38,8 @@ class LimeMockExpectedInvocation
 
     foreach ($this->matchers as $matcher)
     {
-      $string .= ' '.$matcher->getMessage();
+      // avoid trailing spaces if the message is empty
+      $string = rtrim($string.' '.$matcher->getMessage());
     }
 
     return $string;
@@ -60,7 +59,7 @@ class LimeMockExpectedInvocation
       throw new LimeMockInvocationException($this->invocation, $e->getMessage());
     }
 
-    if (!$this->verified && $this->isSatisfied() && !is_null($this->output))
+    if (!$this->verified && $this->isSatisfied())
     {
       list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
 
@@ -122,11 +121,6 @@ class LimeMockExpectedInvocation
   {
     if (!$this->verified)
     {
-      if (is_null($this->output))
-      {
-        throw new BadMethodCallException('You must pass an instance of LimeTest to LimeMock::create() for verifying');
-      }
-
       list ($file, $line) = LimeTrace::findCaller('LimeMockInterface');
 
       if ($this->isSatisfied())
@@ -157,6 +151,13 @@ class LimeMockExpectedInvocation
   public function never()
   {
     return $this->times(0);
+  }
+
+  public function any()
+  {
+    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherAny();
+
+    return $this;
   }
 
   public function atLeastOnce()

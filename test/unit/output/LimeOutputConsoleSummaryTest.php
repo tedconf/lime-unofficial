@@ -18,7 +18,7 @@ $t = new LimeTest(37);
 
 // @Before
 
-  $printer = LimeMock::createStrict('LimePrinter', $t);
+  $printer = $t->mock('LimePrinter', array('strict' => true));
   $output = new LimeOutputConsoleSummary($printer);
 
 
@@ -159,9 +159,9 @@ $t = new LimeTest(37);
 // @Test: flush() prints a summary of all files if failures occured
 
   // fixtures
-  $printer = LimeMock::create('LimePrinter', $t); // non-strict
-  $printer->any('printText');
-  $printer->any('printLine');
+  $printer = $t->mock('LimePrinter'); // non-strict
+  $printer->any('printText')->atLeastOnce();
+  $printer->any('printLine')->atLeastOnce();
   $printer->printBox(' Failed 2/5 test scripts, 60.00% okay. 1/5 subtests failed, 80.00% okay.', LimePrinter::NOT_OK);
   $printer->replay();
   $output = new LimeOutputConsoleSummary($printer);
@@ -191,9 +191,9 @@ $t = new LimeTest(37);
 // @Test: flush() prints a success message if everything went fine
 
   // fixtures
-  $printer = LimeMock::create('LimePrinter', $t); // non-strict
-  $printer->any('printText');
-  $printer->any('printLine');
+  $printer = $t->mock('LimePrinter'); // non-strict
+  $printer->any('printText')->atLeastOnce();
+  $printer->any('printLine')->atLeastOnce();
   $printer->printBox(' All tests successful.', LimePrinter::HAPPY);
   $printer->printBox(' Files=2, Tests=3, Time=00:01, Processes=3', LimePrinter::HAPPY);
   $printer->replay();

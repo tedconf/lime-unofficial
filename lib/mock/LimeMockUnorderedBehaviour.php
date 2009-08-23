@@ -13,12 +13,27 @@ class LimeMockUnorderedBehaviour extends LimeMockBehaviour
 {
   public function invoke(LimeMockInvocation $invocation)
   {
+    $exception = null;
+
     foreach ($this->invocations as $expectedInvocation)
     {
-      if ($expectedInvocation->matches($invocation))
+      try
       {
-        return $expectedInvocation->invoke($invocation);
+        if ($expectedInvocation->matches($invocation))
+        {
+          return $expectedInvocation->invoke($invocation);
+        }
       }
+      catch (LimeMockInvocationException $e)
+      {
+        // see whether any other expectation matches before rethrowing
+        $exception = $e;
+      }
+    }
+
+    if (!is_null($exception))
+    {
+      throw $exception;
     }
 
     parent::invoke($invocation);

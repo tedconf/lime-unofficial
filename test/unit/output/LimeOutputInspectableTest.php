@@ -77,7 +77,7 @@ $t = new LimeTest(16);
 // @Test: Method calls are forwarded to a decorated object
 
   // fixtures
-  $mock = LimeMock::create('LimeOutputInterface', $t);
+  $mock = $t->mock('LimeOutputInterface');
   $mock->focus('/test/file');
   $mock->pass('A passed test', '/test/script', 11);
   $mock->fail('A failed test', '/test/script', 11, 'The error');

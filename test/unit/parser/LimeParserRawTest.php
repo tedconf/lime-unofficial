@@ -19,7 +19,7 @@ $t = new LimeTest(11);
 // @Before
 
   $file = tempnam(sys_get_temp_dir(), 'lime');
-  $output = LimeMock::create('LimeOutputInterface', $t);
+  $output = $t->mock('LimeOutputInterface');
   $parser = new LimeParserRaw($output);
 
 

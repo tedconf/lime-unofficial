@@ -15,13 +15,13 @@ require_once dirname(__FILE__).'/../../MockLimeOutput.php';
 LimeAnnotationSupport::enable();
 
 
-$t = new LimeTest(14);
+$t = new LimeTest(17);
 
 
 // @Before
 
   $output = new MockLimeOutput();
-  $m = LimeMock::createStrict('TestClass', $output);
+  $m = LimeMock::create('TestClass', $output, array('strict' => true));
 
 
 // @After
@@ -79,10 +79,10 @@ $t = new LimeTest(14);
   $m->method2();
 
 
-// @Test: If ->setFailOnVerify() was called, ->verify() fails if methods were called in the wrong order
+// @Test: If the option "no_exceptions" is set, ->verify() fails if methods were called in the wrong order
 
   // test
-  $m->setFailOnVerify();
+  $m = LimeMock::create('TestClass', $output, array('strict' => true, 'no_exceptions' => true));
   $m->method1();
   $m->method2();
   $m->method3();
@@ -155,4 +155,27 @@ $t = new LimeTest(14);
   $t->is($output->passes, 2, 'Two tests passed');
   $t->is($output->fails, 0, 'No test failed');
 
+
+// @Test: Parameters are compared using strict comparison by default
+
+  // @Test: - Case 1: Type comparison fails
+
+  // fixture
+  $m->testMethod(1);
+  $m->replay();
+  $t->expect('LimeMockException');
+  // test
+  $m->testMethod('1');
+
+
+  // @Test: - Case 2: Type comparison passes
+
+  // test
+  $m->testMethod(1);
+  $m->replay();
+  $m->testMethod(1);
+  $m->verify();
+  // assertions
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
 

@@ -17,11 +17,7 @@ interface LimeMockBehaviourInterface
 
   public function verify();
 
-  public function setFailOnVerify();
-
   public function setExpectNothing();
-
-  public function setStrict();
 
   public function reset();
 }

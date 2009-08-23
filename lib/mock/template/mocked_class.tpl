@@ -35,13 +35,11 @@
     return $this->state;
   }
   
-  <?php if ($generate_methods): ?>
+  <?php if ($generate_controls): ?>
   public function replay() { return $this->__lime_replay(); }
   public function any($method) { return $this->__call($method, LimeMockInvocation::ANY_PARAMETERS); }
   public function reset() { return $this->state->reset(); }
   public function verify() { return $this->state->verify(); }
-  public function setStrict() { return $this->state->setStrict(); }
-  public function setFailOnVerify() { return $this->state->setFailOnVerify(); }
   public function setExpectNothing() { return $this->state->setExpectNothing(); }
   <?php endif ?>
   

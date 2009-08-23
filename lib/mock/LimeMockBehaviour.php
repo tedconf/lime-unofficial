@@ -12,25 +12,42 @@
 abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
 {
   protected
+    $options        = array(),
     $verified       = false,
     $invocations    = array(),
-    $failOnVerify   = false,
-    $expectNothing  = false,
-    $strict         = false;
+    $expectNothing  = false;
+
+  public function __construct(array $options = array())
+  {
+    $this->options = array_merge(array(
+      'strict'        =>  false,
+      'nice'          =>  false,
+      'no_exceptions' =>  false,
+    ), $options);
+  }
 
   public function expect(LimeMockExpectedInvocation $invocation)
   {
     $this->invocations[] = $invocation;
 
-    if ($this->strict)
+    if ($this->options['strict'])
     {
       $invocation->strict();
+    }
+
+    if ($this->options['nice'])
+    {
+      $invocation->any();
+    }
+    else
+    {
+      $invocation->once();
     }
   }
 
   public function invoke(LimeMockInvocation $invocation)
   {
-    if (!$this->verified && !$this->failOnVerify && ($this->expectNothing || count($this->invocations) > 0))
+    if (!$this->options['nice'] && !$this->verified && !$this->options['no_exceptions'] && ($this->expectNothing || count($this->invocations) > 0))
     {
       throw new LimeMockInvocationException($invocation, 'was not expected to be called');
     }
@@ -46,24 +63,9 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
     $this->verified = true;
   }
 
-  public function setFailOnVerify()
-  {
-    $this->failOnVerify = true;
-  }
-
   public function setExpectNothing()
   {
     $this->expectNothing = true;
-  }
-
-  public function setStrict()
-  {
-    $this->strict = true;
-
-    foreach ($this->invocations as $invocation)
-    {
-      $invocation->strict();
-    }
   }
 
   public function reset()

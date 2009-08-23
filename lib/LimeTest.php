@@ -593,6 +593,18 @@ class LimeTest
     }
   }
 
+  public function mock($class, array $options = array())
+  {
+    return LimeMock::create($class, $this->output, $options);
+  }
+
+  public function stub($class, array $options = array())
+  {
+    $options = array_merge(array('nice' =>  true), $options);
+
+    return LimeMock::create($class, new LimeOutputNone(), $options);
+  }
+
   public function expect($class, $code = null)
   {
     list ($file, $line) = LimeTrace::findCaller('LimeTest');

@@ -44,10 +44,10 @@ $t = new LimeTest(8);
 
 // @Before
 
-  $output = LimeMock::create('LimeOutputInterface', $t);
+  $output = $t->mock('LimeOutputInterface');
   $test = new TestCase(null, array('output' => $output));
   $output->reset();
-  $test->impl = LimeMock::createStrict('Test', $t);
+  $test->impl = $t->mock('Test');
 
 
 // @Test: The methods setUp() and tearDown() are called before and after each test method

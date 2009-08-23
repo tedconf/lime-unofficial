@@ -17,7 +17,7 @@ $t = new LimeTest(74);
 
 // @Before
 
-  $printer = LimeMock::createStrict('LimePrinter', $t);
+  $printer = $t->mock('LimePrinter', array('strict' => true));
   $output = new LimeOutputTap($printer);
 
 

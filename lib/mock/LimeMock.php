@@ -1,9 +1,10 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -15,12 +16,12 @@
  * This class generates configurable mock objects based on existing interfaces,
  * classes or virtual (non-existing) class names. You can use it to create
  * objects of classes that you have not implemented yet, or to substitute
- * a class in a test.
+ * an existing class in a test.
  *
  * A mock object is created with the create() method:
  *
  * <code>
- *   $mock = LimeMock::create('MyClass');
+ * $mock = LimeMock::create('MyClass');
  * </code>
  *
  * Initially the mock is in recording mode. In this mode you just make the
@@ -28,37 +29,25 @@
  * to configure return values or exceptions that should be thrown.
  *
  * <code>
- *   // method "someMethod()" returns "return value" when called with "parameter"
- *   $mock->someMethod('parameter')->returns('return value');
+ * // method "someMethod()" returns "return value" when called with "parameter"
+ * $mock->someMethod('parameter')->returns('return value');
  * </code>
  *
- * Currently the following method modifiers are supported:
- *
- *   * returns(): The value that should be returned by the method
- *   * throws():  The exception name that should be thrown by the method
- *   * times():   The number of times the method should be called. Can be
- *                combined with the other modifiers
- *
- * <code>
- *   // method "add" will be called 5 times and return 3 every time
- *   $mock->add(1, 2)->returns(3)->times(5);
- * </code>
+ * You can find the complete list of method modifiers in class
+ * LimeMockExpectedInvocation.
  *
  * Once the recording is over, you must call the method replay() on the mock.
  * After the call to this method, the mock is in replay mode. In this mode, it
  * listens for method calls and returns the results configured before.
  *
  * <code>
- *   $mock = LimeMock::create('MyClass');
- *   $mock->add(1, 2)->returns(3);
- *   $mock->replay();
+ * $mock = LimeMock::create('MyClass');
+ * $mock->add(1, 2)->returns(3);
+ * $mock->replay();
  *
- *   echo $mock->add(1, 2);
- *   // returns 3
+ * echo $mock->add(1, 2);
+ * // returns 3
  * </code>
- *
- * This functionality is perfect to substitute real classes by fake
- * implementations.
  *
  * You also have the possibility to find out whether all the configured
  * methods have been called with the right parameters while in replay mode
@@ -172,23 +161,25 @@ class LimeMock
    * @param  bool       $generateMethods   Whether magic methods should be generated
    * @return LimeMockInterface           The mock object
    */
-  public static function create($classOrInterface, $test = null, $generateMethods = true)
+  public static function create($classOrInterface, LimeOutputInterface $output, array $options = array())
   {
-    $name = self::generateClass($classOrInterface, $generateMethods);
-    $output = $test instanceof LimeOutputInterface ? $test : ($test ? $test->getOutput() : null);
+    if (array_key_exists('strict', $options) && $options['strict'])
+    {
+      $behaviour = new LimeMockOrderedBehaviour($options);
+    }
+    else
+    {
+      $behaviour = new LimeMockUnorderedBehaviour($options);
+    }
 
-    return new $name($classOrInterface, new LimeMockUnorderedBehaviour(), $output);
+    $generateControls = !array_key_exists('generate_controls', $options) || $options['generate_controls'];
+
+    $name = self::generateClass($classOrInterface, $generateControls);
+
+    return new $name($classOrInterface, $behaviour, $output);
   }
 
-  public static function createStrict($classOrInterface, $test = null, $generateMethods = true)
-  {
-    $name = self::generateClass($classOrInterface, $generateMethods);
-    $output = $test instanceof LimeOutputInterface ? $test : ($test ? $test->getOutput() : null);
-
-    return new $name($classOrInterface, new LimeMockOrderedBehaviour(), $output);
-  }
-
-  protected static function generateClass($classOrInterface, $generateMethods = true)
+  protected static function generateClass($classOrInterface, $generateControls = true)
   {
     $methods = '';
 
@@ -256,7 +247,7 @@ class LimeMock
       $declaration .= ' extends '.$class->getName();
     }
 
-    if ($generateMethods)
+    if ($generateControls)
     {
       $interfaces[] = 'LimeMockInterface';
     }
@@ -271,7 +262,7 @@ class LimeMock
     eval($template->render(array(
       'class_declaration'   =>  $declaration,
       'methods'             =>  $methods,
-      'generate_methods'    =>  $generateMethods,
+      'generate_controls'   =>  $generateControls,
     )));
 
     return $name;

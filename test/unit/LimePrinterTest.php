@@ -17,7 +17,7 @@ $t = new LimeTest(10);
 
 // @Before
 
-  $colorizer = LimeMock::create('LimeColorizer');
+  $colorizer = $t->stub('LimeColorizer');
   $printer = new LimePrinter($colorizer);
 
 
