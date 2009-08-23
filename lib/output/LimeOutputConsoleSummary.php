@@ -1,14 +1,25 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
 
+/**
+ * Colorizes test results and summarizes them in the console.
+ *
+ * For each test file, one line is printed in the console with a few optional
+ * lines in case the file contains errors or failed tests.
+ *
+ * @package    Lime
+ * @author     Bernhard Schussek <bschussek@gmail.com>
+ * @version    SVN: $Id$
+ */
 class LimeOutputConsoleSummary implements LimeOutputInterface
 {
   protected
@@ -29,6 +40,12 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     $todos          = array(),
     $line           = array();
 
+  /**
+   * Constructor.
+   *
+   * @param LimePrinter $printer  The printer for printing text to the console
+   * @param array       $options  The options of this output
+   */
   public function __construct(LimePrinter $printer, array $options = array())
   {
     $this->printer = $printer;

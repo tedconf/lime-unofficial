@@ -9,11 +9,24 @@
  * with this source code in the file LICENSE.
  */
 
+/**
+ * A behaviour that requires methods to be invoked in the same order as they
+ * were expected.
+ *
+ * @package    Lime
+ * @author     Bernhard Schussek <bschussek@gmail.com>
+ * @version    SVN: $Id$
+ * @see        LimeMockBehaviourInterface
+ */
 class LimeMockOrderedBehaviour extends LimeMockBehaviour
 {
   protected
     $cursor = 0;
 
+  /**
+   * (non-PHPdoc)
+   * @see mock/LimeMockBehaviour#invoke($invocation)
+   */
   public function invoke(LimeMockInvocation $invocation)
   {
     if (array_key_exists($this->cursor, $this->invocations))

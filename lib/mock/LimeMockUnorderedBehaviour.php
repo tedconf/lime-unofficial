@@ -1,16 +1,29 @@
 <?php
 
 /*
- * This file is part of the symfony framework.
+ * This file is part of the Lime test framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * (c) Bernhard Schussek <bschussek@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
 
+/**
+ * A behaviour that allows methods to be invoked in the any order.
+ *
+ * @package    Lime
+ * @author     Bernhard Schussek <bschussek@gmail.com>
+ * @version    SVN: $Id$
+ * @see        LimeMockBehaviourInterface
+ */
 class LimeMockUnorderedBehaviour extends LimeMockBehaviour
 {
+  /**
+   * (non-PHPdoc)
+   * @see mock/LimeMockBehaviour#invoke($invocation)
+   */
   public function invoke(LimeMockInvocation $invocation)
   {
     $exception = null;
