@@ -26,7 +26,7 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
     ), $options);
   }
 
-  public function expect(LimeMockExpectedInvocation $invocation)
+  public function expect(LimeMockInvocationExpectation $invocation)
   {
     $this->invocations[] = $invocation;
 

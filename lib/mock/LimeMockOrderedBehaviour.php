@@ -18,13 +18,13 @@ class LimeMockOrderedBehaviour extends LimeMockBehaviour
   {
     if (array_key_exists($this->cursor, $this->invocations))
     {
-      $expectedInvocation = $this->invocations[$this->cursor];
+      $invocationExpectation = $this->invocations[$this->cursor];
 
-      if ($expectedInvocation->matches($invocation) && $expectedInvocation->isInvokable())
+      if ($invocationExpectation->matches($invocation) && $invocationExpectation->isInvokable())
       {
-        return $expectedInvocation->invoke($invocation);
+        return $invocationExpectation->invoke($invocation);
       }
-      else if ($expectedInvocation->isSatisfied())
+      else if ($invocationExpectation->isSatisfied())
       {
         $this->cursor++;
 

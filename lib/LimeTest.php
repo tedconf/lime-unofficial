@@ -25,8 +25,7 @@ class LimeTest
     $expectedException    = null,
     $expectedCode         = null,
     $actualException      = null,
-    $actualCode           = null,
-    $expectedExceptionAt  = null;
+    $actualCode           = null;
 
   public function __construct($plan = null, array $options = array())
   {
@@ -614,11 +613,11 @@ class LimeTest
 
     if ($class instanceof Exception)
     {
-      $this->expectedException = new LimeExpectedException(get_class($class), $class->getCode(), $file, $line);
+      $this->expectedException = new LimeExceptionExpectation(get_class($class), $class->getCode(), $file, $line);
     }
     else
     {
-      $this->expectedException = new LimeExpectedException($class, $code, $file, $line);
+      $this->expectedException = new LimeExceptionExpectation($class, $code, $file, $line);
     }
 
     $this->actualException = null;
@@ -663,7 +662,7 @@ class LimeTest
     if (!is_null($this->expectedException))
     {
       $expected = $this->expectedException;
-      $actual = LimeExpectedException::create($this->actualException);
+      $actual = LimeExceptionExpectation::create($this->actualException);
 
       if (is_null($expected->getCode()))
       {

@@ -11,7 +11,7 @@
 
 interface LimeMockBehaviourInterface
 {
-  public function expect(LimeMockExpectedInvocation $invocation);
+  public function expect(LimeMockInvocationExpectation $invocation);
 
   public function invoke(LimeMockInvocation $invocation);
 

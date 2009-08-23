@@ -1,6 +1,6 @@
 <?php
 
-class LimeExpectedException
+class LimeExceptionExpectation
 {
   private
     $class = null,
@@ -28,7 +28,7 @@ class LimeExpectedException
     $this->line = $line;
   }
 
-  public function equals(LimeExpectedException $e)
+  public function equals(LimeExceptionExpectation $e)
   {
     return $this->class == $e->class && $this->code == $e->code;
   }

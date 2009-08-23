@@ -34,7 +34,7 @@
  * </code>
  *
  * You can find the complete list of method modifiers in class
- * LimeMockExpectedInvocation.
+ * LimeMockInvocationExpectation.
  *
  * Once the recording is over, you must call the method replay() on the mock.
  * After the call to this method, the mock is in replay mode. In this mode, it

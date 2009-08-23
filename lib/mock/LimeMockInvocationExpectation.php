@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeMockExpectedInvocation
+class LimeMockInvocationExpectation
 {
   const
     COUNT_MATCHER     = 0,
