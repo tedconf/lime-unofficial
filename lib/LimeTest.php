@@ -67,6 +67,9 @@ class LimeTest
     }
 
     set_error_handler(array($this, 'handleError'));
+
+    // make sure that exceptions that are not caught by the test runner are
+    // caught and formatted in an appropriate way
     set_exception_handler(array($this, 'handleException'));
   }
 

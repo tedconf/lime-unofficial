@@ -22,9 +22,8 @@ class LimeTestCase extends LimeTest
     $this->testRunner->addBefore(array($this, 'setUp'));
     $this->testRunner->addAfter(array($this, 'tearDown'));
 
-    // attention: the following three lines are not tested
+    // attention: the following lines are not tested
     $this->testRunner->addExceptionHandler(array($this, 'handleException'));
-    $this->testRunner->addErrorHandler(array($this, 'handleError'));
     $this->testRunner->addAfter(array($this, 'verifyException'));
 
     foreach (get_class_methods($this) as $method)

@@ -171,7 +171,6 @@ class LimeAnnotationSupport
     if ($this->test instanceof LimeTest)
     {
       $testRunner->addExceptionHandler(array($this->test, 'handleException'));
-      $testRunner->addErrorHandler(array($this->test, 'handleError'));
       $testRunner->addAfter(array($this->test, 'verifyException'));
     }
 

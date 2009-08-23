@@ -26,16 +26,16 @@ class TestCase
     $this->methodCalls->addActual($method);
   }
 
-  public function handleErrorSuccessful(Exception $error)
+  public function handleExceptionSuccessful(Exception $error)
   {
-    $this->methodCalls->addActual('handleErrorSuccessful');
+    $this->methodCalls->addActual('handleExceptionSuccessful');
 
     return true;
   }
 
-  public function handleErrorFailed(Exception $error)
+  public function handleExceptionFailed(Exception $error)
   {
-    $this->methodCalls->addActual('handleErrorFailed');
+    $this->methodCalls->addActual('handleExceptionFailed');
 
     return false;
   }
@@ -52,7 +52,7 @@ class TestCase
 }
 
 
-$t = new LimeTest(23);
+$t = new LimeTest(21);
 
 
 $t->diag('The test comments are printed');
@@ -146,56 +146,17 @@ $t->diag('The after-all callbacks are called before the whole test suite');
   $mock->verify();
 
 
-$t->diag('The error handlers are called when a test throws an error');
-
-  // fixtures
-  function throwError() { 1/0; }
-  $mock = $t->mock('Mock', array('strict' => true));
-  $r = new LimeTestRunner();
-  $r->addTest('throwError');
-  $r->addErrorHandler(array($mock, 'handleErrorFailed'));
-  $r->addErrorHandler(array($mock, 'handleErrorSuccessful'));
-  $mock->any('handleErrorFailed')->returns(false);
-  $mock->any('handleErrorSuccessful')->returns(true);
-  $mock->replay();
-  // test
-  $r->run();
-  // assertions
-  $mock->verify();
-
-
-/*
-$t->diag('If no error handler returns true, the error is thrown as LimeError exception');
-
-  // fixtures
-  $test = new TestCase($t);
-  $r = new LimeTestRunner();
-  $r->addTest(array($test, 'testThrowsError'));
-  $r->addExceptionHandler(array($test, 'handleErrorFailed'));
-  // test
-  try
-  {
-    $r->run();
-    $t->fail('A "LimeError" was thrown');
-  }
-  catch (LimeError $e)
-  {
-    $t->pass('A "LimeError" was thrown');
-  }
-*/
-
-
 $t->diag('The exception handlers are called when a test throws an exception');
 
   // fixtures
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
   $r->addTest(array($mock, 'testThrowsException'));
-  $r->addExceptionHandler(array($mock, 'handleErrorFailed'));
-  $r->addExceptionHandler(array($mock, 'handleErrorSuccessful'));
+  $r->addExceptionHandler(array($mock, 'handleExceptionFailed'));
+  $r->addExceptionHandler(array($mock, 'handleExceptionSuccessful'));
   $mock->testThrowsException()->throws('Exception');
-  $mock->any('handleErrorFailed')->returns(false);
-  $mock->any('handleErrorSuccessful')->returns(true);
+  $mock->any('handleExceptionFailed')->returns(false);
+  $mock->any('handleExceptionSuccessful')->returns(true);
   $mock->replay();
   // test
   $r->run();
@@ -209,9 +170,9 @@ $t->diag('If no exception handler returns true, the exception is thrown again');
   $mock = $t->mock('Mock', array('strict' => true));
   $r = new LimeTestRunner();
   $r->addTest(array($mock, 'testThrowsException'));
-  $r->addExceptionHandler(array($mock, 'handleErrorFailed'));
+  $r->addExceptionHandler(array($mock, 'handleExceptionFailed'));
   $mock->testThrowsException()->throws('Exception');
-  $mock->any('handleErrorFailed')->returns(false);
+  $mock->any('handleExceptionFailed')->returns(false);
   $mock->replay();
   // test
   $t->expect('Exception');
