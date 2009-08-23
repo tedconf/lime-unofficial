@@ -21,8 +21,11 @@
  * A mock object is created with the create() method:
  *
  * <code>
- * $mock = LimeMock::create('MyClass');
+ * $mock = LimeMock::create('MyClass', $output);
  * </code>
+ *
+ * Note: The LimeTest class offers an easy access to preconfigured mocks and
+ * stubs using the methods mock() and stub().
  *
  * Initially the mock is in recording mode. In this mode you just make the
  * expected method calls with the expected parameters. You can use modifiers
@@ -34,14 +37,16 @@
  * </code>
  *
  * You can find the complete list of method modifiers in class
- * LimeMockInvocationExpectation.
+ * LimeMockInvocationExpectation. By default, expected methods are initialized
+ * with the modifier once(). If the option "nice" is set, the method is
+ * initialized with the modifier any() instead.
  *
  * Once the recording is over, you must call the method replay() on the mock.
  * After the call to this method, the mock is in replay mode. In this mode, it
  * listens for method calls and returns the results configured before.
  *
  * <code>
- * $mock = LimeMock::create('MyClass');
+ * $mock = LimeMock::create('MyClass', $output);
  * $mock->add(1, 2)->returns(3);
  * $mock->replay();
  *
@@ -51,127 +56,87 @@
  *
  * You also have the possibility to find out whether all the configured
  * methods have been called with the right parameters while in replay mode
- * by calling verify(). This method requires a LimeTest object to store
- * the results of the tests. The LimeTest object must be passed to create()
- * when creating the new mock.
+ * by calling verify().
  *
  * <code>
- *   $mock = LimeMock::create('MyClass', $limeTest);
- *   $mock->add(1,2);
- *   $mock->reply();
- *   $mock->add(1);
- *   $mock->verify();
+ * $mock = LimeMock::create('MyClass', $output);
+ * $mock->add(1,2);
+ * $mock->replay();
+ * $mock->add(1);
+ * $mock->verify();
  *
- *   // results in a failing test
+ * // results in a failing test
  * </code>
  *
- * Usually, configured and actual method parameters are compared with PHP's
- * usual weak typing. If you want to enforce strict typing, you must call
- * the method setStrict() on the mock.
+ * The method create() accepts several options to configure the created mock:
  *
- * <code>
- *   $mock = LimeMock::create('MyClass', $limeTest);
- *   $mock->setStrict();
- *   $mock->doSomething(1);
- *   $mock->replay();
- *   $mock->doSomething('1');
- *   $mock->verify();
+ *    * strict:             If set to TRUE, the mock expects methods to be
+ *                          called in the same order in which they were recorded.
+ *                          Additionally, method parameters will be compared
+ *                          with strict typing. Default: FALSE
+ *    * nice:               If set to TRUE, the mock will ignore unexpected
+ *                          method calls. Mocked methods will be initialized
+ *                          with the modifier any(). Default: FALSE
+ *    * generate_controls:  If set to FALSE, the mock's control methods
+ *                          replay(), verify() etc. will not be generated.
+ *                          Setting this option is useful when the mocked
+ *                          class contains any of these methods. You then have
+ *                          to access the control methods statically in this
+ *                          class, f.i. LimeMock::replay($mock);
+ *                          Default: TRUE
+ *    * no_exceptions:      If set to TRUE, throwing of exceptions is
+ *                          suppressed when unexpected methods are called.
+ *                          The methods will be reported as errors when
+ *                          verify() is called. Default: FALSE
  *
- *   // results in a failing test
- * </code>
- *
- * If an unexpected method is called, you usually find that out in the call
- * to verify() that compares all expected method calls with actual method calls.
- * If you want to debug were a certain unexpected method call comes from, you
- * should call setFailOnVerify() on the mock. In this mode an exception is
- * thrown once an unconfigured method is called while in replay mode.
- *
- * As for verify(), setFailOnVerify() requires a LimeTest instance to be
- * present.
- *
- * <code>
- *   $mock = LimeMock::create('MyClass', $limeTest);
- *   $mock->doSomething();
- *   $mock->replay();
- *   $mock->doSomethingElse(); // throws a lime_expectation_exception
- * </code>
- *
- * As you have seen, mock objects offer a few methods that cannot be mocked
- * by default. Those are:
- *
- *   * verify()
- *   * replay()
- *   * setStrict()
- *   * setFailOnVerify()
- *
- * If you need to mock any of these methods, you need to set the third
- * parameter $generateMethods to false when calling create(). Instead of calling
- * these methods on the mock, you will need to call them statically in LimeMock
- * and need to pass the mock as first argument.
- *
- * <code>
- *   $mock = LimeMock::create('MyClass', $limeTest, false);
- *   $mock->replay()->returns('Response of replay()');
- *   LimeMock::replay($mock);
- *
- *   echo $mock->replay();
- *   // echos "Response of replay()"
- * </code>
- *
- * @package    lime
+ * @package    Lime
  * @author     Bernhard Schussek <bschussek@gmail.com>
  * @version    SVN: $Id$
- *
+ * @see        LimeMockInvocationMatcherInterface
  */
 class LimeMock
 {
+  protected static
+    $methodTemplate               = '%s function %s(%s) { $args = func_get_args(); return $this->__call(\'%s\', $args); }',
+    $parameterTemplate            = '%s %s',
+    $parameterWithDefaultTemplate = '%s %s = %s',
 
-  /**
-   * A template for overridden abstract methods in base classes/interfaces.
-   * @var string
-   */
-  protected static $methodTemplate = '%s function %s(%s) { $args = func_get_args(); return $this->__call(\'%s\', $args); }';
+    $illegalMethods = array(
+      '__construct',
+      '__call',
+      '__lime_replay',
+      '__lime_getState',
+    ),
 
-  protected static $parameterTemplate = '%s %s';
-
-  protected static $parameterWithDefaultTemplate = '%s %s = %s';
-
-  protected static $illegalMethods = array(
-    '__construct',
-    '__call',
-    '__lime_replay',
-    '__lime_getState',
-  );
-
-  protected static $controlMethods = array(
-    'replay',
-    'any',
-    'reset',
-    'verify',
-    'setExpectNothing',
-  );
+    $controlMethods = array(
+      'replay',
+      'any',
+      'reset',
+      'verify',
+      'setExpectNothing',
+    );
 
   /**
    * Creates a new mock object for the given class or interface name.
    *
-   * The class/interface does not necessarily have to exist. Each mock object
-   * generated with LimeMock::create($class) fulfills the condition
-   * ($mock instanceof $class).
+   * The class/interface does not necessarily have to exist. Every generated
+   * object fulfills the condition ($mock instanceof $class).
    *
-   * If you want to verify this object, you need to pass a LimeTest instance
-   * as well. Use the third parameter $generateMethods to suppress the generation
-   * of the magic methods replay(), verify() etc. See the description of this
-   * class for more information.
-   *
-   * @param  string     $classOrInterface  The (non-)existing class/interface
-   *                                       you want to mock
-   * @param  LimeTest  $test              The test instance
-   * @param  bool       $generateMethods   Whether magic methods should be generated
-   * @return LimeMockInterface           The mock object
+   * @param  string $classOrInterface     The (non-)existing class/interface
+   *                                      you want to mock
+   * @param  LimeOutputInterface $output  The output for displaying the test results
+   * @param  array $options               Generation options. See the class
+   *                                      description for more information.
+   * @return LimeMockInterface            The mock object
    */
   public static function create($classOrInterface, LimeOutputInterface $output, array $options = array())
   {
-    if (array_key_exists('strict', $options) && $options['strict'])
+    $options = array_merge(array(
+      'strict'              =>  false,
+      'generate_controls'   =>  true,
+    ), $options);
+
+    if ($options['strict'])
     {
       $behaviour = new LimeMockOrderedBehaviour($options);
     }
@@ -180,13 +145,19 @@ class LimeMock
       $behaviour = new LimeMockUnorderedBehaviour($options);
     }
 
-    $generateControls = !array_key_exists('generate_controls', $options) || $options['generate_controls'];
-
-    $name = self::generateClass($classOrInterface, $generateControls);
+    $name = self::generateClass($classOrInterface, $options['generate_controls']);
 
     return new $name($classOrInterface, $behaviour, $output);
   }
 
+  /**
+   * Generates a mock class for the given class/interface name and returns
+   * the generated class name.
+   *
+   * @param  string  $classOrInterface  The mocked class/interface name
+   * @param  boolean $generateControls  Whether control methods should be generated.
+   * @return string                     The generated class name
+   */
   protected static function generateClass($classOrInterface, $generateControls = true)
   {
     $methods = '';
@@ -280,6 +251,7 @@ class LimeMock
 
   /**
    * Generates a mock class name for the given original class/interface name.
+   *
    * @param  string $originalName
    * @return string
    */
@@ -296,18 +268,36 @@ class LimeMock
 
   /**
    * Turns the given mock into replay mode.
-   * @param  $mock
+   *
+   * @param LimeMockInterface $mock
    */
   public static function replay(LimeMockInterface $mock)
   {
     return $mock->__lime_replay();
   }
 
+  /**
+   * Resets the given mock.
+   *
+   * All expected invocations are removed, the mock is set to record mode again.
+   *
+   * @param LimeMockInterface $mock
+   */
   public static function reset(LimeMockInterface $mock)
   {
-    return $mock->__lime_getState()->reset();
+    return $mock->__lime_reset();
   }
 
+  /**
+   * Expects the given method on the given mock to be called with any parameters.
+   *
+   * The LimeMockInvocationExpectation object is returned and allows you to
+   * set further modifiers on the method expectation.
+   *
+   * @param  LimeMockInterface $mock
+   * @param  string            $methodName
+   * @return LimeMockInvocationExpectation
+   */
   public static function any(LimeMockInterface $mock, $methodName)
   {
     return $mock->__call($methodName, LimeMockInvocation::ANY_PARAMETERS);
@@ -315,6 +305,8 @@ class LimeMock
 
   /**
    * Configures the mock to expect no method call.
+   *
+   * @param  LimeMockInterface $mock
    */
   public static function setExpectNothing(LimeMockInterface $mock)
   {
@@ -324,13 +316,12 @@ class LimeMock
   /**
    * Verifies the given mock.
    *
-   * @param $mock  The mock object
+   * @param  LimeMockInterface $mock
    */
   public static function verify(LimeMockInterface $mock)
   {
     return $mock->__lime_getState()->verify();
   }
-
 }
 
 

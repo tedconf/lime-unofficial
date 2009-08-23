@@ -82,7 +82,7 @@ class TestCallbackClass
 }
 
 
-$t = new LimeTest(90);
+$t = new LimeTest(92);
 
 
 // @Before
@@ -279,10 +279,25 @@ $t = new LimeTest(90);
   $t->is($output->fails, 0, 'No test failed');
 
 
-// @Test: A mock can be reset
+// @Test: A mock can be reset in record mode
 
   // test
   $m->someOtherMethod();
+  $m->reset();
+  $m->testMethod();
+  $m->replay();
+  $m->testMethod();
+  $m->verify();
+  // assertions
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
+
+
+// @Test: A mock can be reset in replay mode
+
+  // test
+  $m->someOtherMethod();
+  $m->replay();
   $m->reset();
   $m->testMethod();
   $m->replay();

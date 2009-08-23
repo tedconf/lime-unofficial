@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeMockReplayState
+class LimeMockReplayState implements LimeMockStateInterface
 {
   protected
     $behaviour = null;
@@ -19,7 +19,7 @@ class LimeMockReplayState
     $this->behaviour = $behaviour;
   }
 
-  public function invoke($class, $method, array $parameters)
+  public function invoke($class, $method, $parameters = LimeMockInvocation::ANY_PARAMETERS)
   {
     return $this->behaviour->invoke(new LimeMockInvocation($class, $method, $parameters));
   }
@@ -30,26 +30,6 @@ class LimeMockReplayState
   public function setExpectNothing()
   {
     throw new BadMethodCallException('setExpectNothing() must be called before replay()');
-  }
-
-  public function setFailOnVerify()
-  {
-    throw new BadMethodCallException('setFailOnVerify() must be called before replay()');
-  }
-
-  public function setStrict()
-  {
-    throw new BadMethodCallException('setStrict() must be called before replay()');
-  }
-
-  public function replay()
-  {
-    throw new BadMethodCallException('replay() is not supported');
-  }
-
-  public function reset()
-  {
-    throw new BadMethodCallException('reset() must be called before replay()');
   }
 
   public function verify()

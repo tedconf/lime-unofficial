@@ -3,13 +3,16 @@
   private
     $class      = null,
     $state      = null,
+    $output     = null,
     $behaviour  = null;
   
-  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output = null)
+  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output)
   {
     $this->class = $class;
     $this->behaviour = $behaviour;
-    $this->state = new LimeMockRecordState($this->behaviour, $output);
+    $this->output = $output;
+    
+    $this->__lime_reset();
   }
   
   public function __call($method, $parameters)
@@ -28,6 +31,16 @@
   public function __lime_replay()
   {
     $this->state = new LimeMockReplayState($this->behaviour);
+  }
+  
+  public function __lime_reset()
+  {
+    $this->behaviour->reset();
+    
+    if (!$this->state instanceof LimeMockRecordState)
+    {
+      $this->state = new LimeMockRecordState($this->behaviour, $this->output);
+    }
   }
   
   public function __lime_getState()

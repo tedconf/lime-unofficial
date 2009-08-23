@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeMockRecordState
+class LimeMockRecordState implements LimeMockStateInterface
 {
   protected
     $behaviour = null,
     $output = null;
 
-  public function __construct(LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output = null)
+  public function __construct(LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output)
   {
     $this->behaviour = $behaviour;
     $this->output = $output;
@@ -37,26 +37,6 @@ class LimeMockRecordState
   public function setExpectNothing()
   {
     return $this->behaviour->setExpectNothing();
-  }
-
-  public function setFailOnVerify()
-  {
-    return $this->behaviour->setFailOnVerify();
-  }
-
-  public function setStrict()
-  {
-    return $this->behaviour->setStrict();
-  }
-
-  public function replay()
-  {
-    throw new BadMethodCallException('replay() is not supported');
-  }
-
-  public function reset()
-  {
-    return $this->behaviour->reset();
   }
 
   public function verify()
