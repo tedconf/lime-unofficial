@@ -64,7 +64,7 @@ class lime_test extends LimeTest
 
   public function error($message)
   {
-    list($file, $line) = LimeTrace::findCaller('lime');
+    list($file, $line) = LimeTrace::findCaller('lime_test');
 
     $this->output->error(new LimeError($message, $file, $line));
   }
