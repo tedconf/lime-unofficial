@@ -301,7 +301,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     {
       $time = max(1, time() - $this->startTime);
       $stats = sprintf(' Files=%d, Tests=%d, Time=%02d:%02d, Processes=%d',
-          $this->actualFiles, $this->actualTests, round($time/60), $time%60, $this->options['processes']);
+          $this->actualFiles, $this->actualTests, floor($time/60), $time%60, $this->options['processes']);
 
       $this->printer->printBox(' All tests successful.', LimePrinter::HAPPY);
       $this->printer->printBox($stats, LimePrinter::HAPPY);
