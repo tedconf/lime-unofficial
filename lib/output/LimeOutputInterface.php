@@ -113,9 +113,9 @@ interface LimeOutputInterface
   /**
    * Informs the output about an error.
    *
-   * @param Exception $exception  The exception that occurred
+   * @param LimeError $error  The error that occurred
    */
-  public function error(Exception $exception);
+  public function error(LimeError $error);
 
   /**
    * Informs the output about a comment.

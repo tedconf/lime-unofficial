@@ -147,20 +147,20 @@ class LimeOutputTap implements LimeOutputInterface
     $this->printer->printLargeBox($message, LimePrinter::WARNING);
   }
 
-  public function error(Exception $exception)
+  public function error(LimeError $error)
   {
     $this->errors++;
 
-    $message = sprintf("%s: %s\n(in %s on line %s)", get_class($exception),
-        $exception->getMessage(), $this->stripBaseDir($exception->getFile()), $exception->getLine());
+    $message = sprintf("%s: %s\n(in %s on line %s)", get_class($error),
+        $error->getMessage(), $this->stripBaseDir($error->getFile()), $error->getLine());
 
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
 
     $this->printer->printLine('Exception trace:', LimePrinter::COMMENT);
 
-    $this->printTrace(null, $exception->getFile(), $exception->getLine());
+    $this->printTrace(null, $error->getFile(), $error->getLine());
 
-    foreach ($exception->getTrace() as $trace)
+    foreach ($error->getTrace() as $trace)
     {
       // hide the part of the trace that is responsible for getting the
       // annotations to work

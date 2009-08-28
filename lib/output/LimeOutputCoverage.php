@@ -40,7 +40,7 @@ class LimeOutputCoverage implements LimeOutputInterface
 
   public function warning($message, $file, $line) {}
 
-  public function error(Exception $exception) {}
+  public function error(LimeError $error) {}
 
   public function comment($message) {}
 }

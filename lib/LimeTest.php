@@ -654,7 +654,7 @@ class LimeTest
     }
     else
     {
-      $this->output->error($exception);
+      $this->output->error(LimeError::fromException($exception));
     }
 
     return true;

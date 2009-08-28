@@ -44,10 +44,10 @@ $t = new LimeTest(11);
 // @Test: The call to error() is passed
 
   // fixtures
-  $output->error(new Exception("An exception"));
+  $output->error(new LimeError("An error", "/test/file", 11));
   $output->replay();
   // test
-  $parser->parse(serialize(array("error", array(new Exception("An exception"))))."\n");
+  $parser->parse(serialize(array("error", array(new LimeError("An error", "/test/file", 11))))."\n");
   // assertions
   $output->verify();
 
@@ -117,7 +117,7 @@ $t = new LimeTest(11);
   // @Test: Case 1 - Invalid identifier
 
   // fixtures
-  $output->error(new LimeError("Parse error: syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1));
+  $output->error(new LimeError("syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1, 'Parse error'));
   $output->replay();
   file_put_contents($file, '<?php $1invalidname;');
   $command = new LimeShellCommand($file);
@@ -132,7 +132,7 @@ $t = new LimeTest(11);
 
   // fixtures
   $output->warning("Warning: require(foobar.php): failed to open stream: No such file or directory", $file, 1);
-  $output->error(new LimeError("Fatal error: require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1));
+  $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   file_put_contents($file, '<?php require "foobar.php";');
   $command = new LimeShellCommand($file);

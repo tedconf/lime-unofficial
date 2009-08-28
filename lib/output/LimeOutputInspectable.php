@@ -113,11 +113,11 @@ class LimeOutputInspectable implements LimeOutputInterface
     $this->output->warning($message, $file, $line);
   }
 
-  public function error(Exception $exception)
+  public function error(LimeError $error)
   {
     $this->errors++;
-    $this->failedFiles[] = $exception->getFile();
-    $this->output->error($exception);
+    $this->failedFiles[] = $error->getFile();
+    $this->output->error($error);
   }
 
   public function comment($message)

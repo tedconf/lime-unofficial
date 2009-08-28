@@ -124,9 +124,9 @@ class LimeOutputArray implements LimeOutputInterface
 
   /**
    * (non-PHPdoc)
-   * @see output/LimeOutputInterface#error($exception)
+   * @see output/LimeOutputInterface#error($error)
    */
-  public function error(Exception $exception)
+  public function error(LimeError $error)
   {
   }
 
