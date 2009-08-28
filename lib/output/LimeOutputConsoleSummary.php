@@ -292,8 +292,8 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     if ($this->failedFiles > 0)
     {
       $stats = sprintf(' Failed %d/%d test scripts, %.2f%% okay. %d/%d subtests failed, %.2f%% okay.',
-          $this->failedFiles, $this->actualFiles, 100 - 100*$this->failedFiles/$this->actualFiles,
-          $this->failedTests, $this->actualTests, 100 - 100*$this->failedTests/$this->actualTests);
+          $this->failedFiles, $this->actualFiles, 100 - 100*$this->failedFiles/max(1,$this->actualFiles),
+          $this->failedTests, $this->actualTests, 100 - 100*$this->failedTests/max(1,$this->actualTests));
 
       $this->printer->printBox($stats, LimePrinter::NOT_OK);
     }
