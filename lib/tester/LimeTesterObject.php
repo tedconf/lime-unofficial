@@ -79,7 +79,13 @@ class LimeTesterObject extends LimeTesterArray
 
       self::$equal[] = array($this->value, $expected->value);
 
-      parent::assertEquals($expected);
+      // don't compare objects if they are identical
+      // this helps to avoid the error "maximum function nesting level reached"
+      // CAUTION: this conditional clause is not tested
+      if (!$expected instanceof self || $this->object !== $expected->object)
+      {
+        parent::assertEquals($expected);
+      }
     }
   }
 
@@ -98,17 +104,15 @@ class LimeTesterObject extends LimeTesterArray
 
   public function assertSame(LimeTesterInterface $expected)
   {
-    if (!$expected instanceof LimeTesterObject || $this->object !== $expected->object)
+    if (!$expected instanceof self || $this->object !== $expected->object)
     {
       throw new LimeAssertionFailedException($this, $expected);
     }
-
-    parent::assertSame($expected);
   }
 
   public function assertNotSame(LimeTesterInterface $expected)
   {
-    if ($expected instanceof LimeTesterObject && $this->object === $expected->object)
+    if ($expected instanceof self && $this->object === $expected->object)
     {
       throw new LimeAssertionFailedException($this, $expected);
     }
