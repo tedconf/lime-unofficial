@@ -628,22 +628,22 @@ class LimeTest
 
   public function handleError($code, $message, $file, $line, $context)
   {
-    if ($this->errorReporting)
+    if (!$this->errorReporting || ($code & error_reporting()) == 0)
     {
-      switch ($code)
-      {
-        case E_WARNING:
-          $message = 'Warning: '.$message;
-          break;
-        case E_NOTICE:
-          $message = 'Notice: '.$message;
-          break;
-      }
-
-      $this->output->warning($message, $file, $line);
+      return false;
     }
 
-    return true;
+    switch ($code)
+    {
+      case E_WARNING:
+        $message = 'Warning: '.$message;
+        break;
+      case E_NOTICE:
+        $message = 'Notice: '.$message;
+        break;
+    }
+
+    $this->output->warning($message, $file, $line);
   }
 
   public function handleException(Exception $exception)
