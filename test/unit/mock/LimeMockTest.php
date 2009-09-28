@@ -29,6 +29,11 @@ interface TestInterfaceWithDefaultValues
   public function testMethod($null = null, $int = 1, $bool = true, $string = 'String', $float = 1.1);
 }
 
+interface TestInterfaceWithReferenceParameters
+{
+  public function testMethod(&$parameter);
+}
+
 abstract class TestClassAbstract
 {
   abstract public function testMethod($parameter);
@@ -82,7 +87,7 @@ class TestCallbackClass
 }
 
 
-$t = new LimeTest(92);
+$t = new LimeTest(93);
 
 
 // @Before
@@ -137,6 +142,14 @@ $t = new LimeTest(92);
   $m = LimeMock::create('TestInterfaceWithTypeHints', $output);
   // assertions
   $t->ok($m instanceof TestInterfaceWithTypeHints, 'The mock implements the interface');
+
+
+// @Test: Methods with reference parameters can be mocked
+
+  // test
+  $m = LimeMock::create('TestInterfaceWithReferenceParameters', $output);
+  // assertions
+  $t->ok($m instanceof TestInterfaceWithReferenceParameters, 'The mock implements the interface');
 
 
 // @Test: Methods with default values can be mocked

@@ -196,6 +196,11 @@ class LimeMock
 
           $name = '$'.$parameter->getName();
 
+          if ($parameter->isPassedByReference())
+          {
+            $name = '&'.$name;
+          }
+
           if ($parameter->isOptional())
           {
             $default = var_export($parameter->getDefaultValue(), true);
