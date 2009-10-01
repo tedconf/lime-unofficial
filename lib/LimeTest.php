@@ -35,6 +35,7 @@ class LimeTest
       'force_colors' => false,
       'verbose'      => false,
       'serialize'    => false,
+      'coverage'     => false,
     );
 
     foreach (LimeShell::parseArguments($GLOBALS['argv']) as $argument => $value)
@@ -48,7 +49,11 @@ class LimeTest
 
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
-    if (is_string($this->options['output']))
+    if ($this->options['coverage'])
+    {
+      $this->output = new LimeOutputCoverage();
+    }
+    elseif (is_string($this->options['output']))
     {
       $factory = new LimeOutputFactory($this->options);
 

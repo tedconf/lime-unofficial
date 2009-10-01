@@ -13,7 +13,7 @@ class LimeShellCommand
   {
     foreach ($arguments as $argument => $value)
     {
-      $arguments[$argument] = '--'.escapeshellarg($argument);
+      $arguments[$argument] = '--'.$argument;
 
       if ($value !== true)
       {

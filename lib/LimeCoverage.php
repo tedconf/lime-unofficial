@@ -86,13 +86,13 @@ class LimeCoverage extends LimeRegistration
 
     foreach ($files as $file)
     {
-      $command = new LimeShellCommand($file, array('--coverage'));
+      $command = new LimeShellCommand($file, array('coverage' => true));
       $command->execute();
 
       // script failed
       if ($command->getStatus() != LimeShell::SUCCESS)
       {
-        $this->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $return), LimeOutput::ERROR);
+        $this->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $command->getStatus()), LimeOutput::ERROR);
       }
 
       // script succeeded, coverage not readable
