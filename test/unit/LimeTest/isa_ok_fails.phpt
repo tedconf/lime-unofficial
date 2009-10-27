@@ -7,7 +7,7 @@ class Test {}
 $t->isa(new Test(), 'Foo');
 ?>
 --EXPECTF--
-/test/unit/LimeTest/setup.php
+# /test/unit/LimeTest/setup.php
 not ok 1
 #     Failed test (%s/isa_ok_fails.php at line 4)
 #       variable isn't a 'Foo' it's a 'Test'

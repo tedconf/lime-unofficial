@@ -6,7 +6,7 @@ require_once(dirname(__FILE__).'/setup.php');
 $t->fail();
 ?>
 --EXPECTF--
-/test/unit/LimeTest/setup.php
+# /test/unit/LimeTest/setup.php
 not ok 1
 #     Failed test (%s/fail.php at line 3)
 1..1

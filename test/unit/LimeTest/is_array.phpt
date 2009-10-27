@@ -6,7 +6,7 @@ require_once(dirname(__FILE__).'/setup.php');
 $t->is(array(0 => 1), array(0 => 2));
 ?>
 --EXPECTF--
-/test/unit/LimeTest/setup.php
+# /test/unit/LimeTest/setup.php
 not ok 1
 #     Failed test (%s/is_array.php at line 3)
 #            got: array (

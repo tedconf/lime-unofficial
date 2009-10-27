@@ -6,7 +6,7 @@ require_once(dirname(__FILE__).'/setup.php');
 $t->todo('test name');
 ?>
 --EXPECT--
-/test/unit/LimeTest/setup.php
-skip 1 - TODO test name
+# /test/unit/LimeTest/setup.php
+not ok 1 - test name # TODO
 1..1
  Looks like everything went fine.

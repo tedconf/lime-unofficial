@@ -6,7 +6,7 @@ require_once(dirname(__FILE__).'/setup.php');
 $t->unlike('test01', '/test\d+/');
 ?>
 --EXPECTF--
-/test/unit/LimeTest/setup.php
+# /test/unit/LimeTest/setup.php
 not ok 1
 #     Failed test (%s/unlike_fails.php at line 3)
 #                'test01'
