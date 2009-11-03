@@ -158,7 +158,7 @@ class LimeMock
   {
     $methods = '';
 
-    if (!class_exists($classOrInterface) && !interface_exists($classOrInterface))
+    if (!class_exists($classOrInterface, false) && !interface_exists($classOrInterface, false))
     {
       eval(sprintf('interface %s {}', $classOrInterface));
     }

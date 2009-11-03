@@ -86,8 +86,20 @@ class TestCallbackClass
   }
 }
 
+class TestAutoloader
+{
+  public static $calls = null;
 
-$t = new LimeTest(93);
+  public static function autoload($class)
+  {
+    ++self::$calls;
+  }
+}
+
+spl_autoload_register(array('TestAutoloader', 'autoload'));
+
+
+$t = new LimeTest(94);
 
 
 // @Before
@@ -158,6 +170,16 @@ $t = new LimeTest(93);
   $m = LimeMock::create('TestInterfaceWithDefaultValues', $output);
   // assertions
   $t->ok($m instanceof TestInterfaceWithDefaultValues, 'The mock implements the interface');
+
+
+// @Test: Mocking of classes does not trigger autoloading
+
+  // fixtures
+  TestAutoloader::$calls = 0;
+  // test
+  $m = LimeMock::create('Foobar', $output);
+  // assertions
+  $t->is(TestAutoloader::$calls, 0, 'The autoloader was not called');
 
 
 // @Test: Methods in the mocked class are not called
