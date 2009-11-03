@@ -55,6 +55,7 @@ class LimeMockInvocationExpectation
     $matched      = false,
     $output       = null,
     $matchers     = array(),
+    $returns      = false,
     $returnValue  = null,
     $exception    = null,
     $callback     = null,
@@ -143,7 +144,9 @@ class LimeMockInvocationExpectation
 
     if (!is_null($this->callback))
     {
-      return call_user_func_array($this->callback, $invocation->getParameters());
+      $result = call_user_func_array($this->callback, $invocation->getParameters());
+
+      return $this->returns ? $this->returnValue : $result;
     }
 
     if (!is_null($this->exception))
@@ -322,6 +325,7 @@ class LimeMockInvocationExpectation
    */
   public function returns($value)
   {
+    $this->returns = true;
     $this->returnValue = $value;
 
     return $this;

@@ -99,7 +99,7 @@ class TestAutoloader
 spl_autoload_register(array('TestAutoloader', 'autoload'));
 
 
-$t = new LimeTest(94);
+$t = new LimeTest(96);
 
 
 // @Before
@@ -738,6 +738,26 @@ $t = new LimeTest(94);
   // assertions
   $t->is(TestCallbackClass::$arguments, array(1, 'foobar'), 'The arguments have been passed to the callback');
   $t->is($value, 'elvis is alive', 'The return value of the callback has been passed through');
+
+
+// @Test: If a callback AND a return value is configured, the return value of the callback is ignored
+
+  // test
+  $m->testMethod()->callback(array('TestCallbackClass', 'callback'))->returns('elvis sure is dead');
+  $m->replay();
+  $value = $m->testMethod();
+  // assertions
+  $t->is($value, 'elvis sure is dead', 'The return value of the callback was ignored');
+
+
+// @Test: The return value of the callback is ignored even if the configured return value is NULL
+
+  // test
+  $m->testMethod()->callback(array('TestCallbackClass', 'callback'))->returns(null);
+  $m->replay();
+  $value = $m->testMethod();
+  // assertions
+  $t->same($value, null, 'The return value of the callback was ignored');
 
 
 // @Test: Parameters are passed to the callback correctly, if any parameters are expected
