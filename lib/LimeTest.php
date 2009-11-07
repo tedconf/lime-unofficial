@@ -339,20 +339,6 @@ class LimeTest
   }
 
   /**
-   * Checks that two arrays have the same values
-   *
-   * @param mixed  $exp1    first variable
-   * @param mixed  $exp2    second variable
-   * @param string $message display output message when the test passes
-   *
-   * @return boolean
-   */
-  public function isDeeply($exp1, $exp2, $message = '')
-  {
-    return $this->is($exp1, $exp2, $message);
-  }
-
-  /**
    * Always passes--useful for testing exceptions
    *
    * @param string $message display output message

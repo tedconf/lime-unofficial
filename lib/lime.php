@@ -54,7 +54,7 @@ class lime_test extends LimeTest
 
   public function is_deeply($exp1, $exp2, $message = '')
   {
-    return $this->isDeeply($exp1, $exp2, $message);
+    return $this->is($exp1, $exp2, $message);
   }
 
   public function include_ok($file, $message = '')
