@@ -119,6 +119,10 @@ class LimeAutoloader
       {
         $file .= 'shell/';
       }
+      else if (0 === strpos($class, 'LimeConstraint'))
+      {
+        $file .= 'constraint/';
+      }
 
       $file .= $class.'.php';
 

@@ -99,7 +99,7 @@ class TestAutoloader
 spl_autoload_register(array('TestAutoloader', 'autoload'));
 
 
-$t = new LimeTest(96);
+$t = new LimeTest(100);
 
 
 // @Before
@@ -677,6 +677,40 @@ $t = new LimeTest(96);
   // assertions
   $t->is($output->passes, 1, 'One test passed');
   $t->is($output->fails, 0, 'No test failed');
+
+
+// @Test: ->parameter() tests single parameters of a method invocation
+
+  // @Test: - Case 1: Comparison fails
+
+  // fixture
+  $m->any('testMethod')->parameter(2)->is('foo');
+  $m->replay();
+  $t->expect('LimeMockException');
+  // test
+  $m->testMethod(1, 'bar');
+
+
+  // @Test: - Case 2: Comparison passes
+
+  // fixture
+  $m->any('testMethod')->parameter(2)->is('foo');
+  $m->replay();
+  $m->testMethod(1, 'foo');
+  $m->verify();
+  // assertions
+  $t->is($output->passes, 1, 'One test passed');
+  $t->is($output->fails, 0, 'No test failed');
+
+
+  // @Test: - Case 3: Parameter offset is out of range
+
+  // fixture
+  $m->any('testMethod')->parameter(2)->is('foo');
+  $m->replay();
+  $t->expect('LimeMockException');
+  // test
+  $m->testMethod(1);
 
 
 // @Test: If a class with the mock's control methods is mocked, an exception is thrown

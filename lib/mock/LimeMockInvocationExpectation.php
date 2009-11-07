@@ -47,20 +47,20 @@
 class LimeMockInvocationExpectation
 {
   const
-    COUNT_MATCHER     = 0,
-    PARAMETER_MATCHER = 1;
+    COUNT_MATCHER     = 0;
 
   protected
-    $invocation   = null,
-    $matched      = false,
-    $output       = null,
-    $matchers     = array(),
-    $returns      = false,
-    $returnValue  = null,
-    $exception    = null,
-    $callback     = null,
-    $strict       = false,
-    $verified     = false;
+    $invocation         = null,
+    $matched            = false,
+    $output             = null,
+    $countMatcher       = null,
+    $parameterMatchers  = array(),
+    $returns            = false,
+    $returnValue        = null,
+    $exception          = null,
+    $callback           = null,
+    $strict             = false,
+    $verified           = false;
 
   /**
    * Constructor.
@@ -73,6 +73,11 @@ class LimeMockInvocationExpectation
   {
     $this->invocation = $invocation;
     $this->output = $output;
+  }
+
+  protected function getMatchers()
+  {
+    return array_merge($this->parameterMatchers, ($this->countMatcher ? array($this->countMatcher) : array()));
   }
 
   /**
@@ -91,7 +96,7 @@ class LimeMockInvocationExpectation
   {
     $string = $this->invocation.' was called';
 
-    foreach ($this->matchers as $matcher)
+    foreach ($this->getMatchers() as $matcher)
     {
       // avoid trailing spaces if the message is empty
       $string = rtrim($string.' '.$matcher->getMessage());
@@ -123,7 +128,7 @@ class LimeMockInvocationExpectation
   {
     try
     {
-      foreach ($this->matchers as $matcher)
+      foreach ($this->getMatchers() as $matcher)
       {
         $matcher->invoke($invocation);
       }
@@ -188,7 +193,7 @@ class LimeMockInvocationExpectation
   {
     $result = true;
 
-    foreach ($this->matchers as $matcher)
+    foreach ($this->getMatchers() as $matcher)
     {
       $result = $result && $matcher->isInvokable();
     }
@@ -206,7 +211,7 @@ class LimeMockInvocationExpectation
   {
     $result = true;
 
-    foreach ($this->matchers as $matcher)
+    foreach ($this->getMatchers() as $matcher)
     {
       $result = $result && $matcher->isSatisfied();
     }
@@ -251,7 +256,7 @@ class LimeMockInvocationExpectation
    */
   public function times($times)
   {
-    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherTimes($times);
+    $this->countMatcher = new LimeMockInvocationMatcherTimes($times);
 
     return $this;
   }
@@ -283,7 +288,7 @@ class LimeMockInvocationExpectation
    */
   public function any()
   {
-    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherAny();
+    $this->countMatcher = new LimeMockInvocationMatcherAny();
 
     return $this;
   }
@@ -295,7 +300,7 @@ class LimeMockInvocationExpectation
    */
   public function atLeastOnce()
   {
-    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherAtLeastOnce();
+    $this->countMatcher = new LimeMockInvocationMatcherAtLeastOnce();
 
     return $this;
   }
@@ -312,7 +317,7 @@ class LimeMockInvocationExpectation
    */
   public function between($start, $end)
   {
-    $this->matchers[self::COUNT_MATCHER] = new LimeMockInvocationMatcherBetween($start, $end);
+    $this->countMatcher = new LimeMockInvocationMatcherBetween($start, $end);
 
     return $this;
   }
@@ -370,8 +375,24 @@ class LimeMockInvocationExpectation
    */
   public function strict()
   {
-    $this->matchers[self::PARAMETER_MATCHER] = new LimeMockInvocationMatcherStrict($this->invocation);
+    $this->parameterMatchers[] = new LimeMockInvocationMatcherStrict($this->invocation);
 
     return $this;
+  }
+
+  /**
+   * Configures a parameter to match some constraint.
+   *
+   * The constraint can be configured on the returned matcher object.
+   *
+   * @param  integer $index  The index of the parameter. The first parameter has
+   *                         index 1.
+   * @return LimeMockInvocationMatcherParameter
+   */
+  public function parameter($index)
+  {
+    $this->parameterMatchers[] = new LimeMockInvocationMatcherParameter($index, $this);
+
+    return end($this->parameterMatchers);
   }
 }

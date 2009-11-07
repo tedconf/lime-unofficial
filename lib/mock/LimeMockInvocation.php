@@ -74,6 +74,22 @@ class LimeMockInvocation
   }
 
   /**
+   * Returns the parameter at the given index.
+   *
+   * @param  integer $index
+   * @return mixed
+   */
+  public function getParameter($index)
+  {
+    if ($index >= count($this->parameters))
+    {
+      throw new OutOfRangeException(sprintf('The parameter %s does not exist', $index));
+    }
+
+    return $this->parameters[$index];
+  }
+
+  /**
    * Returns whether this object equals the given invocation.
    *
    * @param  LimeMockInvocation  $invocation  The compared invocation

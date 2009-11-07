@@ -97,7 +97,7 @@ class LimeTest
     return $this->output;
   }
 
-  protected function test($condition, $message, $error = null)
+  private function test($condition, $message, $error = null)
   {
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
@@ -111,6 +111,20 @@ class LimeTest
     }
 
     return $result;
+  }
+
+  private function testConstraint(LimeConstraintInterface $constraint, $value, $message)
+  {
+    try
+    {
+      $constraint->evaluate($value);
+
+      return $this->pass($message);
+    }
+    catch (LimeConstraintException $e)
+    {
+      return $this->fail($message, $e->getMessage());
+    }
   }
 
   /**
@@ -144,21 +158,7 @@ class LimeTest
    */
   public function is($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertEquals($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("     got: %s\nexpected: %s", $e->getActual(10), $e->getExpected(10));
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintIs($exp2), $exp1, $message);
   }
 
   /**
@@ -172,21 +172,7 @@ class LimeTest
    */
   public function same($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertSame($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("     got: %s\nexpected: %s", $e->getActual(10), $e->getExpected(10));
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintSame($exp2), $exp1, $message);
   }
 
   /**
@@ -200,21 +186,7 @@ class LimeTest
    */
   public function isnt($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertNotEquals($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("%s\n    must not be\n%s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintIsNot($exp2), $exp1, $message);
   }
 
   /**
@@ -228,21 +200,7 @@ class LimeTest
    */
   public function isntSame($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertNotSame($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("%s\n    must not be\n%s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintNotSame($exp2), $exp1, $message);
   }
 
   /**
@@ -256,21 +214,7 @@ class LimeTest
    */
   public function like($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertLike($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("              %s\ndoesn't match %s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintLike($exp2), $exp1, $message);
   }
 
   /**
@@ -284,97 +228,27 @@ class LimeTest
    */
   public function unlike($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertUnlike($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("         %s\nmatches %s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintUnlike($exp2), $exp1, $message);
   }
 
   public function greaterThan($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertGreaterThan($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("         %s\nis not > %s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintGreaterThan($exp2), $exp1, $message);
   }
 
   public function greaterThanEqual($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertGreaterThanOrEqual($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("          %s\nis not >= %s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintGreaterThanEqual($exp2), $exp1, $message);
   }
 
   public function lessThan($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertLessThan($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("         %s\nis not < %s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintLessThan($exp2), $exp1, $message);
   }
 
   public function lessThanEqual($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertLessThanOrEqual($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("          %s\nis not <= %s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintLessThanEqual($exp2), $exp1, $message);
   }
 
   /**
@@ -414,40 +288,12 @@ class LimeTest
 
   public function contains($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertContains($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("%s\n    doesn't contain\n%s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintContains($exp2), $exp1, $message);
   }
 
   public function containsNot($exp1, $exp2, $message = '')
   {
-    $exp1 = LimeTester::create($exp1);
-    $exp2 = LimeTester::create($exp2);
-
-    try
-    {
-      $exp1->assertNotContains($exp2);
-
-      return $this->pass($message);
-    }
-    catch (LimeAssertionFailedException $e)
-    {
-      $error = sprintf("%s\n    must not contain\n%s", $e->getActual(), $e->getExpected());
-
-      return $this->fail($message, $error);
-    }
+    $this->testConstraint(new LimeConstraintContainsNot($exp2), $exp1, $message);
   }
 
   /**
