@@ -22,7 +22,7 @@ class TestSubClass extends TestClass {}
 class TestClassTester extends LimeTesterObject {}
 class InvalidTester {}
 
-$t = new LimeTest(14);
+$t = new LimeTest(15);
 
 
 // Don't use other test methods than ->ok() here, because the testers tested
@@ -95,6 +95,15 @@ $t = new LimeTest(14);
   LimeTester::register('TestInterface', 'TestInterfaceTester');
   $object = new TestInterfaceClass();
   $expected = new TestInterfaceTester($object);
+  $t->ok(LimeTester::create($object) == $expected, 'The correct object was created');
+
+
+// @Test: unregister() removes any custom testers for a given class
+
+  LimeTester::register('TestClass', 'TestClassTester');
+  LimeTester::unregister('TestClass');
+  $object = new TestClass();
+  $expected = new LimeTesterObject($object);
   $t->ok(LimeTester::create($object) == $expected, 'The correct object was created');
 
 

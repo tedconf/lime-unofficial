@@ -28,6 +28,11 @@ abstract class LimeTester implements LimeTesterInterface
     return self::getFactory()->register($type, $tester);
   }
 
+  public static function unregister($type)
+  {
+    return self::getFactory()->unregister($type);
+  }
+
   private static function getFactory()
   {
     if (is_null(self::$factory))

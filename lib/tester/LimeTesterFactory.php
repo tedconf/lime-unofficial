@@ -101,4 +101,12 @@ class LimeTesterFactory
     $this->testers[$type] = $tester;
   }
 
+  public function unregister($type)
+  {
+    if (array_key_exists($type, $this->testers))
+    {
+      unset($this->testers[$type]);
+    }
+  }
+
 }
