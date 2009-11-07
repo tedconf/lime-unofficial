@@ -1,10 +1,10 @@
 --TEST--
-isa method
+isa_ok method
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
 class Test {}
-$t->isa(new Test(), 'Test');
+$t->isa_ok(new Test(), 'Test');
 ?>
 --EXPECT--
 # /test/unit/LimeTest/setup.php

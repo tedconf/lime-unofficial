@@ -1,9 +1,9 @@
 --TEST--
-compare method
+cmp_ok method
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
-$t->compare(2, '>', 1);
+$t->cmp_ok(2, '>', 1);
 ?>
 --EXPECT--
 # /test/unit/LimeTest/setup.php

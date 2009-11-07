@@ -97,23 +97,7 @@ class LimeTest
     return $this->output;
   }
 
-  private function test($condition, $message, $error = null)
-  {
-    list ($file, $line) = LimeTrace::findCaller('LimeTest');
-
-    if ($result = (boolean) $condition)
-    {
-      $this->output->pass($message, $file, $line);
-    }
-    else
-    {
-      $this->output->fail($message, $file, $line, $error);
-    }
-
-    return $result;
-  }
-
-  private function testConstraint(LimeConstraintInterface $constraint, $value, $message)
+  private function test(LimeConstraintInterface $constraint, $value, $message)
   {
     try
     {
@@ -158,7 +142,7 @@ class LimeTest
    */
   public function is($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintIs($exp2), $exp1, $message);
+    $this->test(new LimeConstraintIs($exp2), $exp1, $message);
   }
 
   /**
@@ -172,7 +156,7 @@ class LimeTest
    */
   public function same($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintSame($exp2), $exp1, $message);
+    $this->test(new LimeConstraintSame($exp2), $exp1, $message);
   }
 
   /**
@@ -186,7 +170,7 @@ class LimeTest
    */
   public function isnt($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintIsNot($exp2), $exp1, $message);
+    $this->test(new LimeConstraintIsNot($exp2), $exp1, $message);
   }
 
   /**
@@ -200,7 +184,7 @@ class LimeTest
    */
   public function isntSame($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintNotSame($exp2), $exp1, $message);
+    $this->test(new LimeConstraintNotSame($exp2), $exp1, $message);
   }
 
   /**
@@ -214,7 +198,7 @@ class LimeTest
    */
   public function like($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintLike($exp2), $exp1, $message);
+    $this->test(new LimeConstraintLike($exp2), $exp1, $message);
   }
 
   /**
@@ -228,79 +212,37 @@ class LimeTest
    */
   public function unlike($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintUnlike($exp2), $exp1, $message);
+    $this->test(new LimeConstraintUnlike($exp2), $exp1, $message);
   }
 
   public function greaterThan($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintGreaterThan($exp2), $exp1, $message);
+    $this->test(new LimeConstraintGreaterThan($exp2), $exp1, $message);
   }
 
   public function greaterThanEqual($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintGreaterThanEqual($exp2), $exp1, $message);
+    $this->test(new LimeConstraintGreaterThanEqual($exp2), $exp1, $message);
   }
 
   public function lessThan($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintLessThan($exp2), $exp1, $message);
+    $this->test(new LimeConstraintLessThan($exp2), $exp1, $message);
   }
 
   public function lessThanEqual($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintLessThanEqual($exp2), $exp1, $message);
+    $this->test(new LimeConstraintLessThanEqual($exp2), $exp1, $message);
   }
 
   public function contains($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintContains($exp2), $exp1, $message);
+    $this->test(new LimeConstraintContains($exp2), $exp1, $message);
   }
 
   public function containsNot($exp1, $exp2, $message = '')
   {
-    $this->testConstraint(new LimeConstraintContainsNot($exp2), $exp1, $message);
-  }
-
-  /**
-   * Checks the availability of a method for an object or a class
-   *
-   * @param mixed        $object  an object instance or a class name
-   * @param string|array $methods one or more method names
-   * @param string       $message display output message when the test passes
-   *
-   * @return boolean
-   */
-  public function hasMethod($object, $methods, $message = '')
-  {
-    $result = true;
-    $failedMessages = array();
-    foreach ((array) $methods as $method)
-    {
-      if (!method_exists($object, $method))
-      {
-        $failedMessages[] = sprintf("method '%s' does not exist", $method);
-        $result = false;
-      }
-    }
-
-    return $this->test($result, $message, implode("\n", $failedMessages));
-  }
-
-  /**
-   * Checks the type of an argument
-   *
-   * @param mixed  $var     variable instance
-   * @param string $class   class or type name
-   * @param string $message display output message when the test passes
-   *
-   * @return boolean
-   */
-  public function isa($var, $class, $message = '')
-  {
-    $type = is_object($var) ? get_class($var) : gettype($var);
-    $error = sprintf("variable isn't a '%s' it's a '%s'", $class, $type);
-
-    return $this->test($type == $class, $message, $error);
+    $this->test(new LimeConstraintContainsNot($exp2), $exp1, $message);
   }
 
   /**
@@ -382,19 +324,6 @@ class LimeTest
   public function comment($message)
   {
     $this->output->comment($message);
-  }
-
-  /**
-   * @deprecated Use comment() instead
-   * @param $message
-   * @return unknown_type
-   */
-  public function info($message)
-  {
-    if ($this->output instanceof LimeOutputTap)
-    {
-      $this->output->info($message);
-    }
   }
 
   public function mock($class, array $options = array())

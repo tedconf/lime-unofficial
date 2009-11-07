@@ -1,10 +1,10 @@
 --TEST--
-isa method that fails
+isa_ok method that fails
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
 class Test {}
-$t->isa(new Test(), 'Foo');
+$t->isa_ok(new Test(), 'Foo');
 ?>
 --EXPECTF--
 # /test/unit/LimeTest/setup.php

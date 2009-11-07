@@ -37,38 +37,6 @@ class lime_test extends LimeTest
     return self::toXml($results);
   }
 
-  public function cmp_ok($exp1, $op, $exp2, $message = '')
-  {
-    return $this->compare($exp1, $op, $exp2, $message);
-  }
-
-  public function can_ok($object, $methods, $message = '')
-  {
-    return $this->hasMethod($object, $methods, $message);
-  }
-
-  public function isa_ok($var, $class, $message = '')
-  {
-    return $this->isa($var, $class, $message);
-  }
-
-  public function is_deeply($exp1, $exp2, $message = '')
-  {
-    return $this->is($exp1, $exp2, $message);
-  }
-
-  public function include_ok($file, $message = '')
-  {
-    return $this->includeOk($file, $message);
-  }
-
-  public function error($message)
-  {
-    list($file, $line) = LimeTrace::findCaller('lime_test');
-
-    $this->output->error(new LimeError($message, $file, $line));
-  }
-
   /**
    * Compares two arguments with an operator
    *
@@ -79,7 +47,7 @@ class lime_test extends LimeTest
    *
    * @return boolean
    */
-  public function compare($exp1, $op, $exp2, $message = '')
+  public function cmp_ok($exp1, $op, $exp2, $message = '')
   {
     switch ($op)
     {
@@ -102,6 +70,94 @@ class lime_test extends LimeTest
       default:
         throw new InvalidArgumentException(sprintf('Unknown operation "%s"', $op));
     }
+  }
+
+  /**
+   * Checks the availability of a method for an object or a class
+   *
+   * @param mixed        $object  an object instance or a class name
+   * @param string|array $methods one or more method names
+   * @param string       $message display output message when the test passes
+   *
+   * @return boolean
+   */
+  public function can_ok($object, $methods, $message = '')
+  {
+    $result = true;
+    $failedMessages = array();
+    foreach ((array) $methods as $method)
+    {
+      if (!method_exists($object, $method))
+      {
+        $failedMessages[] = sprintf("method '%s' does not exist", $method);
+        $result = false;
+      }
+    }
+
+    return $this->test_ok($result, $message, implode("\n", $failedMessages));
+  }
+
+  /**
+   * Checks the type of an argument
+   *
+   * @param mixed  $var     variable instance
+   * @param string $class   class or type name
+   * @param string $message display output message when the test passes
+   *
+   * @return boolean
+   */
+  public function isa_ok($var, $class, $message = '')
+  {
+    $type = is_object($var) ? get_class($var) : gettype($var);
+    $error = sprintf("variable isn't a '%s' it's a '%s'", $class, $type);
+
+    return $this->test_ok($type == $class, $message, $error);
+  }
+
+  public function is_deeply($exp1, $exp2, $message = '')
+  {
+    return $this->is($exp1, $exp2, $message);
+  }
+
+  public function include_ok($file, $message = '')
+  {
+    return $this->includeOk($file, $message);
+  }
+
+  public function error($message)
+  {
+    list($file, $line) = LimeTrace::findCaller('lime_test');
+
+    $this->output->error(new LimeError($message, $file, $line));
+  }
+
+  /**
+   * @deprecated Use comment() instead
+   * @param $message
+   * @return unknown_type
+   */
+  public function info($message)
+  {
+    if ($this->output instanceof LimeOutputTap)
+    {
+      $this->output->info($message);
+    }
+  }
+
+  private function test_ok($condition, $message, $error = null)
+  {
+    list ($file, $line) = LimeTrace::findCaller('LimeTest');
+
+    if ($result = (boolean) $condition)
+    {
+      $this->output->pass($message, $file, $line);
+    }
+    else
+    {
+      $this->output->fail($message, $file, $line, $error);
+    }
+
+    return $result;
   }
 }
 

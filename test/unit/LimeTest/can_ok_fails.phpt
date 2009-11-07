@@ -1,10 +1,10 @@
 --TEST--
-hasMethod method that fails
+can_ok method that fails
 --FILE--
 <?php
 require_once(dirname(__FILE__).'/setup.php');
 class Test { function test() {} }
-$t->hasMethod(new Test(), 'foo');
+$t->can_ok(new Test(), 'foo');
 ?>
 --EXPECTF--
 # /test/unit/LimeTest/setup.php
