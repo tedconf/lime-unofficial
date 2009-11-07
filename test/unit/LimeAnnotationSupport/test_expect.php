@@ -13,7 +13,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(4);
+$t = new LimeTest(2);
 
 // @Test
 $t->expect('RuntimeException');
@@ -23,13 +23,3 @@ echo "Test 1\n";
 $t->expect('RuntimeException');
 echo "Test 2\n";
 throw new RuntimeException("Foobar");
-
-// @Test
-$t->expect('RuntimeException', 1);
-echo "Test 3\n";
-throw new RuntimeException("Foobar", 0);
-
-// @Test
-$t->expect('RuntimeException', 1);
-echo "Test 4\n";
-throw new RuntimeException("Foobar", 1);

@@ -341,19 +341,11 @@ class LimeTest
     return LimeMock::create($class, new LimeOutputNone(), $options);
   }
 
-  public function expect($class, $code = null)
+  public function expect($exception, $code = null)
   {
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
-    if ($class instanceof Exception)
-    {
-      $this->expectedException = new LimeExceptionExpectation(get_class($class), $class->getCode(), $file, $line);
-    }
-    else
-    {
-      $this->expectedException = new LimeExceptionExpectation($class, $code, $file, $line);
-    }
-
+    $this->expectedException = new LimeExceptionExpectation($exception, $file, $line);
     $this->actualException = null;
   }
 
@@ -395,29 +387,33 @@ class LimeTest
   {
     if (!is_null($this->expectedException))
     {
-      $expected = $this->expectedException;
-      $actual = LimeExceptionExpectation::create($this->actualException);
+      $expected = $this->expectedException->getException();
+      $file = $this->expectedException->getFile();
+      $line = $this->expectedException->getLine();
 
-      if (is_null($expected->getCode()))
+      if (is_string($expected))
       {
-        $message = sprintf('A "%s" was thrown', $expected->getClass());
+        $actual = is_object($this->actualException) ? get_class($this->actualException) : 'none';
+        $message = sprintf('A "%s" was thrown', $expected);
       }
       else
       {
-        $message = sprintf('A "%s" with code "%s" was thrown', $expected->getClass(), $expected->getCode());
+        $actual = $this->actualException;
+        $message = sprintf('A "%s" was thrown', get_class($expected));
       }
 
-      $file = $expected->getFile();
-      $line = $expected->getLine();
-
-      if ($expected->equals($actual))
+      // can't use ->is() here because the custom file and line need to be
+      // passed to the output
+      try
       {
+        $constraint = new LimeConstraintIs($expected);
+        $constraint->evaluate($actual);
+
         $this->output->pass($message, $file, $line);
       }
-      else
+      catch (LimeConstraintException $e)
       {
-        $error = sprintf("     got: %s\nexpected: %s", $actual, $expected);
-        $this->output->fail($message, $file, $line, $error);
+        $this->output->fail($message, $file, $line, $e->getMessage());
       }
     }
 

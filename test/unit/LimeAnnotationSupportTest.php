@@ -264,19 +264,12 @@ $root/@$file
 Test 1
 not ok 1 - A "RuntimeException" was thrown
 #     Failed test (%ANY%)
-#            got: none
-#       expected: RuntimeException
+#            got: 'none'
+#       expected: 'RuntimeException'
 Test 2
 ok 2 - A "RuntimeException" was thrown
-Test 3
-not ok 3 - A "RuntimeException" with code "1" was thrown
-#     Failed test (%ANY%)
-#            got: RuntimeException (0)
-#       expected: RuntimeException (1)
-Test 4
-ok 4 - A "RuntimeException" with code "1" was thrown
-1..4
- Looks like you failed 2 tests of 4.
+1..2
+ Looks like you failed 1 tests of 2.
 EOF
 , '/')).'/';
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
@@ -291,14 +284,20 @@ $t->diag('Exception objects can be expected');
   $expected = '/'.str_replace('%ANY%', '.*', preg_quote(<<<EOF
 $root/@$file
 Test 1
-ok 1 - A "RuntimeException" with code "0" was thrown
+ok 1 - A "RuntimeException" was thrown
 Test 2
-not ok 2 - A "RuntimeException" with code "1" was thrown
+not ok 2 - A "RuntimeException" was thrown
 #     Failed test (%ANY%)
-#            got: RuntimeException (0)
-#       expected: RuntimeException (1)
+#            got: object(RuntimeException) (
+#                   ...
+#                   'code' => 0,
+#                 )
+#       expected: object(RuntimeException) (
+#                   ...
+#                   'code' => 1,
+#                 )
 Test 3
-ok 3 - A "RuntimeException" with code "1" was thrown
+ok 3 - A "RuntimeException" was thrown
 1..3
  Looks like you failed 1 tests of 3.
 EOF
@@ -319,8 +318,8 @@ ok 1 - A "RuntimeException" was thrown
 Test 2
 not ok 2 - A "LogicException" was thrown
 #     Failed test (%ANY%)
-#            got: none
-#       expected: LogicException
+#            got: 'none'
+#       expected: 'LogicException'
 1..2
  Looks like you failed 1 tests of 2.
 EOF
