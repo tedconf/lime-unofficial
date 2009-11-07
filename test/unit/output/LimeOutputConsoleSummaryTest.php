@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(37);
+$t = new LimeTest(39);
 
 
 // @Before
@@ -222,6 +222,20 @@ $t = new LimeTest(37);
   // test
   $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
+  $output->close();
+  // assertions
+  $printer->verify();
+
+
+// @Test: File extensions are omitted in the output
+
+  // fixtures
+  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printLine("ok", LimePrinter::OK);
+  $printer->replay();
+  // test
+  $output->focus('/test/script.php');
+  $output->pass('A passed test', '/test/script.php', 11);
   $output->close();
   // assertions
   $printer->verify();

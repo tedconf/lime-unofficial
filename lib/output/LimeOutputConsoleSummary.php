@@ -310,6 +310,9 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
   protected function truncate($file)
   {
+    $extension = pathinfo($file, PATHINFO_EXTENSION);
+    $file = substr($file, 0, strlen($file)-strlen($extension));
+
     if (!is_null($this->options['base_dir']))
     {
       return str_replace($this->options['base_dir'], '', $file);
