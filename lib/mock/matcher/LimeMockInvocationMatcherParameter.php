@@ -183,7 +183,7 @@ class LimeMockInvocationMatcherParameter implements LimeMockInvocationMatcherInt
    * @return LimeMockInvocationExpectation
    * @see    LimeConstraintNotSame
    */
-  public function notSame($expected)
+  public function isntSame($expected)
   {
     return $this->setConstraint(new LimeConstraintNotSame($expected));
   }

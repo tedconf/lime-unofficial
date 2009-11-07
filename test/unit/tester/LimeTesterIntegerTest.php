@@ -16,61 +16,61 @@ LimeAnnotationSupport::enable();
 $t = new LimeTest(6);
 
 
-// @Test: assertGreaterThan() throws an exception if the given value is equal
+// @Test: greaterThan() throws an exception if the given value is equal
 
   // fixtures
   $actual = new LimeTesterInteger(1);
   $expected = new LimeTesterInteger(1);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertGreaterThan($expected);
+  $actual->greaterThan($expected);
 
 
-// @Test: assertGreaterThan() throws an exception if the given value is greater
-
-  // fixtures
-  $actual = new LimeTesterInteger(1);
-  $expected = new LimeTesterInteger(2);
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertGreaterThan($expected);
-
-
-// @Test: assertGreaterThanOrEqual() throws an exception if the given value is greater
+// @Test: greaterThan() throws an exception if the given value is greater
 
   // fixtures
   $actual = new LimeTesterInteger(1);
   $expected = new LimeTesterInteger(2);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertGreaterThanOrEqual($expected);
+  $actual->greaterThan($expected);
 
 
-// @Test: assertLessThanOrEqual() throws an exception if the given value is smaller
+// @Test: greaterThanEqual() throws an exception if the given value is greater
+
+  // fixtures
+  $actual = new LimeTesterInteger(1);
+  $expected = new LimeTesterInteger(2);
+  // test
+  $t->expect('LimeAssertionFailedException');
+  $actual->greaterThanEqual($expected);
+
+
+// @Test: lessThanEqual() throws an exception if the given value is smaller
 
   // fixtures
   $actual = new LimeTesterInteger(2);
   $expected = new LimeTesterInteger(1);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertLessThanOrEqual($expected);
+  $actual->lessThanEqual($expected);
 
 
-// @Test: assertLessThan() throws an exception if the given value is equal
+// @Test: lessThan() throws an exception if the given value is equal
 
   // fixtures
   $actual = new LimeTesterInteger(1);
   $expected = new LimeTesterInteger(1);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertLessThan($expected);
+  $actual->lessThan($expected);
 
 
-// @Test: assertLessThan() throws an exception if the given value is smaller
+// @Test: lessThan() throws an exception if the given value is smaller
 
   // fixtures
   $actual = new LimeTesterInteger(2);
   $expected = new LimeTesterInteger(1);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertLessThan($expected);
+  $actual->lessThan($expected);

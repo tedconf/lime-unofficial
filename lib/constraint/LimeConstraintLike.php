@@ -27,7 +27,7 @@ class LimeConstraintLike extends LimeConstraint
   {
     try
     {
-      LimeTester::create($value)->assertLike(LimeTester::create($this->expected));
+      LimeTester::create($value)->like(LimeTester::create($this->expected));
     }
     catch (LimeAssertionFailedException $e)
     {

@@ -27,7 +27,7 @@ class LimeConstraintNotSame extends LimeConstraint
   {
     try
     {
-      LimeTester::create($value)->assertNotSame(LimeTester::create($this->expected));
+      LimeTester::create($value)->isntSame(LimeTester::create($this->expected));
     }
     catch (LimeAssertionFailedException $e)
     {

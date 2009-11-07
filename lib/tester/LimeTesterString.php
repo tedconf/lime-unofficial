@@ -19,20 +19,20 @@ class LimeTesterString extends LimeTesterScalar
     return "'".$this->value."'";
   }
 
-  public function assertEquals(LimeTesterInterface $expected)
+  public function is(LimeTesterInterface $expected)
   {
     // allow comparison with objects that implement __toString()
     if ($expected instanceof LimeTesterObject)
     {
-      $expected->assertEquals($this);
+      $expected->is($this);
     }
     else
     {
-      parent::assertEquals($expected);
+      parent::is($expected);
     }
   }
 
-  public function assertLike(LimeTesterInterface $expected)
+  public function like(LimeTesterInterface $expected)
   {
     if (!preg_match($expected->value, $this->value))
     {
@@ -40,7 +40,7 @@ class LimeTesterString extends LimeTesterScalar
     }
   }
 
-  public function assertUnlike(LimeTesterInterface $expected)
+  public function unlike(LimeTesterInterface $expected)
   {
     if (preg_match($expected->value, $this->value))
     {

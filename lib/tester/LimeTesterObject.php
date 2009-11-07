@@ -59,7 +59,7 @@ class LimeTesterObject extends LimeTesterArray
     return 'object('.$this->type.')';
   }
 
-  public function assertEquals(LimeTesterInterface $expected)
+  public function is(LimeTesterInterface $expected)
   {
     // allow comparison with strings if object implements __toString()
     if ($expected instanceof LimeTesterString && method_exists($this->object, '__toString'))
@@ -84,12 +84,12 @@ class LimeTesterObject extends LimeTesterArray
       // CAUTION: this conditional clause is not tested
       if (!$expected instanceof self || $this->object !== $expected->object)
       {
-        parent::assertEquals($expected);
+        parent::is($expected);
       }
     }
   }
 
-  public function assertNotEquals(LimeTesterInterface $expected)
+  public function isnt(LimeTesterInterface $expected)
   {
     // don't compare twice to allow for cyclic dependencies
     if (in_array(array($this->value, $expected->value), self::$unequal, true) || in_array(array($expected->value, $this->value), self::$unequal, true))
@@ -99,10 +99,10 @@ class LimeTesterObject extends LimeTesterArray
 
     self::$unequal[] = array($this->value, $expected->value);
 
-    parent::assertNotEquals($expected);
+    parent::isnt($expected);
   }
 
-  public function assertSame(LimeTesterInterface $expected)
+  public function same(LimeTesterInterface $expected)
   {
     if (!$expected instanceof self || $this->object !== $expected->object)
     {
@@ -110,7 +110,7 @@ class LimeTesterObject extends LimeTesterArray
     }
   }
 
-  public function assertNotSame(LimeTesterInterface $expected)
+  public function isntSame(LimeTesterInterface $expected)
   {
     if ($expected instanceof self && $this->object === $expected->object)
     {

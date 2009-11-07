@@ -16,194 +16,194 @@ LimeAnnotationSupport::enable();
 $t = new LimeTest(12);
 
 
-// @Test: assertEquals() throws an exception if keys are missing
+// @Test: is() throws an exception if keys are missing
 
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterArray(array(0 => 1));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws an exception if keys are unexpected
+// @Test: is() throws an exception if keys are unexpected
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array());
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws an exception if values don't match
+// @Test: is() throws an exception if values don't match
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array(0 => 2));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws no exception if the order is different
+// @Test: is() throws no exception if the order is different
 
   // fixtures
   $actual = new LimeTesterArray(array('a' => 1, 'b' => 2));
   $expected = new LimeTesterArray(array('b' => 2, 'a' => 1));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertEquals() throws no exception if values match
+// @Test: is() throws no exception if values match
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array(0 => 1));
   // test
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws no exception if values match
+// @Test: is() throws no exception if values match
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => new LimeError("message", "file", 11)));
   $expected = new LimeTesterArray(array(0 => new LimeError("message", "file", 11)));
   // test
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertNotEquals() throws an exception if the arrays are equal
+// @Test: isnt() throws an exception if the arrays are equal
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array(0 => 1));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);
 
 
-// @Test: assertNotEquals() throws no exception if the arrays differ
+// @Test: isnt() throws no exception if the arrays differ
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1, 1 => 2));
   $expected = new LimeTesterArray(array(0 => 1, 1 => 3));
   // test
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);
 
 
-// @Test: assertSame() throws an exception if keys are missing
+// @Test: same() throws an exception if keys are missing
 
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterArray(array(0 => 1));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertSame() throws an exception if keys are unexpected
+// @Test: same() throws an exception if keys are unexpected
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array());
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertSame() throws an exception if types are different
+// @Test: same() throws an exception if types are different
 
   // fixtures
   $actual = new LimeTesterArray(array(1));
   $expected = new LimeTesterArray(array('1'));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertSame() throws an exception if the order is different
+// @Test: same() throws an exception if the order is different
 
   // fixtures
   $actual = new LimeTesterArray(array('a' => 1, 'b' => 2));
   $expected = new LimeTesterArray(array('b' => 2, 'a' => 1));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertSame() throws no exception if values match
+// @Test: same() throws no exception if values match
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array(0 => 1));
   // test
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertNotSame() throws an exception if the arrays are equal
+// @Test: isntSame() throws an exception if the arrays are equal
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = new LimeTesterArray(array(0 => 1));
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertNotSame() throws no exception if the types differ
+// @Test: isntSame() throws no exception if the types differ
 
   // fixtures
   $actual = new LimeTesterArray(array(1));
   $expected = new LimeTesterArray(array('1'));
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertNotSame() throws no exception if the order differs
+// @Test: isntSame() throws no exception if the order differs
 
   // fixtures
   $actual = new LimeTesterArray(array('a' => 1, 'b' => 2));
   $expected = new LimeTesterArray(array('b' => 2, 'a' => 1));
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertContains() throws an exception if a value is not in the array
+// @Test: contains() throws an exception if a value is not in the array
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = LimeTester::create(0);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertContains($expected);
+  $actual->contains($expected);
 
 
-// @Test: assertContains() throws no exception if a value is in the array
+// @Test: contains() throws no exception if a value is in the array
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = LimeTester::create(1);
   // test
-  $actual->assertContains($expected);
+  $actual->contains($expected);
 
 
-// @Test: assertNotContains() throws an exception if a value is in the array
+// @Test: containsNot() throws an exception if a value is in the array
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = LimeTester::create(1);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertNotContains($expected);
+  $actual->containsNot($expected);
 
 
-// @Test: assertNotContains() throws no exception if a value is not in the array
+// @Test: containsNot() throws no exception if a value is not in the array
 
   // fixtures
   $actual = new LimeTesterArray(array(0 => 1));
   $expected = LimeTester::create(0);
   // test
-  $actual->assertNotContains($expected);
+  $actual->containsNot($expected);
 

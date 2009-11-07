@@ -27,7 +27,7 @@ class LimeConstraintIs extends LimeConstraint
   {
     try
     {
-      LimeTester::create($value)->assertEquals(LimeTester::create($this->expected));
+      LimeTester::create($value)->is(LimeTester::create($this->expected));
     }
     catch (LimeAssertionFailedException $e)
     {

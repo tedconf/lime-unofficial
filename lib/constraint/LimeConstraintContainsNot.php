@@ -27,7 +27,7 @@ class LimeConstraintContainsNot extends LimeConstraint
   {
     try
     {
-      LimeTester::create($value)->assertNotContains(LimeTester::create($this->expected));
+      LimeTester::create($value)->containsNot(LimeTester::create($this->expected));
     }
     catch (LimeAssertionFailedException $e)
     {

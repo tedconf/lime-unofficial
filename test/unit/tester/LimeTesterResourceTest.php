@@ -40,31 +40,31 @@ $t = new LimeTest(2);
   $handle2 = null;
 
 
-// @Test: assertEquals() throws an exception if the resources differ
+// @Test: is() throws an exception if the resources differ
 
   $actual = new LimeTesterResource($handle1);
   $expected = new LimeTesterResource($handle2);
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws no exception if the resources are the same
+// @Test: is() throws no exception if the resources are the same
 
   $actual = new LimeTesterResource($handle1);
   $expected = new LimeTesterResource($handle1);
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertNotEquals() throws an exception if the resources are the same
+// @Test: isnt() throws an exception if the resources are the same
 
   $actual = new LimeTesterResource($handle1);
   $expected = new LimeTesterResource($handle1);
   $t->expect('LimeAssertionFailedException');
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);
 
 
-// @Test: assertNotEquals() throws no exception if the resources differ
+// @Test: isnt() throws no exception if the resources differ
 
   $actual = new LimeTesterResource($handle1);
   $expected = new LimeTesterResource($handle2);
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);

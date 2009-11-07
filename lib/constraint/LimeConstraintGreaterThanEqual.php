@@ -27,7 +27,7 @@ class LimeConstraintGreaterThanEqual extends LimeConstraint
   {
     try
     {
-      LimeTester::create($value)->assertGreaterThanOrEqual(LimeTester::create($this->expected));
+      LimeTester::create($value)->greaterThanEqual(LimeTester::create($this->expected));
     }
     catch (LimeAssertionFailedException $e)
     {

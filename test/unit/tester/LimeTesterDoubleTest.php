@@ -22,21 +22,21 @@ $t = new LimeTest(2);
   $t->ok($actual->__toString() === '1.0', 'The value is correct');
 
 
-// @Test: assertEquals() throws no exception if the difference between the doubles is very small
+// @Test: is() throws no exception if the difference between the doubles is very small
 
   // fixtures
   $actual = new LimeTesterDouble(1/3);
   $expected = new LimeTesterDouble(1 - 2/3);
   // test
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertNotEquals() throws an exception if the difference between the doubles is very small
+// @Test: isnt() throws an exception if the difference between the doubles is very small
 
   // fixtures
   $actual = new LimeTesterDouble(1/3);
   $expected = new LimeTesterDouble(1 - 2/3);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);
 

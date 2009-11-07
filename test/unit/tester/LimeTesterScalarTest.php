@@ -16,17 +16,17 @@ LimeAnnotationSupport::enable();
 $t = new LimeTest(5);
 
 
-// @Test: assertEquals() throws an exception if the values differ
+// @Test: is() throws an exception if the values differ
 
   // fixtures
   $actual = new LimeTesterScalar('a');
   $expected = new LimeTesterScalar('b');
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws an exception if the values differ and standard comparison succeeds
+// @Test: is() throws an exception if the values differ and standard comparison succeeds
 
   // fixtures
   // 0 == 'Foobar' => true!
@@ -34,71 +34,71 @@ $t = new LimeTest(5);
   $expected = new LimeTesterScalar('Foobar');
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws no exception if the values are equal, but different types
+// @Test: is() throws no exception if the values are equal, but different types
 
   // fixtures
   $actual = new LimeTesterScalar('0');
   $expected = new LimeTesterScalar(0);
   // test
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws no exception if both values are NULL
+// @Test: is() throws no exception if both values are NULL
 
   // fixtures
   $actual = new LimeTesterScalar(null);
   $expected = new LimeTesterScalar(null);
   // test
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertSame() throws an exception if the values have different types
+// @Test: same() throws an exception if the values have different types
 
   // fixtures
   $actual = new LimeTesterScalar('0');
   $expected = new LimeTesterScalar(0);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertNotEquals() throws an exception if values are equal
+// @Test: isnt() throws an exception if values are equal
 
   // fixtures
   $actual = new LimeTesterScalar(1);
   $expected = new LimeTesterScalar(1);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);
 
 
-// @Test: assertNotEquals() throws an exception if both values are null
+// @Test: isnt() throws an exception if both values are null
 
   // fixtures
   $actual = new LimeTesterScalar(null);
   $expected = new LimeTesterScalar(null);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);
 
 
-// @Test: assertNotEquals() throws no exception if values differ but standard comparison succeeds
+// @Test: isnt() throws no exception if values differ but standard comparison succeeds
 
   // fixtures
   // 0 == 'Foobar' => true!
   $actual = new LimeTesterScalar(0);
   $expected = new LimeTesterScalar('Foobar');
   // test
-  $actual->assertNotEquals($expected);
+  $actual->isnt($expected);
 
 
-// @Test: assertNotSame() throws no exception if values are equal but types are different
+// @Test: isntSame() throws no exception if values are equal but types are different
 
   // fixtures
   $actual = new LimeTesterScalar('1');
   $expected = new LimeTesterScalar(1);
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);

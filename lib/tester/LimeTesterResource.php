@@ -14,7 +14,7 @@ class LimeTesterResource extends LimeTester
   protected
     $type = 'resource';
 
-  public function assertEquals(LimeTesterInterface $expected)
+  public function is(LimeTesterInterface $expected)
   {
     if ($this->value != $expected->value)
     {
@@ -22,7 +22,7 @@ class LimeTesterResource extends LimeTester
     }
   }
 
-  public function assertNotEquals(LimeTesterInterface $expected)
+  public function isnt(LimeTesterInterface $expected)
   {
     if ($this->value == $expected->value)
     {
@@ -30,14 +30,14 @@ class LimeTesterResource extends LimeTester
     }
   }
 
-  public function assertSame(LimeTesterInterface $expected)
+  public function same(LimeTesterInterface $expected)
   {
-    $this->assertEquals($expected);
+    $this->is($expected);
   }
 
-  public function assertNotSame(LimeTesterInterface $expected)
+  public function isntSame(LimeTesterInterface $expected)
   {
-    $this->assertNotEquals($expected);
+    $this->isnt($expected);
   }
 
   public function __toString()

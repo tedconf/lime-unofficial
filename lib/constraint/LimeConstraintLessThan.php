@@ -27,7 +27,7 @@ class LimeConstraintLessThan extends LimeConstraint
   {
     try
     {
-      LimeTester::create($value)->assertLessThan(LimeTester::create($this->expected));
+      LimeTester::create($value)->lessThan(LimeTester::create($this->expected));
     }
     catch (LimeAssertionFailedException $e)
     {

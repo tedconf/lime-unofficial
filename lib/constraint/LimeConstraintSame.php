@@ -27,7 +27,7 @@ class LimeConstraintSame extends LimeConstraint
   {
     try
     {
-      LimeTester::create($value)->assertSame(LimeTester::create($this->expected));
+      LimeTester::create($value)->same(LimeTester::create($this->expected));
     }
     catch (LimeAssertionFailedException $e)
     {

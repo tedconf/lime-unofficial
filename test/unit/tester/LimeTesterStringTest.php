@@ -30,41 +30,41 @@ $t = new LimeTest(3);
   $t->is($actual->__toString(), "'a\d'", 'The string in quotes is returned');
 
 
-// @Test: assertLike() throws an exception if the regular expression does not match
+// @Test: like() throws an exception if the regular expression does not match
 
   // fixtures
   $actual = new LimeTesterString('a');
   $expected = new LimeTesterString('/\d/');
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertLike($expected);
+  $actual->like($expected);
 
 
-// @Test: assertLike() throws no exception if the regular expression does match
+// @Test: like() throws no exception if the regular expression does match
 
   // fixtures
   $actual = new LimeTesterString('1');
   $expected = new LimeTesterString('/\d/');
   // test
-  $actual->assertLike($expected);
+  $actual->like($expected);
 
 
-// @Test: assertUnlike() throws an exception if the regular expression does match
+// @Test: unlike() throws an exception if the regular expression does match
 
   // fixtures
   $actual = new LimeTesterString('1');
   $expected = new LimeTesterString('/\d/');
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertUnlike($expected);
+  $actual->unlike($expected);
 
 
-// @Test: assertUnlike() throws no exception if the regular expression does not match
+// @Test: unlike() throws no exception if the regular expression does not match
 
   // fixtures
   $actual = new LimeTesterString('a');
   $expected = new LimeTesterString('/\d/');
   // test
-  $actual->assertUnlike($expected);
+  $actual->unlike($expected);
 
 

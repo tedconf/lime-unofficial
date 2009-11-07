@@ -24,250 +24,250 @@ class TestClassWithToString
 $t = new LimeTest(12);
 
 
-// @Test: assertEquals() throws an exception when comparing objects with scalars (1)
+// @Test: is() throws an exception when comparing objects with scalars (1)
 
   // fixtures
   $actual = new LimeTesterObject(new stdClass());
   $expected = new LimeTesterScalar(false);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws an exception when comparing objects with scalars (2)
+// @Test: is() throws an exception when comparing objects with scalars (2)
 
   // fixtures
   $actual = new LimeTesterScalar(false);
   $expected = new LimeTesterObject(new stdClass());
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws no exception when comparing strings with objects featuring __toString() (1)
+// @Test: is() throws no exception when comparing strings with objects featuring __toString() (1)
 
   // fixtures
   $actual = new LimeTesterString('foobar');
   $expected = new LimeTesterObject(new TestClassWithToString());
   // test
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws no exception when comparing strings with objects featuring __toString() (2)
+// @Test: is() throws no exception when comparing strings with objects featuring __toString() (2)
 
   // fixtures
   $actual = new LimeTesterObject(new TestClassWithToString());
   $expected = new LimeTesterString('foobar');
   // test
-  $actual->assertEquals($expected);
+  $actual->is($expected);
 
 
-// @Test: assertEquals() throws an exception when comparing arrays with scalars (1)
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
-
-
-// @Test: assertEquals() throws an exception when comparing arrays with scalars (2)
-
-  // fixtures
-  $actual = new LimeTesterScalar(false);
-  $expected = new LimeTesterArray(array());
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
-
-
-// @Test: assertEquals() throws an exception when comparing arrays with objects (1)
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterObject(new stdClass());
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
-
-
-// @Test: assertEquals() throws an exception when comparing arrays with objects (2)
-
-  // fixtures
-  $actual = new LimeTesterObject(new stdClass());
-  $expected = new LimeTesterArray(array());
-  // test
-  $t->expect('LimeAssertionFailedException');
-  $actual->assertEquals($expected);
-
-
-// @Test: assertNotEquals() throws no exception when comparing objects with scalars (1)
-
-  // fixtures
-  $actual = new LimeTesterObject(new stdClass());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $actual->assertNotEquals($expected);
-
-
-// @Test: assertNotEquals() throws no exception when comparing objects with scalars (2)
-
-  // fixtures
-  $expected = new LimeTesterObject(new stdClass());
-  $actual = new LimeTesterScalar(false);
-  // test
-  $actual->assertNotEquals($expected);
-
-
-// @Test: assertNotEquals() throws no exception when comparing arrays with scalars (1)
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterScalar(false);
-  // test
-  $actual->assertNotEquals($expected);
-
-
-// @Test: assertNotEquals() throws no exception when comparing arrays with scalars (2)
-
-  // fixtures
-  $actual = new LimeTesterScalar(false);
-  $expected = new LimeTesterArray(array());
-  // test
-  $actual->assertNotEquals($expected);
-
-
-// @Test: assertNotEquals() throws no exception when comparing arrays with objects (1)
-
-  // fixtures
-  $actual = new LimeTesterArray(array());
-  $expected = new LimeTesterObject(new stdClass());
-  // test
-  $actual->assertNotEquals($expected);
-
-
-// @Test: assertNotEquals() throws no exception when comparing arrays with objects (2)
-
-  // fixtures
-  $actual = new LimeTesterObject(new stdClass());
-  $expected = new LimeTesterArray(array());
-  // test
-  $actual->assertNotEquals($expected);
-
-
-// @Test: assertSame() throws an exception when comparing arrays with scalars (1)
+// @Test: is() throws an exception when comparing arrays with scalars (1)
 
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterScalar(false);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->is($expected);
 
 
-// @Test: assertSame() throws an exception when comparing arrays with scalars (2)
+// @Test: is() throws an exception when comparing arrays with scalars (2)
 
   // fixtures
   $actual = new LimeTesterScalar(false);
   $expected = new LimeTesterArray(array());
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->is($expected);
 
 
-// @Test: assertSame() throws an exception when comparing arrays with objects (1)
+// @Test: is() throws an exception when comparing arrays with objects (1)
 
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterObject(new stdClass());
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->is($expected);
 
 
-// @Test: assertSame() throws an exception when comparing arrays with objects (2)
+// @Test: is() throws an exception when comparing arrays with objects (2)
 
   // fixtures
   $actual = new LimeTesterObject(new stdClass());
   $expected = new LimeTesterArray(array());
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->is($expected);
 
 
-// @Test: assertSame() throws an exception when comparing doubles with strings (1)
+// @Test: isnt() throws no exception when comparing objects with scalars (1)
+
+  // fixtures
+  $actual = new LimeTesterObject(new stdClass());
+  $expected = new LimeTesterScalar(false);
+  // test
+  $actual->isnt($expected);
+
+
+// @Test: isnt() throws no exception when comparing objects with scalars (2)
+
+  // fixtures
+  $expected = new LimeTesterObject(new stdClass());
+  $actual = new LimeTesterScalar(false);
+  // test
+  $actual->isnt($expected);
+
+
+// @Test: isnt() throws no exception when comparing arrays with scalars (1)
+
+  // fixtures
+  $actual = new LimeTesterArray(array());
+  $expected = new LimeTesterScalar(false);
+  // test
+  $actual->isnt($expected);
+
+
+// @Test: isnt() throws no exception when comparing arrays with scalars (2)
+
+  // fixtures
+  $actual = new LimeTesterScalar(false);
+  $expected = new LimeTesterArray(array());
+  // test
+  $actual->isnt($expected);
+
+
+// @Test: isnt() throws no exception when comparing arrays with objects (1)
+
+  // fixtures
+  $actual = new LimeTesterArray(array());
+  $expected = new LimeTesterObject(new stdClass());
+  // test
+  $actual->isnt($expected);
+
+
+// @Test: isnt() throws no exception when comparing arrays with objects (2)
+
+  // fixtures
+  $actual = new LimeTesterObject(new stdClass());
+  $expected = new LimeTesterArray(array());
+  // test
+  $actual->isnt($expected);
+
+
+// @Test: same() throws an exception when comparing arrays with scalars (1)
+
+  // fixtures
+  $actual = new LimeTesterArray(array());
+  $expected = new LimeTesterScalar(false);
+  // test
+  $t->expect('LimeAssertionFailedException');
+  $actual->same($expected);
+
+
+// @Test: same() throws an exception when comparing arrays with scalars (2)
+
+  // fixtures
+  $actual = new LimeTesterScalar(false);
+  $expected = new LimeTesterArray(array());
+  // test
+  $t->expect('LimeAssertionFailedException');
+  $actual->same($expected);
+
+
+// @Test: same() throws an exception when comparing arrays with objects (1)
+
+  // fixtures
+  $actual = new LimeTesterArray(array());
+  $expected = new LimeTesterObject(new stdClass());
+  // test
+  $t->expect('LimeAssertionFailedException');
+  $actual->same($expected);
+
+
+// @Test: same() throws an exception when comparing arrays with objects (2)
+
+  // fixtures
+  $actual = new LimeTesterObject(new stdClass());
+  $expected = new LimeTesterArray(array());
+  // test
+  $t->expect('LimeAssertionFailedException');
+  $actual->same($expected);
+
+
+// @Test: same() throws an exception when comparing doubles with strings (1)
 
   // fixtures
   $actual = new LimeTesterDouble(1.0);
   $expected = new LimeTesterString('1.0');
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
-  $actual->assertNotSame($expected);
+  $actual->same($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertSame() throws an exception when comparing doubles with strings (2)
+// @Test: same() throws an exception when comparing doubles with strings (2)
 
   // fixtures
   $actual = new LimeTesterString('1.0');
   $expected = new LimeTesterDouble(1.0);
   // test
   $t->expect('LimeAssertionFailedException');
-  $actual->assertSame($expected);
+  $actual->same($expected);
 
 
-// @Test: assertNotSame() throws no exception when comparing arrays with scalars (1)
+// @Test: isntSame() throws no exception when comparing arrays with scalars (1)
 
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterScalar(false);
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertNotSame() throws no exception when comparing arrays with scalars (2)
+// @Test: isntSame() throws no exception when comparing arrays with scalars (2)
 
   // fixtures
   $actual = new LimeTesterScalar(false);
   $expected = new LimeTesterArray(array());
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertNotSame() throws no exception when comparing arrays with objects (1)
+// @Test: isntSame() throws no exception when comparing arrays with objects (1)
 
   // fixtures
   $actual = new LimeTesterArray(array());
   $expected = new LimeTesterObject(new stdClass());
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertNotSame() throws no exception when comparing arrays with objects (2)
+// @Test: isntSame() throws no exception when comparing arrays with objects (2)
 
   // fixtures
   $actual = new LimeTesterObject(new stdClass());
   $expected = new LimeTesterArray(array());
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertNotSame() throws no exception when comparing doubles with strings (1)
+// @Test: isntSame() throws no exception when comparing doubles with strings (1)
 
   // fixtures
   $actual = new LimeTesterDouble(1.0);
   $expected = new LimeTesterString('1.0');
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 
-// @Test: assertNotSame() throws no exception when comparing doubles with strings (2)
+// @Test: isntSame() throws no exception when comparing doubles with strings (2)
 
   // fixtures
   $actual = new LimeTesterString('1.0');
   $expected = new LimeTesterDouble(1.0);
   // test
-  $actual->assertNotSame($expected);
+  $actual->isntSame($expected);
 
 

@@ -14,7 +14,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
   protected
     $type         = 'array';
 
-  public function assertEquals(LimeTesterInterface $expected)
+  public function is(LimeTesterInterface $expected)
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
@@ -32,7 +32,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
 
       try
       {
-        $this[$key]->assertEquals($value);
+        $this[$key]->is($value);
       }
       catch (LimeAssertionFailedException $e)
       {
@@ -48,7 +48,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
     }
   }
 
-  public function assertNotEquals(LimeTesterInterface $expected)
+  public function isnt(LimeTesterInterface $expected)
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
@@ -64,7 +64,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
 
       try
       {
-        $this[$key]->assertNotEquals($value);
+        $this[$key]->isnt($value);
         return;
       }
       catch (LimeAssertionFailedException $e)
@@ -75,7 +75,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
     throw new LimeAssertionFailedException($this, $expected);
   }
 
-  public function assertSame(LimeTesterInterface $expected)
+  public function same(LimeTesterInterface $expected)
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
@@ -96,7 +96,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
 
       try
       {
-        $this->current()->assertSame($expected->current());
+        $this->current()->same($expected->current());
       }
       catch (LimeAssertionFailedException $e)
       {
@@ -110,7 +110,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
     }
   }
 
-  public function assertNotSame(LimeTesterInterface $expected)
+  public function isntSame(LimeTesterInterface $expected)
   {
     if (!$expected instanceof LimeTesterArray || $this->getType() !== $expected->getType())
     {
@@ -126,7 +126,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
 
       try
       {
-        $this->current()->assertNotSame($expected->current());
+        $this->current()->isntSame($expected->current());
       }
       catch (LimeAssertionFailedException $e)
       {
@@ -135,13 +135,13 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
     }
   }
 
-  public function assertContains(LimeTesterInterface $expected)
+  public function contains(LimeTesterInterface $expected)
   {
     foreach ($this as $key => $value)
     {
       try
       {
-        $value->assertEquals($expected);
+        $value->is($expected);
         return;
       }
       catch (LimeAssertionFailedException $e)
@@ -152,7 +152,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
     throw new LimeAssertionFailedException($this->dumpAll(), $expected);
   }
 
-  public function assertNotContains(LimeTesterInterface $expected)
+  public function containsNot(LimeTesterInterface $expected)
   {
     foreach ($this as $key => $value)
     {
@@ -160,7 +160,7 @@ class LimeTesterArray extends LimeTester implements ArrayAccess, Iterator
 
       try
       {
-        $value->assertEquals($expected);
+        $value->is($expected);
       }
       catch (LimeAssertionFailedException $e)
       {
