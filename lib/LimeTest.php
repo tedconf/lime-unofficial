@@ -19,13 +19,11 @@
 class LimeTest
 {
   protected
-    $output               = null,
-    $options              = array(),
-    $errorReporting       = true,
-    $expectedException    = null,
-    $expectedCode         = null,
-    $actualException      = null,
-    $actualCode           = null;
+    $output                 = null,
+    $options                = array(),
+    $errorReporting         = true,
+    $exception              = null,
+    $exceptionExpectation   = null;
 
   public function __construct($plan = null, array $options = array())
   {
@@ -345,8 +343,8 @@ class LimeTest
   {
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
-    $this->expectedException = new LimeExceptionExpectation($exception, $file, $line);
-    $this->actualException = null;
+    $this->exceptionExpectation = new LimeExceptionExpectation($exception, $file, $line);
+    $this->exception = null;
   }
 
   public function handleError($code, $message, $file, $line, $context)
@@ -371,9 +369,9 @@ class LimeTest
 
   public function handleException(Exception $exception)
   {
-    if (!is_null($this->expectedException))
+    if (!is_null($this->exceptionExpectation))
     {
-      $this->actualException = $exception;
+      $this->exception = $exception;
     }
     else
     {
@@ -385,20 +383,20 @@ class LimeTest
 
   public function verifyException()
   {
-    if (!is_null($this->expectedException))
+    if (!is_null($this->exceptionExpectation))
     {
-      $expected = $this->expectedException->getException();
-      $file = $this->expectedException->getFile();
-      $line = $this->expectedException->getLine();
+      $expected = $this->exceptionExpectation->getException();
+      $file = $this->exceptionExpectation->getFile();
+      $line = $this->exceptionExpectation->getLine();
 
       if (is_string($expected))
       {
-        $actual = is_object($this->actualException) ? get_class($this->actualException) : 'none';
+        $actual = is_object($this->exception) ? get_class($this->exception) : 'none';
         $message = sprintf('A "%s" was thrown', $expected);
       }
       else
       {
-        $actual = $this->actualException;
+        $actual = $this->exception;
         $message = sprintf('A "%s" was thrown', get_class($expected));
       }
 
@@ -417,6 +415,6 @@ class LimeTest
       }
     }
 
-    $this->expectedException = null;
+    $this->exceptionExpectation = null;
   }
 }
