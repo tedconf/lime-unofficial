@@ -23,9 +23,6 @@
  */
 class LimeMockInvocation
 {
-  const
-    ANY_PARAMETERS  = '...';
-
   protected
     $method         = null,
     $parameters     = array();
@@ -33,10 +30,10 @@ class LimeMockInvocation
   /**
    * Constructor.
    *
-   * @param string        $method      The method name
-   * @param array|string  $parameters  The method parameters or ANY_PARAMETERS
+   * @param string  $method      The method name
+   * @param array   $parameters  The method parameters
    */
-  public function __construct($class, $method, $parameters = array())
+  public function __construct($class, $method, array $parameters = array())
   {
     $this->class = $class;
     $this->method = $method;
@@ -66,7 +63,7 @@ class LimeMockInvocation
   /**
    * Returns the method parameters.
    *
-   * @return array|string   The parameter array or ANY_PARAMETERS
+   * @return array  The parameter array
    */
   public function getParameters()
   {
@@ -87,49 +84,6 @@ class LimeMockInvocation
     }
 
     return $this->parameters[$index];
-  }
-
-  /**
-   * Returns whether this object equals the given invocation.
-   *
-   * @param  LimeMockInvocation  $invocation  The compared invocation
-   * @param  boolean             $strict      Whether to use strict parameter
-   *                                          comparison
-   * @return boolean                          TRUE if the objects are equal
-   */
-  public function equals(LimeMockInvocation $invocation, $strict = false)
-  {
-    if ($this->method != $invocation->method || $this->class != $invocation->class)
-    {
-      return false;
-    }
-    else if ($this->parameters == self::ANY_PARAMETERS)
-    {
-      return true;
-    }
-    else
-    {
-      $exp1 = LimeTester::create($this->parameters);
-      $exp2 = LimeTester::create($invocation->parameters);
-
-      try
-      {
-        if ($strict)
-        {
-          $exp1->assertSame($exp2);
-        }
-        else
-        {
-          $exp1->assertEquals($exp2);
-        }
-
-        return true;
-      }
-      catch (LimeAssertionFailedException $e)
-      {
-        return false;
-      }
-    }
   }
 
   /**

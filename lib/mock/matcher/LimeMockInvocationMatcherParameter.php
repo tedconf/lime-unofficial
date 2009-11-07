@@ -41,6 +41,16 @@ class LimeMockInvocationMatcherParameter implements LimeMockInvocationMatcherInt
   }
 
   /**
+   * Returns the parameter index of this matcher.
+   *
+   * @return integer
+   */
+  public function getIndex()
+  {
+    return $this->index;
+  }
+
+  /**
    * (non-PHPdoc)
    * @see mock/matcher/LimeMockInvocationMatcherInterface#invoke($invocation)
    */
@@ -61,6 +71,33 @@ class LimeMockInvocationMatcherParameter implements LimeMockInvocationMatcherInt
     {
       throw new LimeMockInvocationMatcherException("was not called with $this->index or more parameters");
     }
+  }
+
+  /**
+   * Returns whether this matcher matches the given invocation.
+   *
+   * @param  LimeMockInvocation $invocation
+   * @return boolean
+   */
+  public function matches(LimeMockInvocation $invocation)
+  {
+    try
+    {
+      if (!is_null($this->constraint))
+      {
+        $this->constraint->evaluate($invocation->getParameter($this->index-1));
+      }
+    }
+    catch (LimeConstraintException $e)
+    {
+      return false;
+    }
+    catch (OutOfRangeException $e)
+    {
+      return false;
+    }
+
+    return true;
   }
 
   /**

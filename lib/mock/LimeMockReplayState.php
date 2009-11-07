@@ -41,9 +41,9 @@ class LimeMockReplayState implements LimeMockStateInterface
    * (non-PHPdoc)
    * @see mock/LimeMockStateInterface#invoke($class, $method, $parameters)
    */
-  public function invoke($class, $method, $parameters = LimeMockInvocation::ANY_PARAMETERS)
+  public function invoke($class, $method, array $parameters = null)
   {
-    return $this->behaviour->invoke(new LimeMockInvocation($class, $method, $parameters));
+    return $this->behaviour->invoke(new LimeMockInvocation($class, $method, is_null($parameters) ? array() : $parameters));
   }
 
   /**

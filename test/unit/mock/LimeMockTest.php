@@ -367,7 +367,7 @@ $t = new LimeTest(100);
 
   // test
   $m = LimeMock::create('TestClass', $output, array('no_exceptions' => true));
-  $m->testMethod(1, 'Foobar');
+  $m->testMethod('Foobar');
   $m->replay();
   $m->testMethod('Foobar', 1);
   $m->verify();

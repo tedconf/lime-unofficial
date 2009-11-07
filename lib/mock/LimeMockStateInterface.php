@@ -36,7 +36,7 @@ interface LimeMockStateInterface
    * @throws LimeMockInvocationException
    * @throws Exception
    */
-  public function invoke($class, $method, $parameters = LimeMockInvocation::ANY_PARAMETERS);
+  public function invoke($class, $method, array $parameters = null);
 
   /**
    * Tells the state that the mock should not receive any method invocation.

@@ -301,7 +301,7 @@ class LimeMock
    */
   public static function any(LimeMockInterface $mock, $methodName)
   {
-    return $mock->__call($methodName, LimeMockInvocation::ANY_PARAMETERS);
+    return $mock->__call($methodName, null);
   }
 
   /**

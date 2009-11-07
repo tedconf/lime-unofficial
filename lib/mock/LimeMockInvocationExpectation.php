@@ -46,15 +46,14 @@
  */
 class LimeMockInvocationExpectation
 {
-  const
-    COUNT_MATCHER     = 0;
-
   protected
     $invocation         = null,
     $matched            = false,
     $output             = null,
     $countMatcher       = null,
     $parameterMatchers  = array(),
+    $parameters         = array(),
+    $withAnyParameters  = false,
     $returns            = false,
     $returnValue        = null,
     $exception          = null,
@@ -178,7 +177,24 @@ class LimeMockInvocationExpectation
    */
   public function matches(LimeMockInvocation $invocation)
   {
-    return $this->invocation->equals($invocation);
+    if ($this->invocation->getClass() != $invocation->getClass() || $this->invocation->getMethod() != $invocation->getMethod())
+    {
+      return false;
+    }
+
+    if ($this->withAnyParameters)
+    {
+      return true;
+    }
+
+    $index = 0;
+
+    foreach ($this->parameterMatchers as $matcher)
+    {
+      $index = max($index, $matcher->getIndex());
+    }
+
+    return count($invocation->getParameters()) == $index;
   }
 
   /**
@@ -375,7 +391,13 @@ class LimeMockInvocationExpectation
    */
   public function strict()
   {
-    $this->parameterMatchers[] = new LimeMockInvocationMatcherStrict($this->invocation);
+    $this->strict = true;
+
+    if (!$this->withAnyParameters)
+    {
+      // reload matchers
+      $this->withParameters($this->parameters);
+    }
 
     return $this;
   }
@@ -391,8 +413,49 @@ class LimeMockInvocationExpectation
    */
   public function parameter($index)
   {
-    $this->parameterMatchers[] = new LimeMockInvocationMatcherParameter($index, $this);
+    $this->parameterMatchers[$index] = $matcher = new LimeMockInvocationMatcherParameter($index, $this);
 
-    return end($this->parameterMatchers);
+    return $matcher;
+  }
+
+  /**
+   * This method can be called with any parameters.
+   *
+   * @return LimeMockInvocationExpectation  This object
+   */
+  public function withAnyParameters()
+  {
+    $this->parameterMatchers = array();
+    $this->withAnyParameters = true;
+
+    return $this;
+  }
+
+  /**
+   * This method must be called with the given parameters.
+   *
+   * @param array $parameters
+   * @param $strict
+   * @return unknown_type
+   */
+  public function withParameters(array $parameters)
+  {
+    $this->parameters = $parameters;
+    $this->parameterMatchers = array();
+    $this->withAnyParameters = false;
+
+    foreach ($parameters as $index => $value)
+    {
+      if ($this->strict)
+      {
+        $this->parameter($index+1)->same($value);
+      }
+      else
+      {
+        $this->parameter($index+1)->is($value);
+      }
+    }
+
+    return $this;
   }
 }
