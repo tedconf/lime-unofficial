@@ -251,41 +251,6 @@ class LimeTest
     $this->testConstraint(new LimeConstraintLessThanEqual($exp2), $exp1, $message);
   }
 
-  /**
-   * Compares two arguments with an operator
-   *
-   * @param mixed  $exp1    left value
-   * @param string $op      operator
-   * @param mixed  $exp2    right value
-   * @param string $message display output message when the test passes
-   *
-   * @return boolean
-   */
-  public function compare($exp1, $op, $exp2, $message = '')
-  {
-    switch ($op)
-    {
-      case '===':
-        return $this->same($exp1, $exp2, $message);
-      case '!==':
-        return $this->isntSame($exp1, $exp2, $message);
-      case '==':
-        return $this->is($exp1, $exp2, $message);
-      case '!=':
-        return $this->isnt($exp1, $exp2, $message);
-      case '<':
-        return $this->lessThan($exp1, $exp2, $message);
-      case '<=':
-        return $this->lessThanEqual($exp1, $exp2, $message);
-      case '>':
-        return $this->greaterThan($exp1, $exp2, $message);
-      case '>=':
-        return $this->greaterThanEqual($exp1, $exp2, $message);
-      default:
-        throw new InvalidArgumentException(sprintf('Unknown operation "%s"', $op));
-    }
-  }
-
   public function contains($exp1, $exp2, $message = '')
   {
     $this->testConstraint(new LimeConstraintContains($exp2), $exp1, $message);
