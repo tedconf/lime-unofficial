@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ###
-# This file is part of the symfony framework.
+# This file is part of the Lime framework.
 #
 # (c) Fabien Potencier <fabien.potencier@symfony-project.com>
 #
