@@ -8,4 +8,4 @@ $t->is_deeply(array(1, 2, array(1 => 'foo', 'a' => '4')), array(1, 2, array(1 =>
 --EXPECT--
 ok 1 - test name
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.

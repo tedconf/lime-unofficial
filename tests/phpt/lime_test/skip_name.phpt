@@ -9,4 +9,4 @@ $t->skip('test name', 2);
 ok 1 # SKIP test name
 ok 2 # SKIP test name
 1..2
- Looks like everything went fine.
+# Looks like everything went fine.

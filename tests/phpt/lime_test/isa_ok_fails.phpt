@@ -11,4 +11,4 @@ not ok 1
 #     Failed test (%s/isa_ok_fails.php at line 4)
 #       variable isn't a 'Foo' it's a 'Test'
 1..1
- Looks like you failed 1 tests of 1.
+# Looks like you failed 1 tests of 1.

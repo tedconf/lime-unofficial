@@ -11,4 +11,4 @@ not ok 1
 #     Failed test (%s/can_ok_fails.php at line 4)
 #       method 'foo' does not exist
 1..1
- Looks like you failed 1 tests of 1.
+# Looks like you failed 1 tests of 1.

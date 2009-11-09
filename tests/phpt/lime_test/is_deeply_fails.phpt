@@ -21,4 +21,4 @@ not ok 3
 #            got: array ()
 #       expected: array (  0 => 1,  1 => 2,  2 => 3,)
 1..3
- Looks like you failed 3 tests of 3.
+# Looks like you failed 3 tests of 3.

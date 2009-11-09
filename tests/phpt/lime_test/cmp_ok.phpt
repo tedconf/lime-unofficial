@@ -8,4 +8,4 @@ $t->cmp_ok(2, '>', 1);
 --EXPECT--
 ok 1
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.

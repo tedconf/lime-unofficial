@@ -8,4 +8,4 @@ $t->todo();
 --EXPECT--
 ok 1 # TODO
 1..1
- Looks like everything went fine.
+# Looks like everything went fine.
