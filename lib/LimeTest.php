@@ -141,7 +141,7 @@ class LimeTest
    */
   public function is($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintIs($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintIs($exp2), $exp1, $message);
   }
 
   /**
@@ -155,7 +155,7 @@ class LimeTest
    */
   public function same($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintSame($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintSame($exp2), $exp1, $message);
   }
 
   /**
@@ -169,7 +169,7 @@ class LimeTest
    */
   public function isnt($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintIsNot($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintIsNot($exp2), $exp1, $message);
   }
 
   /**
@@ -183,7 +183,7 @@ class LimeTest
    */
   public function isntSame($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintNotSame($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintNotSame($exp2), $exp1, $message);
   }
 
   /**
@@ -197,7 +197,7 @@ class LimeTest
    */
   public function like($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintLike($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintLike($exp2), $exp1, $message);
   }
 
   /**
@@ -211,37 +211,37 @@ class LimeTest
    */
   public function unlike($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintUnlike($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintUnlike($exp2), $exp1, $message);
   }
 
   public function greaterThan($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintGreaterThan($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintGreaterThan($exp2), $exp1, $message);
   }
 
   public function greaterThanEqual($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintGreaterThanEqual($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintGreaterThanEqual($exp2), $exp1, $message);
   }
 
   public function lessThan($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintLessThan($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintLessThan($exp2), $exp1, $message);
   }
 
   public function lessThanEqual($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintLessThanEqual($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintLessThanEqual($exp2), $exp1, $message);
   }
 
   public function contains($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintContains($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintContains($exp2), $exp1, $message);
   }
 
   public function containsNot($exp1, $exp2, $message = '')
   {
-    $this->test(new LimeConstraintContainsNot($exp2), $exp1, $message);
+    return $this->test(new LimeConstraintContainsNot($exp2), $exp1, $message);
   }
 
   /**
