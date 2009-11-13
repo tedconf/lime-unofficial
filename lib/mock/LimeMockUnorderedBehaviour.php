@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the Lime test framework.
- *
- * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * (c) Bernhard Schussek <bernhard.schussek@symfony-project.com>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 /**
  * A behaviour that allows methods to be invoked in the any order.
  *
@@ -26,7 +16,7 @@ class LimeMockUnorderedBehaviour extends LimeMockBehaviour
    */
   public function invoke(LimeMockInvocation $invocation)
   {
-    $exception = null;
+    $exceptionStack = new LimeMockInvocationExceptionStack();
 
     foreach ($this->invocations as $invocationExpectation)
     {
@@ -39,14 +29,15 @@ class LimeMockUnorderedBehaviour extends LimeMockBehaviour
       }
       catch (LimeMockInvocationException $e)
       {
-        // see whether any other expectation matches before rethrowing
-        $exception = $e;
+        // make sure to test all expectations
+        $exceptionStack->add($e);
       }
     }
 
-    if (!is_null($exception))
+    // no invocation matched and at least one exception was thrown
+    if (!$exceptionStack->isEmpty())
     {
-      throw $exception;
+      throw $exceptionStack;
     }
 
     parent::invoke($invocation);

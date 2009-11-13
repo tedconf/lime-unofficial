@@ -22,9 +22,6 @@
  */
 class LimeMockInvocationException extends Exception
 {
-  private
-    $invocation   = null;
-
   /**
    * Constructor.
    *
@@ -37,17 +34,5 @@ class LimeMockInvocationException extends Exception
   public function __construct(LimeMockInvocation $invocation, $message)
   {
     parent::__construct($invocation.' '.$message);
-
-    $this->invocation = $invocation;
-  }
-
-  /**
-   * Returns the invocation that caused this exception.
-   *
-   * @return LimeMockInvocation
-   */
-  public function getInvocation()
-  {
-    return $this->invocation;
   }
 }

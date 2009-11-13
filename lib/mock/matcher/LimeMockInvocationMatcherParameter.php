@@ -65,7 +65,9 @@ class LimeMockInvocationMatcherParameter implements LimeMockInvocationMatcherInt
     }
     catch (LimeConstraintException $e)
     {
-      throw new LimeMockInvocationMatcherException("was called with wrong parameter $this->index\n".$e->getMessage());
+      $message = LimeTools::indent($e->getMessage(), 2);
+
+      throw new LimeMockInvocationMatcherException("was called with wrong parameter $this->index\n".$message);
     }
     catch (OutOfRangeException $e)
     {
