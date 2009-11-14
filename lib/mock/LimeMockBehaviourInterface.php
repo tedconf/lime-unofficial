@@ -57,6 +57,14 @@ interface LimeMockBehaviourInterface
   public function invoke(LimeMockInvocation $invocation);
 
   /**
+   * Returns whether the given method is invokable.
+   *
+   * @param  LimeMockMethod $method  The method
+   * @return boolean                 TRUE if the method is invokable
+   */
+  public function isInvokable(LimeMockMethod $method);
+
+  /**
    * Verifies whether all expectations have been fulfilled.
    *
    * You should call LimeMockInvocationExpectation#verify() to implement this

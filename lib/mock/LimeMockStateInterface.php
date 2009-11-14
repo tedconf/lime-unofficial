@@ -29,14 +29,20 @@ interface LimeMockStateInterface
    * Depending on the state of the mock, invoked methods may be treated
    * differently.
    *
-   * @param  string $class
-   * @param  string $method
-   * @param  array|string $parameters
+   * @param  LimeMockInvocation $invocation
    * @return mixed
    * @throws LimeMockInvocationException
    * @throws Exception
    */
-  public function invoke($class, $method, array $parameters = null);
+  public function invoke(LimeMockMethod $method, array $parameters = null);
+
+  /**
+   * Returns whether the given method is invokable.
+   *
+   * @param  LimeMockMethod $method  The method
+   * @return boolean                 TRUE if the method is invokable
+   */
+  public function isInvokable(LimeMockMethod $method);
 
   /**
    * Tells the state that the mock should not receive any method invocation.

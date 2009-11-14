@@ -91,6 +91,23 @@ abstract class LimeMockBehaviour implements LimeMockBehaviourInterface
 
   /**
    * (non-PHPdoc)
+   * @see mock/LimeMockBehaviourInterface#isInvokable($method)
+   */
+  public function isInvokable(LimeMockMethod $method)
+  {
+    foreach ($this->invocations as $invocation)
+    {
+      if ($invocation->matches($method))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * (non-PHPdoc)
    * @see mock/LimeMockBehaviourInterface#verify()
    */
   public function verify()

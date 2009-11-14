@@ -41,11 +41,17 @@ abstract class TestClassAbstract
 
 class TestClass
 {
-  public static $calls = 0;
+  public $calls = 0;
+  public $calls2 = 0;
 
   public function testMethod()
   {
-    ++self::$calls;
+    ++$this->calls;
+  }
+
+  public function testMethod2()
+  {
+    ++$this->calls2;
   }
 }
 
@@ -99,7 +105,7 @@ class TestAutoloader
 spl_autoload_register(array('TestAutoloader', 'autoload'));
 
 
-$t = new LimeTest(100);
+$t = new LimeTest(102);
 
 
 // @Before
@@ -185,13 +191,29 @@ $t = new LimeTest(100);
 // @Test: Methods in the mocked class are not called
 
   // fixtures
-  TestClass::$calls = 0;
+  $m->calls = 0;
   // test
   $m->testMethod();
   $m->replay();
   $m->testMethod();
   // assertions
-  $t->is(TestClass::$calls, 0, 'The method has not been called');
+  $t->is($m->calls, 0, 'The method has not been called');
+
+
+// @Test: Unmocked methods in the mocked class are called if the option "stub_methods" is FALSE
+
+  // fixtures
+  $m->calls = 0;
+  $m->calls2 = 0;
+  // test
+  $m = LimeMock::create('TestClass', $output, array('stub_methods' => false, 'nice' => true));
+  $m->testMethod();
+  $m->replay();
+  $m->testMethod();
+  $m->testMethod2();
+  // assertions
+  $t->is($m->calls, 0, 'The mocked method has not been called');
+  $t->is($m->calls2, 1, 'The unmocked method has been called');
 
 
 // @Test: Final methods cannot be mocked
@@ -833,3 +855,4 @@ $t = new LimeTest(100);
   // assertions
   $t->is($output->passes, 1, 'One test passed');
   $t->is($output->fails, 0, 'No test failed');
+

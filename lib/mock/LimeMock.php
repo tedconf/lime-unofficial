@@ -81,6 +81,9 @@
  *                          to access the control methods statically in this
  *                          class, f.i. LimeMock::replay($mock);
  *                          Default: TRUE
+ *    * stub_methods:       If set to FALSE, method implementations in the
+ *                          mocked class are called when a method is not
+ *                          configured to be stubbed. Default: TRUE
  *    * nice:               See LimeMockBehaviour
  *    * no_exceptions:      See LimeMockBehaviour
  *
@@ -130,6 +133,7 @@ class LimeMock
     $options = array_merge(array(
       'strict'              =>  false,
       'generate_controls'   =>  true,
+      'stub_methods'        =>  true,
     ), $options);
 
     if ($options['strict'])
@@ -143,7 +147,7 @@ class LimeMock
 
     $name = self::generateClass($classOrInterface, $options['generate_controls']);
 
-    return new $name($classOrInterface, $behaviour, $output);
+    return new $name($classOrInterface, $behaviour, $output, $options['stub_methods']);
   }
 
   /**

@@ -21,7 +21,7 @@
  * @author     Bernhard Schussek <bernhard.schussek@symfony-project.com>
  * @version    SVN: $Id$
  */
-class LimeMockInvocation
+class LimeMockInvocation implements LimeMockMethodInterface
 {
   protected
     $method         = null,
@@ -33,9 +33,8 @@ class LimeMockInvocation
    * @param string  $method      The method name
    * @param array   $parameters  The method parameters
    */
-  public function __construct($class, $method, array $parameters = array())
+  public function __construct(LimeMockMethod $method, array $parameters = array())
   {
-    $this->class = $class;
     $this->method = $method;
     $this->parameters = $parameters;
   }
@@ -47,7 +46,7 @@ class LimeMockInvocation
    */
   public function getClass()
   {
-    return $this->class;
+    return $this->method->getClass();
   }
 
   /**
@@ -57,7 +56,7 @@ class LimeMockInvocation
    */
   public function getMethod()
   {
-    return $this->method;
+    return $this->method->getMethod();
   }
 
   /**
@@ -130,6 +129,6 @@ class LimeMockInvocation
       }
     }
 
-    return sprintf('%s(%s)', $this->method, implode(', ', (array)$parameters));
+    return sprintf('%s(%s)', $this->method->getMethod(), implode(', ', (array)$parameters));
   }
 }

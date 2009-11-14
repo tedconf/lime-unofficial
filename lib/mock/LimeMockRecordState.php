@@ -47,11 +47,11 @@ class LimeMockRecordState implements LimeMockStateInterface
 
   /**
    * (non-PHPdoc)
-   * @see mock/LimeMockStateInterface#invoke($class, $method, $parameters)
+   * @see mock/LimeMockStateInterface#invoke($method, $parameters)
    */
-  public function invoke($class, $method, array $parameters = null)
+  public function invoke(LimeMockMethod $method, array $parameters = null)
   {
-    $invocation = new LimeMockInvocation($class, $method, is_null($parameters) ? array() : $parameters);
+    $invocation = new LimeMockInvocation($method, is_null($parameters) ? array() : $parameters);
     $invocation = new LimeMockInvocationExpectation($invocation, $this->output);
 
     if (is_null($parameters))
@@ -66,6 +66,17 @@ class LimeMockRecordState implements LimeMockStateInterface
     $this->behaviour->expect($invocation);
 
     return $invocation;
+  }
+
+  /**
+   * All method can be invoked during record mode.
+   *
+   * (non-PHPdoc)
+   * @see mock/LimeMockStateInterface#isInvokable($method)
+   */
+  public function isInvokable(LimeMockMethod $method)
+  {
+    return true;
   }
 
   /**

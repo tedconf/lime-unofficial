@@ -340,6 +340,20 @@ class LimeTest
     return LimeMock::create($class, new LimeOutputNone(), $options);
   }
 
+  public function extendMock($class, array $options = array())
+  {
+    $options['stub_methods'] = false;
+
+    return $this->mock($class, $options);
+  }
+
+  public function extendStub($class, array $options = array())
+  {
+    $options['stub_methods'] = false;
+
+    return $this->stub($class, $options);
+  }
+
   public function expect($exception, $code = null)
   {
     list ($file, $line) = LimeTrace::findCaller('LimeTest');

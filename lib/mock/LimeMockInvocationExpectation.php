@@ -175,26 +175,27 @@ class LimeMockInvocationExpectation
    * @param  LimeMockInvocation $invocation
    * @return boolean
    */
-  public function matches(LimeMockInvocation $invocation)
+  public function matches(LimeMockMethodInterface $method)
   {
-    if ($this->invocation->getClass() != $invocation->getClass() || $this->invocation->getMethod() != $invocation->getMethod())
+    if ($this->invocation->getClass() != $method->getClass() || $this->invocation->getMethod() != $method->getMethod())
     {
       return false;
     }
+    else if ($method instanceof LimeMockInvocation && !$this->withAnyParameters)
+    {
+      $index = 0;
 
-    if ($this->withAnyParameters)
+      foreach ($this->parameterMatchers as $matcher)
+      {
+        $index = max($index, $matcher->getIndex());
+      }
+
+      return count($method->getParameters()) == $index;
+    }
+    else
     {
       return true;
     }
-
-    $index = 0;
-
-    foreach ($this->parameterMatchers as $matcher)
-    {
-      $index = max($index, $matcher->getIndex());
-    }
-
-    return count($invocation->getParameters()) == $index;
   }
 
   /**

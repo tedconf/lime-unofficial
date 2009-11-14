@@ -11,16 +11,18 @@
 <?php echo $class_declaration ?>  
 {
   private
-    $class      = null,
-    $state      = null,
-    $output     = null,
-    $behaviour  = null;
+    $class        = null,
+    $state        = null,
+    $output       = null,
+    $behaviour    = null,
+    $stubMethods  = true;
   
-  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output)
+  public function __construct($class, LimeMockBehaviourInterface $behaviour, LimeOutputInterface $output, $stubMethods = true)
   {
     $this->class = $class;
     $this->behaviour = $behaviour;
     $this->output = $output;
+    $this->stubMethods = $stubMethods;
     
     $this->__lime_reset();
   }
@@ -29,7 +31,18 @@
   {
     try
     {
-      return $this->state->invoke($this->class, $method, $parameters);
+      $method = new LimeMockMethod($this->class, $method);
+      
+      // if $stubMethods is set to FALSE, methods that are not configured are
+      // passed to the real implementation
+      if ($this->stubMethods || $this->state->isInvokable($method))
+      {
+        return $this->state->invoke($method, $parameters);
+      }
+      else if (method_exists($this->class, $method->getMethod()))
+      {
+        return call_user_func_array(array('parent', $method->getMethod()), $parameters);
+      }
     }
     catch (LimeMockInvocationException $e)
     {
