@@ -37,6 +37,11 @@ class LimeTesterDouble extends LimeTesterInteger
 
   public function is(LimeTesterInterface $expected)
   {
+    if (is_infinite($this->value) && is_infinite($expected->value))
+    {
+      return;
+    }
+
     if (abs($this->value - $expected->value) >= self::EPSILON)
     {
       throw new LimeAssertionFailedException($this, $expected);
@@ -45,7 +50,7 @@ class LimeTesterDouble extends LimeTesterInteger
 
   public function isnt(LimeTesterInterface $expected)
   {
-    if (abs($this->value - $expected->value) < self::EPSILON)
+    if ((is_infinite($this->value) && is_infinite($expected->value)) || abs($this->value - $expected->value) < self::EPSILON)
     {
       throw new LimeAssertionFailedException($this, $expected);
     }

@@ -14,7 +14,7 @@ include dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(2);
+$t = new LimeTest(5);
 
 
 // @Test: __toString() returns the value as float
@@ -31,6 +31,13 @@ $t = new LimeTest(2);
   // test
   $actual->is($expected);
 
+// @Test: is() throws no exception if the the two values are infinite
+
+  // fixtures
+  $actual = new LimeTesterDouble(log(0));
+  $expected = new LimeTesterDouble(log(0));
+  // test
+  $actual->is($expected);
 
 // @Test: isnt() throws an exception if the difference between the doubles is very small
 
@@ -41,3 +48,11 @@ $t = new LimeTest(2);
   $t->expect('LimeAssertionFailedException');
   $actual->isnt($expected);
 
+// @Test: isnt() throws an exception if the the two values are infinite
+
+  // fixtures
+  $actual = new LimeTesterDouble(log(0));
+  $expected = new LimeTesterDouble(log(0));
+  // test
+  $t->expect('LimeAssertionFailedException');
+  $actual->isnt($expected);
