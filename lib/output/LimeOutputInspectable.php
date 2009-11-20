@@ -85,7 +85,7 @@ class LimeOutputInspectable implements LimeOutputInterface
 
   public function plan($amount)
   {
-    $this->planned = $amount;
+    $this->planned += $amount;
     $this->output->plan($amount);
   }
 
