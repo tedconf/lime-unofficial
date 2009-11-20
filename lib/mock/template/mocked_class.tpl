@@ -41,7 +41,13 @@
       }
       else if (method_exists($this->class, $method->getMethod()))
       {
-        return call_user_func_array(array('parent', $method->getMethod()), $parameters);
+        // THIS METHOD CALL WILL LEAD TO SEGFAULTS WHEN EXECUTED IN A 
+        // WEBSERVER ENVIRONMENT!!!
+        
+        // should be replaced by this in PHP 5.3:
+        // call_user_func_array('parent::'.$method->getMethod(), $parameters);
+        
+        return call_user_func_array(array($this, 'parent::'.$method->getMethod()), $parameters);
       }
     }
     catch (LimeMockInvocationException $e)

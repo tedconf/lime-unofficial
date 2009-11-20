@@ -217,7 +217,7 @@ class LimeMock
         }
 
         $methods .= sprintf(self::$methodTemplate, $modifiers, $method->getName(),
-            implode(', ', $parameters), $method->getName());
+            implode(', ', $parameters), $method->getName())."\n  ";
       }
     }
 
