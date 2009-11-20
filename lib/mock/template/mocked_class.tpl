@@ -44,10 +44,14 @@
         // THIS METHOD CALL WILL LEAD TO SEGFAULTS WHEN EXECUTED IN A 
         // WEBSERVER ENVIRONMENT!!!
         
-        // should be replaced by this in PHP 5.3:
-        // call_user_func_array('parent::'.$method->getMethod(), $parameters);
-        
-        return call_user_func_array(array($this, 'parent::'.$method->getMethod()), $parameters);
+        if (PHP_VERSION_ID < 50300)
+        {
+	      return call_user_func_array(array($this, 'parent::'.$method->getMethod()), $parameters);
+	    }
+	    else
+	    {
+          return call_user_func_array('parent::'.$method->getMethod(), $parameters);
+        }
       }
     }
     catch (LimeMockInvocationException $e)
