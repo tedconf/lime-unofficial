@@ -14,6 +14,7 @@ class LimeOutputInspectable implements LimeOutputInterface
 {
   private
     $output       = null,
+    $planned      = 0,
     $passed       = 0,
     $failed       = 0,
     $skipped      = 0,
@@ -30,6 +31,11 @@ class LimeOutputInspectable implements LimeOutputInterface
   public function supportsThreading()
   {
     return $this->output->supportsThreading();
+  }
+
+  public function getPlanned()
+  {
+    return $this->planned;
   }
 
   public function getPassed()
@@ -79,6 +85,7 @@ class LimeOutputInspectable implements LimeOutputInterface
 
   public function plan($amount)
   {
+    $this->planned = $amount;
     $this->output->plan($amount);
   }
 

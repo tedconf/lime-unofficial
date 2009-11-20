@@ -109,11 +109,13 @@ class LimeTestSuite extends LimeRegistration
 
     $this->output->flush();
 
+    $planned = $this->output->getPlanned();
+    $passed = $this->output->getPassed();
     $failed = $this->output->getFailed();
     $errors = $this->output->getErrors();
     $warnings = $this->output->getWarnings();
     $skipped = $this->output->getSkipped();
 
-    return 0 == ($failed + $errors + $warnings + $skipped);
+    return 0 == ($failed + $errors + $warnings + $skipped) && $planned == $passed;
   }
 }
