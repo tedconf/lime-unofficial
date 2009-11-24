@@ -44,7 +44,7 @@ class LimeMockInvocationExceptionStack extends LimeMockInvocationException
 
       for ($i = 1; $i <= count($this->exceptions); ++$i)
       {
-        $message = LimeTools::indent($this->exceptions[$i-1]->getMessage(), strlen($i)+2);
+        $message = LimeTools::indent(wordwrap($this->exceptions[$i-1]->getMessage(), 70), strlen($i)+2);
 
         $this->message .= sprintf("%s) %s\n", $i, trim($message));
       }
