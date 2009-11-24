@@ -51,7 +51,7 @@ abstract class LimeShell
       {
         self::$executable = getenv('PHP_PATH');
 
-        if (!is_executable($executable))
+        if (!is_executable(self::$executable))
         {
           throw new Exception('The defined PHP_PATH environment variable is not a valid PHP executable.');
         }
