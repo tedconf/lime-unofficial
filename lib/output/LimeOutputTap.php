@@ -152,7 +152,7 @@ class LimeOutputTap implements LimeOutputInterface
   {
     $this->errors++;
 
-    $message = sprintf("%s: %s\n(in %s on line %s)", get_class($error),
+    $message = sprintf("%s: %s\n(in %s on line %s)", $error->getType(),
         $error->getMessage(), $this->stripBaseDir($error->getFile()), $error->getLine());
 
     $this->printer->printLargeBox($message, LimePrinter::ERROR);
