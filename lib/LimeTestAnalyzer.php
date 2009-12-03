@@ -74,7 +74,9 @@ class LimeTestAnalyzer
     {
       if (!$this->parser->done())
       {
-        $this->output->warning("Could not parse test output. Make sure you don't echo any additional data.", $this->file, 1);
+        // FIXME: Should be handled in a better way
+        $buffer = substr($this->parser->buffer, 0, strpos($this->parser->buffer, "\n"));
+        $this->output->warning(sprintf('Could not parse test output: "%s"', $buffer), $this->file, 1);
       }
 
       // if the last error was not followed by \n, it is still in the buffer
