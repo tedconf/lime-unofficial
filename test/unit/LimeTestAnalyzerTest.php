@@ -54,8 +54,8 @@ EOF
 // @Test: If the output cannot be unserialized, an error is reported
 
   // fixtures
-  file_put_contents($file, '<?php echo "\0raw\0Some Error occurred";');
-  $output->warning("Could not parse test output. Make sure you don't echo any additional data.", $file, 1);
+  file_put_contents($file, '<?php echo "\0raw\0Some Error occurred\n";');
+  $output->warning('Could not parse test output: "Some Error occurred"', $file, 1);
   $output->replay();
   // test
   $analyzer->connect($file);
