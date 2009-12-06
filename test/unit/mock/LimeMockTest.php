@@ -138,12 +138,14 @@ $t = new LimeTest(106);
     // test
     $m = LimeMock::create('TestNamespace\TestInterface', $output);
     // assertions
-    $t->ok($m instanceof TestNamespace\TestInterface, 'The mock implements the interface');
+    $interface = 'TestNamespace\TestInterface';
+    $t->ok($m instanceof $interface, 'The mock implements the interface');
     $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
   }
   else
   {
-    $t->skip(2);
+    $t->skip();
+    $t->skip();
   }
 
 
@@ -171,12 +173,14 @@ $t = new LimeTest(106);
     // test
     $m = LimeMock::create('TestNamespace\TestClass', $output);
     // assertions
-    $t->ok($m instanceof TestNamespace\TestClass, 'The mock generates and inherits the class');
+    $class = 'TestNamespace\TestClass';
+    $t->ok($m instanceof $class, 'The mock generates and inherits the class');
     $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
   }
   else
   {
-    $t->skip(2);
+    $t->skip();
+    $t->skip();
   }
 
 
