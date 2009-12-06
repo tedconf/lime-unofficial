@@ -164,7 +164,17 @@ class LimeMock
 
     if (!class_exists($classOrInterface, false) && !interface_exists($classOrInterface, false))
     {
-      eval(sprintf('interface %s {}', $classOrInterface));
+      if (($pos = strpos($classOrInterface, '\\')) !== false)
+      {
+        $namespace = substr($classOrInterface, 0, $pos);
+        $interface = substr($classOrInterface, $pos+1);
+
+        eval(sprintf('namespace %s { interface %s {} }', $namespace, $interface));
+      }
+      else
+      {
+        eval(sprintf('interface %s {}', $classOrInterface));
+      }
     }
 
     $class = new ReflectionClass($classOrInterface);
@@ -262,6 +272,9 @@ class LimeMock
    */
   protected static function generateName($originalName)
   {
+    // strip namespace separators
+    $originalName = str_replace('\\', '_', $originalName);
+
     while (!isset($name) || class_exists($name, false))
     {
       // inspired by PHPUnit_Framework_MockObject_Generator

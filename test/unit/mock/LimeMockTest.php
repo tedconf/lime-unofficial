@@ -105,7 +105,7 @@ class TestAutoloader
 spl_autoload_register(array('TestAutoloader', 'autoload'));
 
 
-$t = new LimeTest(102);
+$t = new LimeTest(106);
 
 
 // @Before
@@ -129,6 +129,24 @@ $t = new LimeTest(102);
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
 
 
+// @Test: Namespaced interfaces can be mocked (PHP 5.3)
+
+  if (version_compare(PHP_VERSION, '5.3', '>='))
+  {
+    require_once __DIR__.'/php5.3/TestInterface.php';
+
+    // test
+    $m = LimeMock::create('TestNamespace\TestInterface', $output);
+    // assertions
+    $t->ok($m instanceof TestNamespace\TestInterface, 'The mock implements the interface');
+    $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
+  }
+  else
+  {
+    $t->skip(2);
+  }
+
+
 // @Test: Abstract classes can be mocked
 
   // test
@@ -144,6 +162,22 @@ $t = new LimeTest(102);
   // assertions
   $t->ok($m instanceof FoobarClass, 'The mock generates and inherits the class');
   $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
+
+
+// @Test: Non-existing namespaced classes can be mocked (PHP 5.3)
+
+  if (version_compare(PHP_VERSION, '5.3', '>='))
+  {
+    // test
+    $m = LimeMock::create('TestNamespace\TestClass', $output);
+    // assertions
+    $t->ok($m instanceof TestNamespace\TestClass, 'The mock generates and inherits the class');
+    $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
+  }
+  else
+  {
+    $t->skip(2);
+  }
 
 
 // @Test: Classes with methods from the mock can be mocked
