@@ -14,12 +14,12 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(16);
+$t = new LimeTest(11);
 
 
 // @Before
 
-  $output = new LimeOutputInspectable();
+  $output = new LimeOutputProxy();
 
 
 // @After
@@ -27,52 +27,30 @@ $t = new LimeTest(16);
   $output = null;
 
 
-// @Test: getPassed() returns the number of calls to pass()
+// @Test: getResult() returns the result of the test
 
+  // fixtures
+  $error = new LimeError('An error', '/test/script', 11);
+  $expected = new LimeOutputResult();
+  $expected->addPlan(5);
+  $expected->addPassed();
+  $expected->addPassed();
+  $expected->addFailure(array('A failed test', '/test/script', 11, null));
+  $expected->addWarning(array('A warning', '/test/script', 11));
+  $expected->addError($error);
+  $expected->addSkipped();
+  $expected->addTodo('A todo');
+  // test
+  $output->plan(5);
+  $output->pass('A passed test', '/test/script', 11);
   $output->pass('A passed test', '/test/script', 11);
   $output->fail('A failed test', '/test/script', 11);
-  $output->pass('A passed test', '/test/script', 11);
-  $t->is($output->getPassed(), 2, 'The returned number is correct');
-
-
-// @Test: getFailed() returns the number of calls to fail()
-
-  $output->fail('A failed test', '/test/script', 11);
-  $output->pass('A passed test', '/test/script', 11);
-  $output->fail('A failed test', '/test/script', 11);
-  $t->is($output->getFailed(), 2, 'The returned number is correct');
-
-
-// @Test: getSkipped() returns the number of calls to skip()
-
-  $output->skip('A skipped test', '/test/script', 11);
-  $output->pass('A passed test', '/test/script', 11);
-  $output->skip('A skipped test', '/test/script', 11);
-  $t->is($output->getSkipped(), 2, 'The returned number is correct');
-
-
-// @Test: getTodos() returns the number of calls to todo()
-
-  $output->todo('A todo', '/test/script', 11);
-  $output->pass('A passed test', '/test/script', 11);
-  $output->todo('A todo', '/test/script', 11);
-  $t->is($output->getTodos(), 2, 'The returned number is correct');
-
-
-// @Test: getErrors() returns the number of calls to error()
-
-  $output->error(new LimeError('An error', '/test/script', 11));
-  $output->pass('A passed test', '/test/script', 11);
-  $output->error(new LimeError('An error', '/test/script', 11));
-  $t->is($output->getErrors(), 2, 'The returned number is correct');
-
-
-// @Test: getWarnings() returns the number of calls to warning()
-
+  $output->error($error);
   $output->warning('A warning', '/test/script', 11);
-  $output->pass('A passed test', '/test/script', 11);
-  $output->warning('A warning', '/test/script', 11);
-  $t->is($output->getWarnings(), 2, 'The returned number is correct');
+  $output->skip('A skipped test', '/test/script', 11);
+  $output->todo('A todo', '/test/script', 11);
+  // assertions
+  $t->is($output->getResult(), $expected, 'The result has been filled as expected');
 
 
 // @Test: Method calls are forwarded to a decorated object
@@ -89,7 +67,7 @@ $t = new LimeTest(16);
   $mock->comment('A comment');
   $mock->flush();
   $mock->replay();
-  $output = new LimeOutputInspectable($mock);
+  $output = new LimeOutputProxy($mock);
   // test
   $output->focus('/test/file');
   $output->pass('A passed test', '/test/script', 11);

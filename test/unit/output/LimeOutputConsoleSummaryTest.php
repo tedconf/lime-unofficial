@@ -163,26 +163,27 @@ $t = new LimeTest(39);
   $printer = $t->mock('LimePrinter'); // non-strict
   $printer->any('printText')->atLeastOnce();
   $printer->any('printLine')->atLeastOnce();
-  $printer->printBox(' Failed 2/5 test scripts, 60.00% okay. 1/5 subtests failed, 80.00% okay.', LimePrinter::NOT_OK);
+  $printer->printBox(' Failed 2/4 test scripts, 50.00% okay. 1/5 subtests failed, 80.00% okay.', LimePrinter::NOT_OK);
   $printer->replay();
   $output = new LimeOutputConsoleSummary($printer);
   // test
   $output->focus('/test/script1');
+  $output->plan(1);
   $output->pass('A passed test', '/test/script', 11);
   $output->close();
   $output->focus('/test/script2');
+  $output->plan(1);
   $output->pass('A passed test', '/test/script2', 11);
   $output->warning('A warning', '/test/script2', 11);
   $output->close();
   $output->focus('/test/script3');
+  $output->plan(1);
   $output->fail('A failed test', '/test/script3', 11);
   $output->close();
   $output->focus('/test/script4');
+  $output->plan(2);
   $output->pass('A passed test', '/test/script', 11);
   $output->error(new LimeError('An error', '/test/script', 11));
-  $output->close();
-  $output->focus('/test/script5');
-  $output->pass('A passed test', '/test/script', 11);
   $output->close();
   $output->flush();
   // assertions
