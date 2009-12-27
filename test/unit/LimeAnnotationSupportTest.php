@@ -22,7 +22,7 @@ class LimeAnnotationSupportTest extends LimeTest
 }
 
 
-$t = new LimeAnnotationSupportTest(39);
+$t = new LimeAnnotationSupportTest(41);
 
 $root = '# /test/unit/LimeAnnotationSupport';
 
@@ -427,3 +427,26 @@ Test 2
 EOF;
   $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
   $t->isOutput($command->getOutput(), $expected);
+
+
+$t->diag('The annotation support is able to deal with closures');
+
+  if (version_compare(PHP_VERSION, '5.3', '>='))
+  {
+    // test
+    $command = execute($file = 'test_closure.php');
+    // assertion
+    $expected = <<<EOF
+$root/@$file
+Test 1
+1..0
+ Looks like everything went fine.
+EOF;
+    $t->is($command->getStatus(), 0, 'The file returned exit status 0 (success)');
+    $t->isOutput($command->getOutput(), $expected);
+  }
+  else
+  {
+    $t->skip();
+    $t->skip();
+  }
