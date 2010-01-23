@@ -164,7 +164,7 @@ class LimeMock
 
     if (!class_exists($classOrInterface, false) && !interface_exists($classOrInterface, false))
     {
-      if (($pos = strpos($classOrInterface, '\\')) !== false)
+      if (($pos = strrpos($classOrInterface, '\\')) !== false)
       {
         $namespace = substr($classOrInterface, 0, $pos);
         $interface = substr($classOrInterface, $pos+1);

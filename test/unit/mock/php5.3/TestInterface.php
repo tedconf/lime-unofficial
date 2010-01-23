@@ -1,6 +1,6 @@
 <?php
 
-namespace TestNamespace;
+namespace TestNamespace\TestSubNamespace;
 
 interface TestInterface
 {

@@ -136,9 +136,9 @@ $t = new LimeTest(106);
     require_once __DIR__.'/php5.3/TestInterface.php';
 
     // test
-    $m = LimeMock::create('TestNamespace\TestInterface', $output);
+    $m = LimeMock::create('TestNamespace\TestSubNamespace\TestInterface', $output);
     // assertions
-    $interface = 'TestNamespace\TestInterface';
+    $interface = 'TestNamespace\TestSubNamespace\TestInterface';
     $t->ok($m instanceof $interface, 'The mock implements the interface');
     $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
   }
@@ -171,9 +171,9 @@ $t = new LimeTest(106);
   if (version_compare(PHP_VERSION, '5.3', '>='))
   {
     // test
-    $m = LimeMock::create('TestNamespace\TestClass', $output);
+    $m = LimeMock::create('TestNamespace\TestSubNamespace\TestClass', $output);
     // assertions
-    $class = 'TestNamespace\TestClass';
+    $class = 'TestNamespace\TestSubNamespace\TestClass';
     $t->ok($m instanceof $class, 'The mock generates and inherits the class');
     $t->ok($m instanceof LimeMockInterface, 'The mock implements "LimeMockInterface"');
   }
