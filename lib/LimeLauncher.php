@@ -10,7 +10,12 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeTestAnalyzer
+/**
+ * Launches test files and passes their output to its own output instance.
+ *
+ * @author Bernhard Schussek <bschussek@gmail.com>
+ */
+class LimeLauncher
 {
   protected
     $suppressedMethods  = array(),
@@ -21,28 +26,48 @@ class LimeTestAnalyzer
     $done               = true,
     $parser             = null;
 
+  /**
+   * Constructor.
+   *
+   * @param LimeOutputInterface $output
+   * @param array $suppressedMethods
+   */
   public function __construct(LimeOutputInterface $output, array $suppressedMethods = array())
   {
     $this->suppressedMethods = $suppressedMethods;
     $this->output = $output;
   }
 
-  public function getConnectedFile()
-  {
-    return $this->file;
-  }
-
-  public function connect($file, array $arguments = array())
+  /**
+   * Launches the given file in a background process.
+   *
+   * @param string $file
+   * @param array $arguments
+   */
+  public function launch(LimeFile $file, array $arguments = array())
   {
     $arguments['output'] = 'raw';
 
     $this->file = $file;
     $this->done = false;
     $this->parser = null;
-    $this->process = new LimeShellProcess($file, $arguments);
+    $this->process = new LimeShellProcess($file->getPath(), $arguments);
     $this->process->execute();
   }
 
+  /**
+   * Returns the file name of the currently launched process.
+   *
+   * @return string
+   */
+  public function getCurrentFile()
+  {
+    return $this->file;
+  }
+
+  /**
+   * Reads the next chunk of output from the currently launched process.
+   */
   public function proceed()
   {
     $data = $this->process->getOutput();
@@ -66,7 +91,7 @@ class LimeTestAnalyzer
 
     while (preg_match('/^(.+)\n/', $this->errors, $matches))
     {
-      $this->output->warning($matches[1], $this->file, 0);
+      $this->output->warning($matches[1], $this->file->getPath(), 0);
       $this->errors = substr($this->errors, strlen($matches[0]));
     }
 
@@ -76,13 +101,13 @@ class LimeTestAnalyzer
       {
         // FIXME: Should be handled in a better way
         $buffer = substr($this->parser->buffer, 0, strpos($this->parser->buffer, "\n"));
-        $this->output->warning(sprintf('Could not parse test output: "%s"', $buffer), $this->file, 1);
+        $this->output->warning(sprintf('Could not parse test output: "%s"', $buffer), $this->file->getPath(), 1);
       }
 
       // if the last error was not followed by \n, it is still in the buffer
       if (!empty($this->errors))
       {
-        $this->output->warning($this->errors, $this->file, 0);
+        $this->output->warning($this->errors, $this->file->getPath(), 0);
         $this->errors = '';
       }
 
@@ -90,6 +115,11 @@ class LimeTestAnalyzer
     }
   }
 
+  /**
+   * Returns whether the currently launched process has ended.
+   *
+   * @return boolean
+   */
   public function done()
   {
     return $this->done;

@@ -13,24 +13,21 @@
 class LimeOutputTap implements LimeOutputInterface
 {
   protected
-    $options    = array(),
-    $result     = null,
-    $expected   = null,
-    $passed     = 0,
-    $actual     = 0,
-    $warnings   = 0,
-    $errors     = 0,
-    $file       = null,
-    $printer    = null;
+    $configuration  = null,
+    $result         = null,
+    $expected       = null,
+    $passed         = 0,
+    $actual         = 0,
+    $warnings       = 0,
+    $errors         = 0,
+    $file           = null,
+    $printer        = null;
 
-  public function __construct(LimePrinter $printer, array $options = array())
+  public function __construct(LimePrinter $printer, LimeConfiguration $configuration)
   {
     $this->printer = $printer;
     $this->result = new LimeOutputResult();
-    $this->options = array_merge(array(
-      'verbose'   => false,
-      'base_dir'  => null,
-    ), $options);
+    $this->configuration = $configuration;
   }
 
   public function supportsThreading()
@@ -40,7 +37,14 @@ class LimeOutputTap implements LimeOutputInterface
 
   private function stripBaseDir($path)
   {
-    return is_null($this->options['base_dir']) ? $path : str_replace($this->options['base_dir'], '', $path);
+    if (strpos($path, $this->configuration->getBaseDir()) == 0)
+    {
+      return substr($path, strlen($this->configuration->getBaseDir()));
+    }
+    else
+    {
+      return $path;
+    }
   }
 
   public function focus($file)
@@ -164,7 +168,7 @@ class LimeOutputTap implements LimeOutputInterface
     {
       // hide the part of the trace that is responsible for getting the
       // annotations to work
-      if (strpos($trace['function'], '__lime_annotation_') === 0 && !$this->options['verbose'])
+      if (strpos($trace['function'], '__lime_annotation_') === 0 && !$this->configuration->getVerbose())
       {
         break;
       }

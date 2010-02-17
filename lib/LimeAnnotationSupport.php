@@ -74,6 +74,7 @@
 class LimeAnnotationSupport
 {
   protected static
+    $scriptPath   = null,
     $enabled      = false;
 
   protected
@@ -99,6 +100,11 @@ class LimeAnnotationSupport
     }
   }
 
+  public static function setScriptPath($path)
+  {
+    self::$scriptPath = $path;
+  }
+
   /**
    * Returns the file path of the executed test script
    *
@@ -106,15 +112,18 @@ class LimeAnnotationSupport
    */
   protected static function getScriptPath()
   {
-    $traces = debug_backtrace();
-    $file = $traces[count($traces)-1]['file'];
-
-    if (!is_file($file))
+    if (is_null(self::$scriptPath))
     {
-      throw new RuntimeException('The script name from the traces is not valid: '.$file);
+      $traces = debug_backtrace();
+      self::$scriptPath = $traces[count($traces) - 1]['file'];
     }
 
-    return $file;
+    if (!is_file(self::$scriptPath))
+    {
+      throw new RuntimeException('The script path is not valid: '.self::$scriptPath);
+    }
+
+    return self::$scriptPath;
   }
 
   /**

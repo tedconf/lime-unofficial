@@ -14,12 +14,14 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(74);
+$t = new LimeTest(73);
 
 // @Before
 
   $printer = $t->mock('LimePrinter', array('strict' => true));
-  $output = new LimeOutputTap($printer);
+  $configuration = $t->stub('LimeConfiguration');
+  $configuration->replay();
+  $output = new LimeOutputTap($printer, $configuration);
 
 
 // @After
@@ -44,18 +46,6 @@ $t = new LimeTest(74);
   $printer->replay();
   // test
   $output->focus('/test/file');
-  $output->focus('/test/file');
-  // assertions
-  $printer->verify();
-
-
-// @Test: The constructor accepts a base directory which is stripped from the file name
-
-  // fixtures
-  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
-  $printer->printLine('# /file', LimePrinter::INFO);
-  $printer->replay();
-  // test
   $output->focus('/test/file');
   // assertions
   $printer->verify();
@@ -121,7 +111,9 @@ $t = new LimeTest(74);
 // @Test: fail() truncates the file path
 
   // fixtures
-  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
+  $configuration->reset();
+  $configuration->getBaseDir()->returns('/test');
+  $configuration->replay();
   $printer->printLine('not ok 1', LimePrinter::NOT_OK);
   $printer->printLine('#     Failed test (/file at line 11)', LimePrinter::COMMENT);
   $printer->replay();
@@ -205,7 +197,9 @@ $t = new LimeTest(74);
 // @Test: warning() truncates the file path
 
   // fixtures
-  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
+  $configuration->reset();
+  $configuration->getBaseDir()->returns('/test');
+  $configuration->replay();
   $printer->printLargeBox("A very important warning\n(in /file on line 11)", LimePrinter::WARNING);
   $printer->replay();
   // test
@@ -231,7 +225,9 @@ $t = new LimeTest(74);
 // @Test: error() truncates the file path
 
   // fixtures
-  $output = new LimeOutputTap($printer, array('base_dir' => '/test'));
+  $configuration->reset();
+  $configuration->getBaseDir()->returns('/test');
+  $configuration->replay();
   $printer->printLargeBox("Error: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
   $printer->printLine('Exception trace:', LimePrinter::COMMENT);
   $printer->any('printText')->atLeastOnce();

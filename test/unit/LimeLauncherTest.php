@@ -21,14 +21,14 @@ $t = new LimeTest(7);
 
   $file = tempnam(sys_get_temp_dir(), 'lime');
   $output = $t->mock('LimeOutputInterface');
-  $analyzer = new LimeTestAnalyzer($output);
+  $launcher = new LimeLauncher($output);
 
 
 // @After
 
   $file = null;
   $output = null;
-  $analyzer = null;
+  $launcher = null;
 
 
 // @Test: The file is called with the argument --output=raw
@@ -45,8 +45,8 @@ if (in_array('--output=raw', \$GLOBALS['argv']))
 EOF
   );
   // test
-  $analyzer->connect($file);
-  while (!$analyzer->done()) $analyzer->proceed();
+  $launcher->launch(new LimeFile($file));
+  while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
 
@@ -58,8 +58,8 @@ EOF
   $output->warning('Could not parse test output: "Some Error occurred"', $file, 1);
   $output->replay();
   // test
-  $analyzer->connect($file);
-  while (!$analyzer->done()) $analyzer->proceed();
+  $launcher->launch(new LimeFile($file));
+  while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
 
@@ -72,8 +72,8 @@ EOF
   $output->warning('Error 2', $file, 0);
   $output->replay();
   // test
-  $analyzer->connect($file);
-  while (!$analyzer->done()) $analyzer->proceed();
+  $launcher->launch(new LimeFile($file));
+  while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
 
@@ -87,8 +87,8 @@ EOF
   $output->error(new LimeError("syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1, 'Parse error'));
   $output->replay();
   // test
-  $analyzer->connect($file);
-  while (!$analyzer->done()) $analyzer->proceed();
+  $launcher->launch(new LimeFile($file));
+  while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
 
@@ -101,8 +101,8 @@ EOF
   $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   // test
-  $analyzer->connect($file);
-  while (!$analyzer->done()) $analyzer->proceed();
+  $launcher->launch(new LimeFile($file));
+  while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
 

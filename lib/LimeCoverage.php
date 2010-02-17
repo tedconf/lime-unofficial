@@ -27,7 +27,7 @@ class LimeCoverage extends LimeRegistration
     $uncoveredCode  = array(),
     $actualCode     = array();
 
-  public function __construct(LimeTestSuite $suite, array $options = array())
+  public function __construct(LimeHarness $suite, array $options = array())
   {
     $this->suite = $suite;
     $this->options = array_merge(array(

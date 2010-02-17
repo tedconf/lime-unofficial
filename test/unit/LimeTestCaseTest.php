@@ -46,7 +46,10 @@ $t = new LimeTest(8);
 // @Before
 
   $output = $t->mock('LimeOutputInterface');
-  $test = new TestCase(null, array('output' => $output));
+  $configuration = $t->stub('LimeConfiguration');
+  $configuration->createTestOutput()->returns($output);
+  $configuration->replay();
+  $test = new TestCase(null, $configuration);
   $output->reset();
   $test->impl = $t->mock('Test');
 

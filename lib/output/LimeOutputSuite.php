@@ -20,11 +20,12 @@
  * @author     Bernhard Schussek <bernhard.schussek@symfony-project.com>
  * @version    SVN: $Id$
  */
-class LimeOutputConsoleSummary implements LimeOutputInterface
+class LimeOutputSuite implements LimeOutputInterface
 {
   protected
+    $loader         = null,
     $printer        = null,
-    $options        = array(),
+    $configuration  = null,
     $startTime      = 0,
     $file           = null,
     $results        = array(),
@@ -37,18 +38,19 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
   /**
    * Constructor.
    *
-   * @param LimePrinter $printer  The printer for printing text to the console
-   * @param array       $options  The options of this output
+   * @param LimePrinter $printer              The printer for printing text to the console
+   * @param LimeConfiguration $configuration  The configuration of this output
    */
-  public function __construct(LimePrinter $printer, array $options = array())
+  public function __construct(LimePrinter $printer, LimeConfiguration $configuration)
   {
     $this->printer = $printer;
+    $this->configuration = $configuration;
     $this->startTime = time();
-    $this->options = array_merge(array(
-      'base_dir'  => null,
-      'processes' => 1,
-      'verbose'   => false,
-    ), $options);
+  }
+
+  public function setLoader(LimeLoader $loader)
+  {
+    $this->loader = $loader;
   }
 
   public function supportsThreading()
@@ -78,13 +80,29 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
       $this->failedTests += $result->getNbFailures();
 
       $path = $this->truncate($this->file);
+      $labels = '';
 
-      if (strlen($path) > 71)
+      if (!is_null($this->loader))
       {
-        $path = substr($path, -71);
+        $file = $this->loader->getFileByPath($this->file);
+        if (count($file->getLabels()) > 0)
+        {
+          $labels = '['.implode(',',$file->getLabels()).'] ';
+        }
       }
 
-      $this->printer->printText(str_pad($path, 73, '.'));
+      if (strlen($path) > (71 - strlen($labels)))
+      {
+        $path = substr($path, -(71 - strlen($labels)));
+      }
+
+      if ($labels)
+      {
+        $this->printer->printText(trim($labels), LimePrinter::LABEL);
+        $path = ' '.$path;
+      }
+
+      $this->printer->printText(str_pad($path, 73 - strlen($labels), '.'));
 
       if ($result->hasErrors() || $result->hasFailures() || $result->isIncomplete())
       {
@@ -120,7 +138,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
         $i = 0;
         foreach ($result->getFailures() as $number => $failed)
         {
-          if (!$this->options['verbose'] && $i > 2)
+          if (!$this->configuration->getVerbose() && $i > 2)
           {
             $this->printer->printLine(sprintf('    ... and %s more', $result->getNbFailures()-$i));
             break;
@@ -138,7 +156,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
         foreach ($result->getWarnings() as $i => $warning)
         {
-          if (!$this->options['verbose'] && $i > 2)
+          if (!$this->configuration->getVerbose() && $i > 2)
           {
             $this->printer->printLine(sprintf('    ... and %s more', $result->getNbWarnings()-$i));
             break;
@@ -146,7 +164,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
           $this->printer->printLine('    '.$warning[0]);
 
-          if ($this->options['verbose'])
+          if ($this->configuration->getVerbose())
           {
             $this->printer->printText('      (in ');
             $this->printer->printText($this->truncate($warning[1]), LimePrinter::TRACE);
@@ -163,7 +181,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
         foreach ($result->getErrors() as $i => $error)
         {
-          if (!$this->options['verbose'] && $i > 2)
+          if (!$this->configuration->getVerbose() && $i > 2)
           {
             $this->printer->printLine(sprintf('    ... and %s more', $result->getNbErrors()-$i));
             break;
@@ -171,7 +189,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
           $this->printer->printLine('    '.$error->getMessage());
 
-          if ($this->options['verbose'])
+          if ($this->configuration->getVerbose())
           {
             $this->printer->printText('      (in ');
             $this->printer->printText($this->truncate($error->getFile()), LimePrinter::TRACE);
@@ -188,7 +206,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
         foreach ($result->getTodos() as $i => $todo)
         {
-          if (!$this->options['verbose'] && $i > 2)
+          if (!$this->configuration->getVerbose() && $i > 2)
           {
             $this->printer->printLine(sprintf('    ... and %s more', $result->getNbTodos()-$i));
             break;
@@ -251,7 +269,7 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
     {
       $time = max(1, time() - $this->startTime);
       $stats = sprintf(' Files=%d, Tests=%d, Time=%02d:%02d, Processes=%d',
-          $this->actualFiles, $this->actualTests, floor($time/60), $time%60, $this->options['processes']);
+          $this->actualFiles, $this->actualTests, floor($time/60), $time%60, $this->configuration->getProcesses());
 
       $this->printer->printBox(' All tests successful.', LimePrinter::HAPPY);
       $this->printer->printBox($stats, LimePrinter::HAPPY);
@@ -260,16 +278,6 @@ class LimeOutputConsoleSummary implements LimeOutputInterface
 
   protected function truncate($file)
   {
-    $extension = pathinfo($file, PATHINFO_EXTENSION);
-    $file = substr($file, 0, strlen($file)-strlen($extension));
-
-    if (!is_null($this->options['base_dir']))
-    {
-      return str_replace($this->options['base_dir'], '', $file);
-    }
-    else
-    {
-      return $file;
-    }
+    return basename($file, $this->configuration->getSuffix());
   }
 }

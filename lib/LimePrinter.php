@@ -25,7 +25,8 @@ class LimePrinter
     BOOLEAN = 9,
     INFO = 10,
     TRACE = 11,
-    TODO = 12;
+    TODO = 12,
+    LABEL = 13;
 
   protected
     $colorizer = null;
@@ -47,6 +48,7 @@ class LimePrinter
       $colorizer->setStyle(self::BOOLEAN, array('fg' => 'cyan'));
       $colorizer->setStyle(self::INFO, array('fg' => 'cyan', 'bold' => true));
       $colorizer->setStyle(self::TRACE, array('fg' => 'green', 'bold' => true));
+      $colorizer->setStyle(self::LABEL, array('fg' => 'cyan'));
     }
 
     $this->colorizer = $colorizer;

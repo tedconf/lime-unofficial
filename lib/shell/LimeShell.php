@@ -100,6 +100,7 @@ abstract class LimeShell
   public static function parseArguments(array $arguments)
   {
     $options = array();
+    $parameters = array();
 
     foreach ($GLOBALS['argv'] as $parameter)
     {
@@ -116,8 +117,12 @@ abstract class LimeShell
       {
         $options[$matches[1]] = true;
       }
+      else
+      {
+        $parameters[] = $parameter;
+      }
     }
 
-    return $options;
+    return array($options, $parameters);
   }
 }

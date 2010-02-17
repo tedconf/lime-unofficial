@@ -23,7 +23,7 @@ $fileLines = 0;
 $testLines = 0;
 $lexer = new LimeLexerCodeLines();
 
-$suite = new LimeTestSuite();
+$suite = new LimeHarness();
 
 $suite->registerGlob($baseDir.'/../lib/*.php');
 $suite->registerGlob($baseDir.'/../lib/*/*.php');
@@ -38,7 +38,7 @@ foreach ($suite->getFiles() as $file)
 
 $printer->printLine(sprintf('Classes:       %d', $fileLines));
 
-$suite = new LimeTestSuite();
+$suite = new LimeHarness();
 
 $suite->registerGlob($baseDir.'/unit/*.php');
 $suite->registerGlob($baseDir.'/unit/*/*.php');

@@ -19,13 +19,8 @@ class lime_test extends LimeTest
 {
   public function __construct($plan = null, $options = array())
   {
-    // for BC
-    if (!is_array($options))
-    {
-      $options = array(); // drop the old output because it is not compatible with LimeTest
-    }
-
-    parent::__construct($plan, $options);
+    // the options are dropped because they are not compatible anymore
+    parent::__construct($plan);
   }
 
   static public function to_array()
@@ -332,7 +327,7 @@ class lime_colorizer extends LimeColorizer
   }
 }
 
-class lime_harness extends LimeTestSuite
+class lime_harness extends LimeHarness
 {
   public function __construct($options = array())
   {

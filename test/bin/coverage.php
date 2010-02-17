@@ -16,7 +16,7 @@ LimeAutoloader::register();
 
 $baseDir = realpath(dirname(__FILE__).'/..');
 
-$suite = new LimeTestSuite(array('base_dir' => $baseDir));
+$suite = new LimeHarness(array('base_dir' => $baseDir));
 
 $suite->registerGlob($baseDir.'/unit/*Test.php');
 $suite->registerGlob($baseDir.'/unit/*/*Test.php');

@@ -15,9 +15,9 @@ class LimeTestCase extends LimeTest
   protected
     $testRunner   = null;
 
-  public function __construct($plan = null, array $options = array())
+  public function __construct($plan = null, LimeConfiguration $configuration = null)
   {
-    parent::__construct($plan, $options);
+    parent::__construct($plan, $configuration);
 
     $this->testRunner = new LimeTestRunner($this->getOutput());
     $this->testRunner->addBefore(array($this, 'setUp'));

@@ -38,7 +38,7 @@ class LimeRegistration
     {
       if (is_file($fileOrDirectory))
       {
-        $this->files[] = realpath($fileOrDirectory);
+        $this->registerFile($fileOrDirectory);
       }
       elseif (is_dir($fileOrDirectory))
       {
@@ -49,6 +49,11 @@ class LimeRegistration
         throw new Exception(sprintf('The file or directory "%s" does not exist.', $fileOrDirectory));
       }
     }
+  }
+
+  public function registerFile($file)
+  {
+    $this->files[] = realpath($fileOrDirectory);
   }
 
   public function registerGlob($glob)

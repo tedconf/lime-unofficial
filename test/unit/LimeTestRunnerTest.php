@@ -13,47 +13,8 @@
 include dirname(__FILE__).'/../bootstrap/unit.php';
 
 
-class TestCase
-{
-  public $methodCalls;
-
-  public function __construct(LimeTest $test)
-  {
-    $this->methodCalls = new LimeExpectationList($test);
-  }
-
-  public function __call($method, $args)
-  {
-    $this->methodCalls->addActual($method);
-  }
-
-  public function handleExceptionSuccessful(Exception $error)
-  {
-    $this->methodCalls->addActual('handleExceptionSuccessful');
-
-    return true;
-  }
-
-  public function handleExceptionFailed(Exception $error)
-  {
-    $this->methodCalls->addActual('handleExceptionFailed');
-
-    return false;
-  }
-
-  public function testThrowsError()
-  {
-    1/0;
-  }
-
-  public function testThrowsException()
-  {
-    throw new Exception();
-  }
-}
-
-
 $t = new LimeTest(21);
+
 
 
 $t->diag('The test comments are printed');

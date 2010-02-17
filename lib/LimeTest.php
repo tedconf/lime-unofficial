@@ -26,43 +26,23 @@ class LimeTest
     $exception              = null,
     $exceptionExpectation   = null;
 
-  public function __construct($plan = null, array $options = array())
+  public function __construct($plan = null, LimeConfiguration $configuration = null)
   {
-    $this->options = array(
-      'base_dir'     => null,
-      'output'       => 'tap',
-      'force_colors' => false,
-      'verbose'      => false,
-      'serialize'    => false,
-      'coverage'     => false,
-    );
+    list($cliOptions) = LimeShell::parseArguments($GLOBALS['argv']);
 
-    foreach (LimeShell::parseArguments($GLOBALS['argv']) as $argument => $value)
+    foreach ($cliOptions as $option => $value)
     {
-      $this->options[str_replace('-', '_', $argument)] = $value;
+      $this->options[str_replace('-', '_', $option)] = $value;
     }
 
-    $this->options = array_merge($this->options, $options);
-
-    $this->options['base_dir'] = realpath($this->options['base_dir']);
+    if (is_null($configuration))
+    {
+      $configuration = LimeConfiguration::getInstance(getcwd());
+    }
 
     list ($file, $line) = LimeTrace::findCaller('LimeTest');
 
-    if ($this->options['coverage'])
-    {
-      $this->output = new LimeOutputCoverage();
-    }
-    elseif (is_string($this->options['output']))
-    {
-      $factory = new LimeOutputFactory($this->options);
-
-      $this->output = $factory->create($this->options['output']);
-    }
-    else
-    {
-      $this->output = $this->options['output'];
-    }
-
+    $this->output = $configuration->createTestOutput();
     $this->output->focus($file);
 
     if (!is_null($plan))

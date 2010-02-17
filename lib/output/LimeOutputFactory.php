@@ -10,23 +10,41 @@
  * with this source code in the file LICENSE.
  */
 
-class LimeOutputFactory
+/**
+ * Factory class for creating LimeOutputInterface instances.
+ *
+ * The available instance names are:
+ *
+ *   * raw
+ *   * xml
+ *   * array
+ *   * suite
+ *   * tap
+ *
+ * @author Bernhard Schussek <bschussek@gmail.com>
+ */
+class LimeOutputFactory implements LimeOutputFactoryInterface
 {
   protected
-    $options = array();
+    $configuration    = null;
 
-  public function __construct(array $options)
+  /**
+   * Constructor.
+   *
+   * @param LimeConfiguration $configuration
+   */
+  public function __construct(LimeConfiguration $configuration)
   {
-    $this->options = array_merge(array(
-      'serialize'     => false,
-      'force_colors'  => false,
-      'base_dir'      => null,
-    ), $options);
+    $this->configuration = $configuration;
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see output/LimeOutputFactoryInterface#create($name)
+   */
   public function create($name)
   {
-    $colorizer = LimeColorizer::isSupported() || $this->options['force_colors'] ? new LimeColorizer() : null;
+    $colorizer = LimeColorizer::isSupported() || $this->configuration->getForceColors() ? new LimeColorizer() : null;
     $printer = new LimePrinter($colorizer);
 
     switch ($name)
@@ -36,12 +54,12 @@ class LimeOutputFactory
       case 'xml':
         return new LimeOutputXml();
       case 'array':
-        return new LimeOutputArray($this->options['serialize']);
-      case 'summary':
-        return new LimeOutputConsoleSummary($printer, $this->options);
+        return new LimeOutputArray($this->configuration->getSerialize());
+      case 'suite':
+        return new LimeOutputSuite($printer, $this->configuration);
       case 'tap':
       default:
-        return new LimeOutputTap($printer, $this->options);
+        return new LimeOutputTap($printer, $this->configuration);
     }
   }
 }

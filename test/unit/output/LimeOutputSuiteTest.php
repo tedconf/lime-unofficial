@@ -14,13 +14,17 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(39);
+$t = new LimeTest(40);
 
 
 // @Before
 
   $printer = $t->mock('LimePrinter', array('strict' => true));
-  $output = new LimeOutputConsoleSummary($printer);
+  $configuration = $t->stub('LimeConfiguration');
+  $configuration->getVerbose()->returns(false);
+  $configuration->getProcesses()->returns(1);
+  $configuration->replay();
+  $output = new LimeOutputSuite($printer, $configuration);
 
 
 // @After
@@ -32,9 +36,30 @@ $t = new LimeTest(39);
 // @Test: When close() is called, the test summary is printed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("ok", LimePrinter::OK);
   $printer->replay();
+  // test
+  $output->focus('/test/script');
+  $output->pass('A passed test', '/test/script', 11);
+  $output->close();
+  // assertions
+  $printer->verify();
+
+
+// @Test: When close() is called and a loader is available, the labels are included
+
+  // fixtures
+  $printer->printText('[label1,label2]', LimePrinter::LABEL);
+  $printer->printText(str_pad(' script', 57, '.'));
+  $printer->printLine("ok", LimePrinter::OK);
+  $printer->replay();
+  $file = new LimeFile('path');
+  $file->addLabels(array('label1', 'label2'));
+  $loader = $t->stub('LimeLoader');
+  $loader->any('getFileByPath')->returns($file);
+  $loader->replay();
+  $output->setLoader($loader);
   // test
   $output->focus('/test/script');
   $output->pass('A passed test', '/test/script', 11);
@@ -46,7 +71,7 @@ $t = new LimeTest(39);
 // @Test: When close() is called and tests failed, the status is "not ok" and the failed tests are displayed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
   $printer->any('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
@@ -65,7 +90,7 @@ $t = new LimeTest(39);
 // @Test: When close() is called and warnings appeared in the test, the status is warning and the warnings are displayed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("warning", LimePrinter::WARNING);
   $printer->any('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
@@ -85,7 +110,7 @@ $t = new LimeTest(39);
 // @Test: When close() is called and errors appeared in the test, the status is "not ok" and the errors are displayed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
   $printer->any('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
@@ -105,7 +130,7 @@ $t = new LimeTest(39);
 // @Test: When close() is called and todos appeared in the test, the status is "ok" but the todos are displayed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("ok", LimePrinter::OK);
   $printer->any('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
@@ -125,7 +150,7 @@ $t = new LimeTest(39);
 // @Test: When close() is called and the too few tests were executed, a message is printed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
   $printer->any('printLine')->once();
   $printer->printLine('    Looks like you planned 2 tests but only ran 1.');
@@ -142,7 +167,7 @@ $t = new LimeTest(39);
 // @Test: When close() is called and the too many tests were executed, a message is printed
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
   $printer->any('printLine')->once();
   $printer->printLine('    Looks like you only planned 1 tests but ran 2.');
@@ -165,7 +190,7 @@ $t = new LimeTest(39);
   $printer->any('printLine')->atLeastOnce();
   $printer->printBox(' Failed 2/4 test scripts, 50.00% okay. 1/5 subtests failed, 80.00% okay.', LimePrinter::NOT_OK);
   $printer->replay();
-  $output = new LimeOutputConsoleSummary($printer);
+  $output = new LimeOutputSuite($printer, $configuration);
   // test
   $output->focus('/test/script1');
   $output->plan(1);
@@ -199,7 +224,10 @@ $t = new LimeTest(39);
   $printer->printBox(' All tests successful.', LimePrinter::HAPPY);
   $printer->printBox(' Files=2, Tests=3, Time=00:01, Processes=3', LimePrinter::HAPPY);
   $printer->replay();
-  $output = new LimeOutputConsoleSummary($printer, array('processes' => 3));
+  $configuration->reset();
+  $configuration->getProcesses()->returns(3);
+  $configuration->replay();
+  $output = new LimeOutputSuite($printer, $configuration);
   // test
   $output->focus('/test/script1');
   $output->pass('A passed test', '/test/script1', 11);
@@ -213,31 +241,18 @@ $t = new LimeTest(39);
   $printer->verify();
 
 
-// @Test: If the base dir is set, the test files are truncated
-
-  // fixtures
-  $output = new LimeOutputConsoleSummary($printer, array('base_dir' => '/test'));
-  $printer->reset();
-  $printer->printText(str_pad('/script', 73, '.'));
-  $printer->printLine("ok", LimePrinter::OK);
-  $printer->replay();
-  // test
-  $output->focus('/test/script');
-  $output->pass('A passed test', '/test/script', 11);
-  $output->close();
-  // assertions
-  $printer->verify();
-
-
 // @Test: File extensions are omitted in the output
 
   // fixtures
-  $printer->printText(str_pad('/test/script', 73, '.'));
+  $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("ok", LimePrinter::OK);
   $printer->replay();
+  $configuration->reset();
+  $configuration->getSuffix()->returns('_test.php');
+  $configuration->replay();
   // test
-  $output->focus('/test/script.php');
-  $output->pass('A passed test', '/test/script.php', 11);
+  $output->focus('/test/script_test.php');
+  $output->pass('A passed test', '/test/script_test.php', 11);
   $output->close();
   // assertions
   $printer->verify();
@@ -247,12 +262,12 @@ $t = new LimeTest(39);
 
   // fixtures
   $printer->reset();
-  $printer->printText(str_repeat('x', 59).'/test/script..');
+  $printer->printText(str_repeat('x', 65).'script..');
   $printer->printLine("ok", LimePrinter::OK);
   $printer->replay();
   // test
-  $output->focus(str_repeat('x', 80).'/test/script');
-  $output->pass('A passed test', '/test/script', 11);
+  $output->focus('/test/'.str_repeat('x', 80).'script');
+  $output->pass('A passed test', '/test/'.str_repeat('x', 80).'script', 11);
   $output->close();
   // assertions
   $printer->verify();
