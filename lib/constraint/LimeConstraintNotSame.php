@@ -31,7 +31,7 @@ class LimeConstraintNotSame extends LimeConstraint
     }
     catch (LimeAssertionFailedException $e)
     {
-      throw new LimeConstraintException(sprintf("%s\n    must not be\n%s", $e->getActual(), $e->getExpected()));
+      throw new LimeConstraintException(sprintf("%s\n    must not be identical to\n%s", $e->getActual(), $e->getExpected()));
     }
   }
 }
