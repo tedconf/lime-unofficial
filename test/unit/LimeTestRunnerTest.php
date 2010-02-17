@@ -117,8 +117,8 @@ $t->diag('The exception handlers are called when a test throws an exception');
   $r->addExceptionHandler(array($mock, 'handleExceptionFailed'));
   $r->addExceptionHandler(array($mock, 'handleExceptionSuccessful'));
   $mock->testThrowsException()->throws('Exception');
-  $mock->any('handleExceptionFailed')->returns(false);
-  $mock->any('handleExceptionSuccessful')->returns(true);
+  $mock->method('handleExceptionFailed')->returns(false);
+  $mock->method('handleExceptionSuccessful')->returns(true);
   $mock->replay();
   // test
   $r->run();
@@ -134,7 +134,7 @@ $t->diag('If no exception handler returns true, the exception is thrown again');
   $r->addTest(array($mock, 'testThrowsException'));
   $r->addExceptionHandler(array($mock, 'handleExceptionFailed'));
   $mock->testThrowsException()->throws('Exception');
-  $mock->any('handleExceptionFailed')->returns(false);
+  $mock->method('handleExceptionFailed')->returns(false);
   $mock->replay();
   // test
   $t->expect('Exception');

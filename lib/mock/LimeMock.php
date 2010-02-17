@@ -316,7 +316,7 @@ class LimeMock
    * @param  string            $methodName
    * @return LimeMockInvocationExpectation
    */
-  public static function any(LimeMockInterface $mock, $methodName)
+  public static function method(LimeMockInterface $mock, $methodName)
   {
     return $mock->__call($methodName, null);
   }

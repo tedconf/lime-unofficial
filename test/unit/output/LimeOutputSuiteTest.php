@@ -57,7 +57,7 @@ $t = new LimeTest(40);
   $file = new LimeFile('path');
   $file->addLabels(array('label1', 'label2'));
   $loader = $t->stub('LimeLoader');
-  $loader->any('getFileByPath')->returns($file);
+  $loader->method('getFileByPath')->returns($file);
   $loader->replay();
   $output->setLoader($loader);
   // test
@@ -73,7 +73,7 @@ $t = new LimeTest(40);
   // fixtures
   $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->any('printLine')->times(4);
+  $printer->method('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
   $printer->replay();
   // test
@@ -92,7 +92,7 @@ $t = new LimeTest(40);
   // fixtures
   $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("warning", LimePrinter::WARNING);
-  $printer->any('printLine')->times(4);
+  $printer->method('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
   $printer->replay();
   // test
@@ -112,7 +112,7 @@ $t = new LimeTest(40);
   // fixtures
   $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->any('printLine')->times(4);
+  $printer->method('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
   $printer->replay();
   // test
@@ -132,7 +132,7 @@ $t = new LimeTest(40);
   // fixtures
   $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("ok", LimePrinter::OK);
-  $printer->any('printLine')->times(4);
+  $printer->method('printLine')->times(4);
   $printer->printLine('    ... and 1 more');
   $printer->replay();
   // test
@@ -152,7 +152,7 @@ $t = new LimeTest(40);
   // fixtures
   $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->any('printLine')->once();
+  $printer->method('printLine')->once();
   $printer->printLine('    Looks like you planned 2 tests but only ran 1.');
   $printer->replay();
   // test
@@ -169,7 +169,7 @@ $t = new LimeTest(40);
   // fixtures
   $printer->printText(str_pad('script', 73, '.'));
   $printer->printLine("not ok", LimePrinter::NOT_OK);
-  $printer->any('printLine')->once();
+  $printer->method('printLine')->once();
   $printer->printLine('    Looks like you only planned 1 tests but ran 2.');
   $printer->replay();
   // test
@@ -186,8 +186,8 @@ $t = new LimeTest(40);
 
   // fixtures
   $printer = $t->mock('LimePrinter'); // non-strict
-  $printer->any('printText')->atLeastOnce();
-  $printer->any('printLine')->atLeastOnce();
+  $printer->method('printText')->atLeastOnce();
+  $printer->method('printLine')->atLeastOnce();
   $printer->printBox(' Failed 2/4 test scripts, 50.00% okay. 1/5 subtests failed, 80.00% okay.', LimePrinter::NOT_OK);
   $printer->replay();
   $output = new LimeOutputSuite($printer, $configuration);
@@ -219,8 +219,8 @@ $t = new LimeTest(40);
 
   // fixtures
   $printer = $t->mock('LimePrinter'); // non-strict
-  $printer->any('printText')->atLeastOnce();
-  $printer->any('printLine')->atLeastOnce();
+  $printer->method('printText')->atLeastOnce();
+  $printer->method('printLine')->atLeastOnce();
   $printer->printBox(' All tests successful.', LimePrinter::HAPPY);
   $printer->printBox(' Files=2, Tests=3, Time=00:01, Processes=3', LimePrinter::HAPPY);
   $printer->replay();

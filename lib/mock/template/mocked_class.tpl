@@ -83,7 +83,7 @@
   
   <?php if ($generate_controls): ?>
   public function replay() { return LimeMock::replay($this); }
-  public function any($methodName) { return LimeMock::any($this, $methodName); }
+  public function method($methodName) { return LimeMock::method($this, $methodName); }
   public function reset() { return LimeMock::reset($this); }
   public function verify() { return LimeMock::verify($this); }
   public function setExpectNothing() { return LimeMock::setExpectNothing($this); }

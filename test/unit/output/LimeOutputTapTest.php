@@ -213,8 +213,8 @@ $t = new LimeTest(73);
   // fixtures
   $printer->printLargeBox("Error: A very important error\n(in /test/file on line 11)", LimePrinter::ERROR);
   $printer->printLine('Exception trace:', LimePrinter::COMMENT);
-  $printer->any('printText')->atLeastOnce();
-  $printer->any('printLine')->atLeastOnce();
+  $printer->method('printText')->atLeastOnce();
+  $printer->method('printLine')->atLeastOnce();
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));
@@ -230,8 +230,8 @@ $t = new LimeTest(73);
   $configuration->replay();
   $printer->printLargeBox("Error: A very important error\n(in /file on line 11)", LimePrinter::ERROR);
   $printer->printLine('Exception trace:', LimePrinter::COMMENT);
-  $printer->any('printText')->atLeastOnce();
-  $printer->any('printLine')->atLeastOnce();
+  $printer->method('printText')->atLeastOnce();
+  $printer->method('printLine')->atLeastOnce();
   $printer->replay();
   // test
   $output->error(new LimeError('A very important error', '/test/file', 11));

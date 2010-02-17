@@ -48,7 +48,7 @@ $t = new LimeTest(17);
 // @Test: ->verify() passes if a method is expected both with any and with concrete parameters
 
   // test
-  $m->any('testMethod')->once();
+  $m->method('testMethod')->once();
   $m->testMethod(1, 'foobar');
   $m->replay();
   $m->testMethod('ramble on');

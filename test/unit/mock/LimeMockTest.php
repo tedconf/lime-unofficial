@@ -591,7 +591,7 @@ $t = new LimeTest(106);
   // @Test: - Case 1: Correct parameters
 
   // test
-  $m->any('testMethod');
+  $m->method('testMethod');
   $m->replay();
   $m->testMethod();
   $m->verify();
@@ -602,7 +602,7 @@ $t = new LimeTest(106);
   // @Test: - Case 1: "Wrong" parameters
 
   // test
-  $m->any('testMethod');
+  $m->method('testMethod');
   $m->replay();
   $m->testMethod(1, 2, 3);
   $m->verify();
@@ -688,7 +688,7 @@ $t = new LimeTest(106);
   $m->testMethod();
 
 
-// @Test: ->any() always passes, regardless of how often a method was called
+// @Test: ->method() always passes, regardless of how often a method was called
 
   // @Test: - Case 1: No actual call
 
@@ -744,7 +744,7 @@ $t = new LimeTest(106);
   // @Test: - Case 1: Comparison fails
 
   // fixture
-  $m->any('testMethod')->parameter(2)->is('foo');
+  $m->method('testMethod')->parameter(2)->is('foo');
   $m->replay();
   $t->expect('LimeMockException');
   // test
@@ -754,7 +754,7 @@ $t = new LimeTest(106);
   // @Test: - Case 2: Comparison passes
 
   // fixture
-  $m->any('testMethod')->parameter(2)->is('foo');
+  $m->method('testMethod')->parameter(2)->is('foo');
   $m->replay();
   $m->testMethod(1, 'foo');
   $m->verify();
@@ -766,7 +766,7 @@ $t = new LimeTest(106);
   // @Test: - Case 3: Parameter offset is out of range
 
   // fixture
-  $m->any('testMethod')->parameter(2)->is('foo');
+  $m->method('testMethod')->parameter(2)->is('foo');
   $m->replay();
   $t->expect('LimeMockException');
   // test
@@ -859,7 +859,7 @@ $t = new LimeTest(106);
   // fixtures
   TestCallbackClass::$arguments = null;
   // test
-  $m->any('testMethod')->callback(array('TestCallbackClass', 'callback'));
+  $m->method('testMethod')->callback(array('TestCallbackClass', 'callback'));
   $m->replay();
   $value = $m->testMethod(1, 'foobar');
   // assertions
