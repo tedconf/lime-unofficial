@@ -48,7 +48,7 @@ class LimeLoader
    * @param string $path
    * @param array $labels
    */
-  public function load(LimeLoadable $loadable)
+  protected function load(LimeLoadable $loadable)
   {
     foreach ($loadable->loadFiles() as $file)
     {
