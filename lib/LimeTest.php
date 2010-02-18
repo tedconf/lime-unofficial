@@ -21,20 +21,12 @@ class LimeTest
 {
   protected
     $output                 = null,
-    $options                = array(),
     $errorReporting         = true,
     $exception              = null,
     $exceptionExpectation   = null;
 
   public function __construct($plan = null, LimeConfiguration $configuration = null)
   {
-    list($cliOptions) = LimeShell::parseArguments($GLOBALS['argv']);
-
-    foreach ($cliOptions as $option => $value)
-    {
-      $this->options[str_replace('-', '_', $option)] = $value;
-    }
-
     if (is_null($configuration))
     {
       $configuration = LimeConfiguration::getInstance(getcwd());

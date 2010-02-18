@@ -17,7 +17,7 @@
  */
 class LimeCli
 {
-  private static $allowedOptions = array(
+  protected static $allowedOptions = array(
     'help',
     'init',
     'processes',
@@ -38,7 +38,7 @@ class LimeCli
   {
     try
     {
-      list($options, $labels) = LimeShell::parseArguments($arguments);
+      list($options, $labels) = $this->parseArguments($arguments);
 
       if ($diff = array_diff(array_keys($options), self::$allowedOptions))
       {
@@ -71,7 +71,7 @@ class LimeCli
    *
    * @return integer  The return value of the command (0 if successful)
    */
-  private function usage(array $options)
+  protected function usage(array $options)
   {
     echo <<<EOF
 Command line utility for the Lime 2 test framework.
@@ -150,7 +150,7 @@ EOF;
    *
    * @return integer  The return value of the command (0 if successful)
    */
-  private function init(array $options)
+  protected function init(array $options)
   {
     $limeDir = realpath(dirname(__FILE__).'/..');
     $skeletonDir = $limeDir.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'skeleton';
@@ -186,7 +186,7 @@ EOF;
    * @param  array $labels  The label names
    * @return integer        The return value of the command (0 if successful)
    */
-  private function test(array $labels, array $options)
+  protected function test(array $labels, array $options)
   {
     $configuration = LimeConfiguration::getInstance(getcwd());
 
@@ -260,5 +260,40 @@ EOF;
         return $harness->run($loader->getFilesByLabels($labels)) ? 0 : 1;
       }
     }
+  }
+
+  /**
+   * Parses the given CLI arguments and returns an array of options.
+   *
+   * @param  array $arguments
+   * @return array
+   */
+  protected function parseArguments(array $arguments)
+  {
+    $options = array();
+    $parameters = array();
+
+    foreach ($arguments as $argument)
+    {
+      if (preg_match('/^--([a-zA-Z\-]+)=(.+)$/', $argument, $matches))
+      {
+        if (in_array($matches[2], array('true', 'false')))
+        {
+          $matches[2] = eval($matches[2]);
+        }
+
+        $options[$matches[1]] = $matches[2];
+      }
+      else if (preg_match('/^--([a-zA-Z\-]+)$/', $argument, $matches))
+      {
+        $options[$matches[1]] = true;
+      }
+      else
+      {
+        $parameters[] = $argument;
+      }
+    }
+
+    return array($options, $parameters);
   }
 }

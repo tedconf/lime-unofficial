@@ -15,14 +15,16 @@
  *
  * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
-interface LimeOutputFactoryInterface
+interface LimeParserFactoryInterface
 {
   /**
-   * Creates a new LimeOutputInterface instance for the given name.
+   * Creates a new LimeParserInterface instance for the given name.
    *
    * Names can be defined by the concrete factory implementation.
    *
    * @param string $name
+   * @param LimeOutputInterface $output  The output where the parsed information
+   *                                     will be written to
    */
-  public function create($name);
+  public function create($name, LimeOutputInterface $output);
 }

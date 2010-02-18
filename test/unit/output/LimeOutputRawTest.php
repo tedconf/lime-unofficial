@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(13);
+$t = new LimeTest(12);
 
 
 // @Before
@@ -38,19 +38,6 @@ $t = new LimeTest(13);
   $result = ob_get_clean();
   // assertions
   $t->is($result, serialize(array('focus', array('/test/file')))."\n", 'The method call is serialized');
-
-
-// @Test: A header is printed on the first call
-
-  // fixtures
-  $output = new LimeOutputRaw();
-  // test
-  ob_start();
-  $output->focus('/test/file');
-  $output->focus('/test/file');
-  $result = ob_get_clean();
-  // assertions
-  $t->is($result, "\0raw\0".serialize(array('focus', array('/test/file')))."\n".serialize(array('focus', array('/test/file')))."\n", 'The method call is serialized');
 
 
 // @Test: close() prints the method call as serialized array

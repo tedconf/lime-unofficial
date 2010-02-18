@@ -54,7 +54,7 @@ $t = new LimeTest(40);
   $printer->printText(str_pad(' script', 57, '.'));
   $printer->printLine("ok", LimePrinter::OK);
   $printer->replay();
-  $file = new LimeFile('path');
+  $file = new LimeFile('path', $t->stub('LimeExecutable'));
   $file->addLabels(array('label1', 'label2'));
   $loader = $t->stub('LimeLoader');
   $loader->method('getFileByPath')->returns($file);

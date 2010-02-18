@@ -87,11 +87,11 @@ class LimeCoverage extends LimeRegistration
 
     foreach ($files as $file)
     {
-      $command = new LimeShellCommand($file, array('coverage' => true));
+      $command = new LimeCommand($file, array('coverage' => true));
       $command->execute();
 
       // script failed
-      if ($command->getStatus() != LimeShell::SUCCESS)
+      if ($command->getStatus() != 0)
       {
         $this->output->echoln(sprintf('Warning: %s returned status %d, results may be inaccurate', $file, $command->getStatus()), LimeOutput::ERROR);
       }
@@ -99,7 +99,7 @@ class LimeCoverage extends LimeRegistration
       // script succeeded, coverage not readable
       if (false === $coverage = @unserialize($command->getOutput()))
       {
-        if ($command->getStatus() == LimeShell::SUCCESS)
+        if ($command->getStatus() == 0)
         {
           throw new Exception(sprintf('Unable to unserialize coverage for file "%s"', $file));
         }

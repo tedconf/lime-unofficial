@@ -13,12 +13,12 @@
 /**
  * Launches test files and passes their output to its own output instance.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
 class LimeLauncher
 {
   protected
-    $suppressedMethods  = array(),
+    $parserFactory      = null,
     $output             = null,
     $errors             = '',
     $file               = null,
@@ -32,10 +32,10 @@ class LimeLauncher
    * @param LimeOutputInterface $output
    * @param array $suppressedMethods
    */
-  public function __construct(LimeOutputInterface $output, array $suppressedMethods = array())
+  public function __construct(LimeOutputInterface $output, LimeParserFactoryInterface $parserFactory)
   {
-    $this->suppressedMethods = $suppressedMethods;
     $this->output = $output;
+    $this->parserFactory = $parserFactory;
   }
 
   /**
@@ -46,12 +46,12 @@ class LimeLauncher
    */
   public function launch(LimeFile $file, array $arguments = array())
   {
-    $arguments['output'] = 'raw';
+    $executable = $file->getExecutable();
 
     $this->file = $file;
     $this->done = false;
-    $this->parser = null;
-    $this->process = new LimeShellProcess($file->getPath(), $arguments);
+    $this->parser =  $this->parserFactory->create($executable->getParserName(), $this->output);
+    $this->process = new LimeProcess($file->getPath(), $executable, $arguments);
     $this->process->execute();
   }
 
@@ -71,19 +71,6 @@ class LimeLauncher
   public function proceed()
   {
     $data = $this->process->getOutput();
-
-    if (is_null($this->parser))
-    {
-      if (substr($data, 0, 5) == "\0raw\0")
-      {
-        $this->parser = new LimeParserRaw($this->output, $this->suppressedMethods);
-        $data = substr($data, 5);
-      }
-      else
-      {
-        $this->parser = new LimeParserTap($this->output);
-      }
-    }
 
     $this->parser->parse($data);
 

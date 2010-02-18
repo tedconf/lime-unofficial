@@ -14,20 +14,24 @@
  * Register your test files here. The file paths can be absolute or relative to
  * the configured base directory.
  *
+ * Each test file or bunch of test files needs an executable used to
+ * execute the test files. Read the documentation of LimeExecutable for more
+ * information. The default executable $lime is provided in this script.
+ *
  * Examples:
  *
  * Registers the file MyClassTest.php:
  *
- *   $config->registerFile('test/MyClassTest.php');
+ *   $config->registerFile('test/MyClassTest.php', $lime);
  *
  * Registers all files in a specific directory with the configured suffix
  * (see below):
  *
- *   $config->registerDir('path/to/dir');
+ *   $config->registerDir('path/to/dir', $lime);
  *
  * Registers all files matched by the given glob:
  *
- *   $config->registerGlob('test/*.test.php');
+ *   $config->registerGlob('test/*.test.php', $lime);
  *
  * Registers all file paths returned by the given callback:
  *
@@ -36,7 +40,7 @@
  *     ...
  *   }
  *
- *   $config->registerCallback('read_test_files');
+ *   $config->registerCallback('read_test_files', $lime);
  *
  * All register*() methods accept an optional parameter which either accepts
  * a single label or an array with multiple labels tjat will be added to all
@@ -45,11 +49,13 @@
  *
  * Examples:
  *
- *   $config->registerDir('path/to/dir', 'label');
- *   $config->registerDir('path/to/dir', array('unit', 'slow'));
+ *   $config->registerDir('path/to/dir', $lime, 'label');
+ *   $config->registerDir('path/to/dir', $lime, array('unit', 'slow'));
  */
 
-//$config->registerDir('test');
+$lime = LimeExecutable::php('lime', 'raw', array('--output' => 'raw'));
+
+//$config->registerDir('test', $lime);
 
 /*
  * Sets the directory where the registered files are searched for.

@@ -12,9 +12,6 @@
 
 class LimeOutputRaw implements LimeOutputInterface
 {
-  protected
-    $initialized = false;
-
   protected function printCall($method, array $arguments = array())
   {
     foreach ($arguments as &$argument)
@@ -23,12 +20,6 @@ class LimeOutputRaw implements LimeOutputInterface
       {
         $argument = str_replace(array("\n", "\r"), array('\n', '\r'), $argument);
       }
-    }
-
-    if (!$this->initialized)
-    {
-      $this->initialized = true;
-      print "\0raw\0";
     }
 
     print serialize(array($method, $arguments))."\n";

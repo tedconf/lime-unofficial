@@ -1,6 +1,6 @@
 <?php
 
-class LimeShellProcess extends LimeShellCommand
+class LimeProcess extends LimeCommand
 {
   protected
     $handle         = null,

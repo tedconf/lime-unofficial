@@ -19,6 +19,7 @@ $t = new LimeTest(34);
 
 // @Before
 
+  $executable = LimeExecutable::php();
   $file = tempnam(sys_get_temp_dir(), 'lime');
   $output = $t->mock('LimeOutputInterface');
   $parser = new LimeParserTap($output);
@@ -223,7 +224,7 @@ $t = new LimeTest(34);
   $output->error(new LimeError("syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1, 'Parse error'));
   $output->replay();
   file_put_contents($file, '<?php $1invalidname;');
-  $command = new LimeShellCommand($file);
+  $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
   $parser->parse($command->getOutput());
@@ -238,7 +239,7 @@ $t = new LimeTest(34);
   $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   file_put_contents($file, '<?php require "foobar.php";');
-  $command = new LimeShellCommand($file);
+  $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
   $parser->parse($command->getOutput());

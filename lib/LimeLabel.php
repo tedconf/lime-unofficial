@@ -13,7 +13,7 @@
 /**
  * A label for test files.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
 class LimeLabel
 {

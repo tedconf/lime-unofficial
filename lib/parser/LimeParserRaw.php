@@ -12,16 +12,11 @@
 
 class LimeParserRaw extends LimeParser
 {
+  protected static
+    $suppressedMethods = array('focus', 'close', 'flush');
+
   protected
-    $suppressedMethods = array(),
     $error = false;
-
-  public function __construct(LimeOutputInterface $output, array $suppressedMethods = array())
-  {
-    parent::__construct($output);
-
-    $this->suppressedMethods = $suppressedMethods;
-  }
 
   public function parse($data)
   {
@@ -46,7 +41,7 @@ class LimeParserRaw extends LimeParser
           break;
         }
 
-        if (!in_array($method, $this->suppressedMethods))
+        if (!in_array($method, self::$suppressedMethods))
         {
           foreach ($arguments as &$argument)
           {

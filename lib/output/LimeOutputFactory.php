@@ -21,7 +21,7 @@
  *   * suite
  *   * tap
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
 class LimeOutputFactory implements LimeOutputFactoryInterface
 {

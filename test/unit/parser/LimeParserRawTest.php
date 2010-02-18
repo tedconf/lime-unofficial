@@ -14,11 +14,12 @@ require_once dirname(__FILE__).'/../../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(11);
+$t = new LimeTest(10);
 
 
 // @Before
 
+  $executable = LimeExecutable::php();
   $file = tempnam(sys_get_temp_dir(), 'lime');
   $output = $t->mock('LimeOutputInterface');
   $parser = new LimeParserRaw($output);
@@ -58,18 +59,6 @@ $t = new LimeTest(11);
   // fixtures
   $output->pass('A passed test', '/test/file', 11);
   $output->replay();
-  // test
-  $parser->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
-  // assertions
-  $output->verify();
-
-
-// @Test: Method calls can be suppressed by passing the first constructor parameter
-
-  // fixtures
-  $output->invoke('pass')->never();
-  $output->replay();
-  $parser = new LimeParserRaw($output, array('pass'));
   // test
   $parser->parse(serialize(array("pass", array("A passed test", "/test/file", 11)))."\n");
   // assertions
@@ -121,7 +110,7 @@ $t = new LimeTest(11);
   $output->error(new LimeError("syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1, 'Parse error'));
   $output->replay();
   file_put_contents($file, '<?php $1invalidname;');
-  $command = new LimeShellCommand($file);
+  $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
   $parser->parse($command->getOutput());
@@ -136,7 +125,7 @@ $t = new LimeTest(11);
   $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   file_put_contents($file, '<?php require "foobar.php";');
-  $command = new LimeShellCommand($file);
+  $command = new LimeCommand($file, $executable);
   $command->execute();
   // test
   $parser->parse($command->getOutput());

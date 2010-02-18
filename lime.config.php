@@ -49,8 +49,12 @@
  *   $config->registerDir('path/to/dir', array('unit', 'slow'));
  */
 
-$config->registerGlob('test/unit/*Test.php');
-$config->registerGlob('test/unit/*/*Test.php');
+$lime = LimeExecutable::php('lime', 'raw', array('--output' => 'raw'));
+$phpt = LimeExecutable::shell(null, 'tap');
+
+$config->registerGlob('test/unit/*Test.php', $lime);
+$config->registerGlob('test/unit/*/*Test.php', $lime);
+$config->registerFile('test/bin/prove.sh', $phpt);
 
 /*
  * Sets the directory where the registered files are searched for.
@@ -89,7 +93,7 @@ $config->setSuffix('Test.php');
 $config->setProcesses(1);
 
 /*
- * Sets the output factory used for creating output instances.
+ * Sets the factory used for creating output instances.
  */
 $config->setOutputFactory(new LimeOutputFactory($config));
 
@@ -110,3 +114,8 @@ $config->setSuiteOutput('suite');
  * and "raw".
  */
 $config->setTestOutput('tap');
+
+/*
+ * Sets the factory used for creating parser instances.
+ */
+$config->setParserFactory(new LimeParserFactory());

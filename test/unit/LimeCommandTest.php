@@ -10,11 +10,16 @@
  * with this source code in the file LICENSE.
  */
 
-include dirname(__FILE__).'/../../bootstrap/unit.php';
+include dirname(__FILE__).'/../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
 $t = new LimeTest(5);
+
+
+// @Before
+
+  $executable = LimeExecutable::php();
 
 
 // @Test: A PHP file can be executed
@@ -29,7 +34,7 @@ exit(1);
 EOF
   );
   // test
-  $command = new LimeShellCommand($file);
+  $command = new LimeCommand($file, $executable);
   $command->execute();
   // assertions
   $t->is($command->getOutput(), 'Test', 'The output is correct');
@@ -49,7 +54,7 @@ exit(1);
 EOF
   );
   // test
-  $command = new LimeShellCommand($file, array('test' => true, 'arg' => 'value'));
+  $command = new LimeCommand($file, $executable, array('--test' => true, '--arg' => 'value'));
   $command->execute();
   // assertions
   $output = "array (

@@ -14,7 +14,7 @@
  * points to the instance of the LimeConfiguration class. You can there
  * modify the configuration.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
 class LimeConfiguration
 {
@@ -183,6 +183,26 @@ class LimeConfiguration
   }
 
   /**
+   * Sets the factory used for creating parser instances.
+   *
+   * @param LimeParserFactoryInterface $factory
+   */
+  public function setParserFactory(LimeParserFactoryInterface $factory)
+  {
+    $this->parserFactory = $factory;
+  }
+
+  /**
+   * Returns the factory used for creating parser instances.
+   *
+   * @return LimeParserFactoryInterface
+   */
+  public function getParserFactory()
+  {
+    return $this->parserFactory;
+  }
+
+  /**
    * Sets the name of the output used for test suites.
    *
    * @param string $output
@@ -308,14 +328,14 @@ class LimeConfiguration
    * @param string $path
    * @param array $labels
    */
-  public function registerFile($path, $labels = array())
+  public function registerFile($path, LimeExecutable $executable, $labels = array())
   {
     if (!is_file($path))
     {
       throw new InvalidArgumentException(sprintf('The file "%s" does not exist', $path));
     }
 
-    $this->files[] = array($path, $labels);
+    $this->files[] = array($path, $executable, $labels);
   }
 
   /**
@@ -324,14 +344,14 @@ class LimeConfiguration
    * @param string $path
    * @param array $labels
    */
-  public function registerDir($path, $labels = array())
+  public function registerDir($path, LimeExecutable $executable, $labels = array())
   {
     if (!is_dir($path))
     {
       throw new InvalidArgumentException(sprintf('The directory "%s" does not exist', $path));
     }
 
-    $this->dirs[] = array($path, $labels);
+    $this->dirs[] = array($path, $executable, $labels);
   }
 
   /**
@@ -340,9 +360,9 @@ class LimeConfiguration
    * @param string $glob
    * @param array $labels
    */
-  public function registerGlob($glob, $labels = array())
+  public function registerGlob($glob, LimeExecutable $executable, $labels = array())
   {
-    $this->globs[] = array($glob, $labels);
+    $this->globs[] = array($glob, $executable, $labels);
   }
 
   /**
@@ -353,9 +373,9 @@ class LimeConfiguration
    * @param callable $callback
    * @param array $labels
    */
-  public function registerCallback($callback, $labels = array())
+  public function registerCallback($callback, LimeExecutable $executable, $labels = array())
   {
-    $this->callbacks[] = array($callback, $labels);
+    $this->callbacks[] = array($callback, $executable, $labels);
   }
 
   /**

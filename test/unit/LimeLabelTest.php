@@ -17,20 +17,25 @@ LimeAnnotationSupport::enable();
 $t = new LimeTest(3);
 
 
+// @BeforeAll
+
+  $executable = $t->stub('LimeExecutable');
+
+
 // @Before
 
   $label1 = new LimeLabel();
-  $label1->addFile(new LimeFile('test1.txt'));
-  $label1->addFile(new LimeFile('test2.txt'));
+  $label1->addFile(new LimeFile('test1.txt', $executable));
+  $label1->addFile(new LimeFile('test2.txt', $executable));
   $label2 = new LimeLabel();
-  $label2->addFile(new LimeFile('test1.txt'));
-  $label2->addFile(new LimeFile('test3.txt'));
+  $label2->addFile(new LimeFile('test1.txt', $executable));
+  $label2->addFile(new LimeFile('test3.txt', $executable));
 
 
 // @Test: intersect() returns the intersection of two labels
 
   $expected = new LimeLabel();
-  $expected->addFile(new LimeFile('test1.txt'));
+  $expected->addFile(new LimeFile('test1.txt', $executable));
   $actual = $label1->intersect($label2);
   $t->is($actual, $expected, 'The intersection is correct');
 
@@ -38,9 +43,9 @@ $t = new LimeTest(3);
 // @Test: add() returns the sum of two labels
 
   $expected = new LimeLabel();
-  $expected->addFile(new LimeFile('test1.txt'));
-  $expected->addFile(new LimeFile('test2.txt'));
-  $expected->addFile(new LimeFile('test3.txt'));
+  $expected->addFile(new LimeFile('test1.txt', $executable));
+  $expected->addFile(new LimeFile('test2.txt', $executable));
+  $expected->addFile(new LimeFile('test3.txt', $executable));
   $actual = $label1->add($label2);
   $t->is($actual, $expected, 'The sum is correct');
 
@@ -48,6 +53,6 @@ $t = new LimeTest(3);
 // @Test: subtract() returns the first label without the second
 
   $expected = new LimeLabel();
-  $expected->addFile(new LimeFile('test2.txt'));
+  $expected->addFile(new LimeFile('test2.txt', $executable));
   $actual = $label1->subtract($label2);
   $t->is($actual, $expected, 'The subtraction is correct');

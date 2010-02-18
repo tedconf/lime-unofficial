@@ -17,7 +17,7 @@
  * will be loaded. The file paths can then be accessed using the different
  * getFile*() methods.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
 class LimeLoader
 {
@@ -38,19 +38,19 @@ class LimeLoader
 
     foreach ($configuration->getRegisteredFiles() as $file)
     {
-      $this->loadFile($this->getAbsolutePath($file[0]), $file[1]);
+      $this->loadFile($this->getAbsolutePath($file[0]), $file[1], $file[2]);
     }
     foreach ($configuration->getRegisteredDirs() as $dir)
     {
-      $this->loadDir($this->getAbsolutePath($dir[0]), $dir[1]);
+      $this->loadDir($this->getAbsolutePath($dir[0]), $dir[1], $dir[2]);
     }
     foreach ($configuration->getRegisteredGlobs() as $glob)
     {
-      $this->loadGlob($this->getAbsolutePath($glob[0]), $glob[1]);
+      $this->loadGlob($this->getAbsolutePath($glob[0]), $glob[1], $glob[2]);
     }
     foreach ($configuration->getRegisteredCallbacks() as $callback)
     {
-      $this->loadFile($callback[0], $callback[1]);
+      $this->loadFile($callback[0], $callback[1], $callback[2]);
     }
   }
 
@@ -81,7 +81,7 @@ class LimeLoader
    * @param string $path
    * @param array $labels
    */
-  protected function loadFile($path, $labels = array())
+  protected function loadFile($path, LimeExecutable $executable, $labels = array())
   {
     if (!is_file($path))
     {
@@ -93,7 +93,7 @@ class LimeLoader
 
     if (!isset($this->files[$path]))
     {
-      $this->files[$path] = new LimeFile($path);
+      $this->files[$path] = new LimeFile($path, $executable);
 
       if (!isset($this->filesByName[$name]))
       {
@@ -125,17 +125,17 @@ class LimeLoader
    * @param array $paths
    * @param array $labels
    */
-  protected function loadFiles(array $paths, $labels = array())
+  protected function loadFiles(array $paths, LimeExecutable $executable, $labels = array())
   {
     foreach ($paths as $path)
     {
       if (is_dir($path))
       {
-        $this->loadDir($path, $labels);
+        $this->loadDir($path, $executable, $labels);
       }
       else
       {
-        $this->loadFile($path, $labels);
+        $this->loadFile($path, $executable, $labels);
       }
     }
   }
@@ -148,7 +148,7 @@ class LimeLoader
    * @param string $path
    * @param array $labels
    */
-  protected function loadDir($path, $labels = array())
+  protected function loadDir($path, LimeExecutable $executable, $labels = array())
   {
     $iterator = new DirectoryIterator($path);
 
@@ -158,11 +158,11 @@ class LimeLoader
       {
         if ($file->isDir())
         {
-          $this->loadDir($file->getPathname(), $labels);
+          $this->loadDir($file->getPathname(), $executable, $labels);
         }
         else if (preg_match($this->configuration->getFilePattern(), $file->getFilename()))
         {
-          $this->loadFile($file->getPathname(), $labels);
+          $this->loadFile($file->getPathname(), $executable, $labels);
         }
       }
     }
@@ -174,11 +174,11 @@ class LimeLoader
    * @param string $glob
    * @param array $labels
    */
-  protected function loadGlob($glob, $labels = array())
+  protected function loadGlob($glob, LimeExecutable $executable, $labels = array())
   {
     if ($files = glob($glob))
     {
-      $this->loadFiles($files, $labels);
+      $this->loadFiles($files, $executable, $labels);
     }
   }
 
@@ -190,11 +190,11 @@ class LimeLoader
    * @param callable $callback
    * @param array $labels
    */
-  protected function loadCallback($callback, $labels = array())
+  protected function loadCallback($callback, LimeExecutable $executable, $labels = array())
   {
     if ($files = call_user_func($callback))
     {
-      $this->loadFiles($files, $labels);
+      $this->loadFiles($files, $executable, $labels);
     }
   }
 

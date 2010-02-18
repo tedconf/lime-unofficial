@@ -15,22 +15,24 @@
  *
  * The file may be assigned to labels.
  *
- * @author Bernhard Schussek <bschussek@gmail.com>
+ * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
 class LimeFile
 {
   private
     $path          = null,
-    $labels      = array();
+    $executable    = null,
+    $labels        = array();
 
   /**
    * Constructor.
    *
    * @param string $path  The path to the file
    */
-  public function __construct($path)
+  public function __construct($path, LimeExecutable $executable)
   {
     $this->path = $path;
+    $this->executable = $executable;
   }
 
   /**
@@ -41,6 +43,16 @@ class LimeFile
   public function getPath()
   {
     return $this->path;
+  }
+
+  /**
+   * Returns the executable for the file.
+   *
+   * @return LimeExecutable
+   */
+  public function getExecutable()
+  {
+    return $this->executable;
   }
 
   /**

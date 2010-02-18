@@ -14,14 +14,16 @@ require_once dirname(__FILE__).'/../bootstrap/unit.php';
 
 LimeAnnotationSupport::enable();
 
-$t = new LimeTest(7);
+$t = new LimeTest(6);
 
 
 // @Before
 
-  $file = tempnam(sys_get_temp_dir(), 'lime');
   $output = $t->mock('LimeOutputInterface');
-  $launcher = new LimeLauncher($output);
+  $parserFactory = new LimeParserFactory();
+  $executable = LimeExecutable::php(null, 'raw');
+  $file = tempnam(sys_get_temp_dir(), 'lime');
+  $launcher = new LimeLauncher($output, $parserFactory);
 
 
 // @After
@@ -31,34 +33,14 @@ $t = new LimeTest(7);
   $launcher = null;
 
 
-// @Test: The file is called with the argument --output=raw
-
-  // fixtures
-  $output->plan(2);
-  $output->replay();
-  file_put_contents($file, <<<EOF
-<?php
-if (in_array('--output=raw', \$GLOBALS['argv']))
-{
-  echo "1..2\n";
-}
-EOF
-  );
-  // test
-  $launcher->launch(new LimeFile($file));
-  while (!$launcher->done()) $launcher->proceed();
-  // assertions
-  $output->verify();
-
-
 // @Test: If the output cannot be unserialized, an error is reported
 
   // fixtures
-  file_put_contents($file, '<?php echo "\0raw\0Some Error occurred\n";');
+  file_put_contents($file, '<?php echo "Some Error occurred\n";');
   $output->warning('Could not parse test output: "Some Error occurred"', $file, 1);
   $output->replay();
   // test
-  $launcher->launch(new LimeFile($file));
+  $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
@@ -72,7 +54,7 @@ EOF
   $output->warning('Error 2', $file, 0);
   $output->replay();
   // test
-  $launcher->launch(new LimeFile($file));
+  $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
@@ -87,7 +69,7 @@ EOF
   $output->error(new LimeError("syntax error, unexpected T_LNUMBER, expecting T_VARIABLE or '$'", $file, 1, 'Parse error'));
   $output->replay();
   // test
-  $launcher->launch(new LimeFile($file));
+  $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();
@@ -101,7 +83,7 @@ EOF
   $output->error(new LimeError("require(): Failed opening required 'foobar.php' (include_path='".get_include_path()."')", $file, 1, 'Fatal error'));
   $output->replay();
   // test
-  $launcher->launch(new LimeFile($file));
+  $launcher->launch(new LimeFile($file, $executable));
   while (!$launcher->done()) $launcher->proceed();
   // assertions
   $output->verify();

@@ -1,6 +1,6 @@
 <?php
 
-class LimeShellCommand
+class LimeCommand
 {
   protected
     $command    = null,
@@ -9,11 +9,13 @@ class LimeShellCommand
     $errors     = '',
     $errorFile  = '';
 
-  public function __construct($file, array $arguments = array())
+  public function __construct($file, LimeExecutable $executable, array $arguments = array())
   {
+    $arguments = array_merge($executable->getArguments(), $arguments);
+
     foreach ($arguments as $argument => $value)
     {
-      $arguments[$argument] = '--'.$argument;
+      $arguments[$argument] = $argument;
 
       if ($value !== true)
       {
@@ -31,7 +33,7 @@ class LimeShellCommand
     // see http://trac.symfony-project.org/ticket/5437 for the explanation on the weird "cd" thing
     $this->command = sprintf(
       'cd & %s %s %s 2>%s',
-      escapeshellarg(LimeShell::getExecutable()),
+      $executable->getExecutable(),
       escapeshellarg($file),
       implode(' ', $arguments),
       $this->errorFile

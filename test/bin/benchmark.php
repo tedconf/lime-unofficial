@@ -48,7 +48,7 @@ foreach ($processCounts as $i => $processCount)
 
   echo "Running ".($i+1)." of ".count($processCounts)." ($processCount processes)\n";
 
-  $command = new LimeShellCommand(TEST_SCRIPT, array('processes' => $processCount));
+  $command = new LimeCommand(TEST_SCRIPT, array('processes' => $processCount));
   $command->execute();
 
   $stats[$processCount][] = microtime(true) - $time;
