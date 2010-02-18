@@ -25,6 +25,7 @@ class LimeConfiguration
     $instances     = array();
 
   private
+    $loadables       = array(),
     $files           = array(),
     $dirs            = array(),
     $globs           = array(),
@@ -130,16 +131,6 @@ class LimeConfiguration
   public function getSuffix()
   {
     return $this->suffix;
-  }
-
-  /**
-   * Returns the file pattern that test files should match.
-   *
-   * @return string
-   */
-  public function getFilePattern()
-  {
-    return $this->pattern;
   }
 
   /**
@@ -330,12 +321,7 @@ class LimeConfiguration
    */
   public function registerFile($path, LimeExecutable $executable, $labels = array())
   {
-    if (!is_file($path))
-    {
-      throw new InvalidArgumentException(sprintf('The file "%s" does not exist', $path));
-    }
-
-    $this->files[] = array($path, $executable, $labels);
+    $this->loadables[] = new LimeFile($this->getAbsolutePath($path), $executable, $labels);
   }
 
   /**
@@ -346,12 +332,7 @@ class LimeConfiguration
    */
   public function registerDir($path, LimeExecutable $executable, $labels = array())
   {
-    if (!is_dir($path))
-    {
-      throw new InvalidArgumentException(sprintf('The directory "%s" does not exist', $path));
-    }
-
-    $this->dirs[] = array($path, $executable, $labels);
+    $this->loadables[] = new LimeDirectory($this->getAbsolutePath($path), $this->pattern, $executable, $labels);
   }
 
   /**
@@ -362,7 +343,7 @@ class LimeConfiguration
    */
   public function registerGlob($glob, LimeExecutable $executable, $labels = array())
   {
-    $this->globs[] = array($glob, $executable, $labels);
+    $this->loadables[] = new LimeGlob($this->getAbsolutePath($glob), $executable, $labels);
   }
 
   /**
@@ -375,46 +356,37 @@ class LimeConfiguration
    */
   public function registerCallback($callback, LimeExecutable $executable, $labels = array())
   {
-    $this->callbacks[] = array($callback, $executable, $labels);
+    $this->loadables[] = new LimeCallback($callback, $executable, $labels);
   }
 
   /**
-   * Returns all registered files.
+   * Returns all registered loadables.
    *
    * @return array
    */
-  public function getRegisteredFiles()
+  public function getLoadables()
   {
-    return $this->files;
+    return $this->loadables;
   }
 
   /**
-   * Returns all registered directories.
+   * Returns the absolute version of the given path.
    *
-   * @return array
-   */
-  public function getRegisteredDirs()
-  {
-    return $this->dirs;
-  }
-
-  /**
-   * Returns all registered globs.
+   * If the path is not already absolute, the base directory of the
+   * configuration is prepended in front of the path.
    *
-   * @return array
+   * @param  string $path
+   * @return string
    */
-  public function getRegisteredGlobs()
+  protected function getAbsolutePath($path)
   {
-    return $this->globs;
-  }
-
-  /**
-   * Returns all registered callbacks.
-   *
-   * @return array
-   */
-  public function getRegisteredCallbacks()
-  {
-    return $this->callbacks;
+    if (realpath($path) != $path)
+    {
+      return $this->getBaseDir().DIRECTORY_SEPARATOR.$path;
+    }
+    else
+    {
+      return $path;
+    }
   }
 }

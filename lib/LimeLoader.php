@@ -36,42 +36,9 @@ class LimeLoader
   {
     $this->configuration = $configuration;
 
-    foreach ($configuration->getRegisteredFiles() as $file)
+    foreach ($configuration->getLoadables() as $loadable)
     {
-      $this->loadFile($this->getAbsolutePath($file[0]), $file[1], $file[2]);
-    }
-    foreach ($configuration->getRegisteredDirs() as $dir)
-    {
-      $this->loadDir($this->getAbsolutePath($dir[0]), $dir[1], $dir[2]);
-    }
-    foreach ($configuration->getRegisteredGlobs() as $glob)
-    {
-      $this->loadGlob($this->getAbsolutePath($glob[0]), $glob[1], $glob[2]);
-    }
-    foreach ($configuration->getRegisteredCallbacks() as $callback)
-    {
-      $this->loadFile($callback[0], $callback[1], $callback[2]);
-    }
-  }
-
-  /**
-   * Returns the absolute version of the given path.
-   *
-   * If the path is not already absolute, the base directory of the
-   * configuration is prepended in front of the path.
-   *
-   * @param  string $path
-   * @return string
-   */
-  protected function getAbsolutePath($path)
-  {
-    if (realpath($path) != $path)
-    {
-      return $this->configuration->getBaseDir().DIRECTORY_SEPARATOR.$path;
-    }
-    else
-    {
-      return $path;
+      $this->load($loadable);
     }
   }
 
@@ -81,123 +48,49 @@ class LimeLoader
    * @param string $path
    * @param array $labels
    */
-  protected function loadFile($path, LimeExecutable $executable, $labels = array())
+  public function load(LimeLoadable $loadable)
   {
-    if (!is_file($path))
+    foreach ($loadable->loadFiles() as $file)
     {
-      throw new InvalidArgumentException(sprintf('The file "%s" does not exist', $path));
-    }
+      $path = $file->getPath();
+      $name = basename($path, $this->configuration->getSuffix());
 
-    $path = realpath($path);
-    $name = basename($path, $this->configuration->getSuffix());
-
-    if (!isset($this->files[$path]))
-    {
-      $this->files[$path] = new LimeFile($path, $executable);
-
-      if (!isset($this->filesByName[$name]))
+      if (!isset($this->files[$path]))
       {
-        $this->filesByName[$name] = array();
-      }
+        $this->files[$path] = $file;
 
-      // allow multiple files with the same name
-      $this->filesByName[$name][] = $this->files[$path];
-    }
+        if (!isset($this->filesByName[$name]))
+        {
+          $this->filesByName[$name] = array();
+        }
 
-    $labels = (array)$labels;
-
-    $this->files[$path]->addLabels($labels);
-
-    foreach ($labels as $label)
-    {
-      if (!isset($this->labels[$label]))
-      {
-        $this->labels[$label] = new LimeLabel();
-      }
-
-      $this->labels[$label]->addFile($this->files[$path]);
-    }
-  }
-
-  /**
-   * Loads an array of test file paths in the test suite.
-   *
-   * @param array $paths
-   * @param array $labels
-   */
-  protected function loadFiles(array $paths, LimeExecutable $executable, $labels = array())
-  {
-    foreach ($paths as $path)
-    {
-      if (is_dir($path))
-      {
-        $this->loadDir($path, $executable, $labels);
+        // allow multiple files with the same name
+        $this->filesByName[$name][] = $file;
       }
       else
       {
-        $this->loadFile($path, $executable, $labels);
+        // merge labels into existing files
+        $this->files[$path]->addLabels($file->getLabels());
       }
-    }
-  }
 
-  /**
-   * Loads the content of a directory in the test suite.
-   *
-   * Only files with the configures suffix will be added.
-   *
-   * @param string $path
-   * @param array $labels
-   */
-  protected function loadDir($path, LimeExecutable $executable, $labels = array())
-  {
-    $iterator = new DirectoryIterator($path);
-
-    foreach ($iterator as $file)
-    {
-      if (!$file->isDot())
+      foreach ($file->getLabels() as $label)
       {
-        if ($file->isDir())
+        if (!isset($this->labels[$label]))
         {
-          $this->loadDir($file->getPathname(), $executable, $labels);
+          $this->labels[$label] = new LimeLabel();
         }
-        else if (preg_match($this->configuration->getFilePattern(), $file->getFilename()))
-        {
-          $this->loadFile($file->getPathname(), $executable, $labels);
-        }
+
+        $this->labels[$label]->addFile($this->files[$path]);
       }
     }
   }
 
   /**
-   * Loads all files matched by the given glob in the test suite.
+   * Returns whether the given label exists.
    *
-   * @param string $glob
-   * @param array $labels
+   * @param  string $label
+   * @return boolean
    */
-  protected function loadGlob($glob, LimeExecutable $executable, $labels = array())
-  {
-    if ($files = glob($glob))
-    {
-      $this->loadFiles($files, $executable, $labels);
-    }
-  }
-
-  /**
-   * Adds the results of a callback to be added to the test suite.
-   *
-   * The callback should return an array of file paths.
-   *
-   * @param callable $callback
-   * @param array $labels
-   */
-  protected function loadCallback($callback, LimeExecutable $executable, $labels = array())
-  {
-    if ($files = call_user_func($callback))
-    {
-      $this->loadFiles($files, $executable, $labels);
-    }
-  }
-
   public function isLabel($label)
   {
     preg_match('/^[+-]?(.+)$/', $label, $matches);

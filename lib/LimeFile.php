@@ -17,7 +17,7 @@
  *
  * @author Bernhard Schussek <bernhard.schussek@symfony-project.com>
  */
-class LimeFile
+class LimeFile implements LimeLoadable
 {
   private
     $path          = null,
@@ -29,10 +29,16 @@ class LimeFile
    *
    * @param string $path  The path to the file
    */
-  public function __construct($path, LimeExecutable $executable)
+  public function __construct($path, LimeExecutable $executable, array $labels = array())
   {
-    $this->path = $path;
+    if (!is_file($path))
+    {
+      throw new InvalidArgumentException(sprintf('The file "%s" does not exist', $path));
+    }
+
+    $this->path = realpath($path);
     $this->executable = $executable;
+    $this->labels = $labels;
   }
 
   /**
@@ -58,9 +64,9 @@ class LimeFile
   /**
    * Adds the given labels to the file.
    *
-   * @param array $la bels
+   * @param array $labels
    */
-  public function addLabels($labels)
+  public function addLabels(array $labels)
   {
     $this->labels = array_merge($this->labels, $labels);
   }
@@ -73,5 +79,13 @@ class LimeFile
   public function getLabels()
   {
     return array_values(array_unique($this->labels));
+  }
+
+  /**
+   * @see LimeLoadable#loadFiles()
+   */
+  public function loadFiles()
+  {
+    return array($this);
   }
 }

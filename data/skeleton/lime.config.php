@@ -10,6 +10,11 @@
  * with this source code in the file LICENSE.
  */
 
+/*
+ * Sets the directory where the registered files are searched for.
+ */
+$config->setBaseDir(dirname(__FILE__));
+
 /**
  * Register your test files here. The file paths can be absolute or relative to
  * the configured base directory.
@@ -56,11 +61,6 @@
 $lime = LimeExecutable::php('lime', 'raw', array('--output' => 'raw'));
 
 //$config->registerDir('test', $lime);
-
-/*
- * Sets the directory where the registered files are searched for.
- */
-$config->setBaseDir(dirname(__FILE__));
 
 /*
  * If you set verbose to true, some test outputs will output additional
